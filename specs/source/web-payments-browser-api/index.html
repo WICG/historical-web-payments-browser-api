@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Web Payments API 1.0</title>
+    <title>Web Payments Browser API 1.0</title>
     <meta http-equiv='Content-Type' content='text/html;charset=utf-8'/>
     <!--
       === NOTA BENE ===
@@ -9,15 +9,14 @@
       out in the same tree and use relative links so that they'll work offline,
      -->
     <link rel="stylesheet" href="spec.css">
-    <script src='../../respec-w3c-common.js' class='remove'></script>
-    <script src='../../web-payments-common.js' class='remove'></script>
+    <script src='https://www.w3.org/Tools/respec/respec-w3c-common' async class='remove'></script>
     <script type="text/javascript" class="remove">
       var respecConfig = {
           // specification status (e.g. WD, LCWD, NOTE, etc.). If in doubt use ED.
           specStatus:           "CG-DRAFT",
 
           // the specification's short name, as in http://www.w3.org/TR/short-name/
-          shortName:            "web-payments-api",
+          shortName:            "web-payments-browser-api",
 
           // if you wish the publication date to be other than today, set this
           // publishDate:  "2009-08-06",
@@ -28,15 +27,15 @@
           // previousMaturity:  "WD",
 
           // if there a publicly available Editor's Draft, this is the link
-          edDraftURI:           "https://web-payments.org/specs/source/web-payments-api/",
+          edDraftURI:           "https://web-payments.org/specs/source/web-payments-browser-api/",
 
           // if this is a LCWD, uncomment and set the end of its review period
           // lcEnd: "2009-08-05",
 
           // editors, add as many as you like
           // only "name" is required
-          editors:  [
-              { name: "Manu Sporny", url: "http://digitalbazaar.com/",
+          editors: [
+              { name: "Manu Sporny", url: "https://manu.sporny.org/",
                 company: "Digital Bazaar, Inc.", companyURL: "http://digitalbazaar.com/" },
           ],
 
@@ -44,13 +43,15 @@
           // This is optional, uncomment if you have authors as well as editors.
           // only "name" is required. Same format as editors.
 
-          //authors:  [
-          //    { name: "Your Name", url: "http://example.org/",
-          //      company: "Your Company", companyURL: "http://example.com/" },
-          //],
+          authors: [
+              { name: "Manu Sporny", url: "https://manu.sporny.org/",
+                company: "Digital Bazaar, Inc.", companyURL: "http://digitalbazaar.com/" },
+              { name: "Dave Longley", url: "https://github.com/dlongley",
+                company: "Digital Bazaar, Inc.", companyURL: "http://digitalbazaar.com/" },
+          ],
 
           // extend the bibliography entries
-          localBiblio: webpayments.localBiblio,
+          //localBiblio: {},
 
           // name of the WG
           wg:           "W3C Web Payments Community Group",
@@ -68,35 +69,11 @@
           // Team Contact.
           wgPatentURI:  "",
           maxTocLevel: 4,
-          preProcess: [ webpayments.preProcess ] /*,
+          preProcess: [ ] /*,
           alternateFormats: [ {uri: "diff-20111214.html", label: "diff to previous version"} ],
           */
       };
     </script>
-    <script type="text/javascript" class="remove">
-      var oldonload = window.onload;
-      window.onload = function() {
-        if (oldonload) oldonload();
-        prettyPrint();
-      };
-    </script>
-<style type="text/css">
-  .diff { font-weight:bold; color:#0a3; }
-  table, thead, tr, td { padding: 5px; border-width: 1px; border-spacing: 0px; border-style: solid; border-collapse: collapse;}
-  ol.algorithm {
-    counter-reset: numsection;
-    list-style-type: none;
-  }
-  ol.algorithm li {
-    margin: 0.5em 0;
-  }
-  ol.algorithm li:before {
-    font-weight: bold;
-    counter-increment: numsection;
-    content: counters(numsection, ".") ") ";
-  }
-
-</style>
 </head>
 
 <body>
