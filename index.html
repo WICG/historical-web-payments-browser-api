@@ -10,165 +10,82 @@
      -->
     <link rel="stylesheet" href="spec.css">
     <script src='//www.w3.org/Tools/respec/respec-w3c-common' async class='remove'></script>
+    <script src='utils.js' async class='remove'></script>
     <script type="text/javascript" class="remove">
-      var respecConfig = {
-          // specification status (e.g. WD, LCWD, NOTE, etc.). If in doubt use ED.
-          specStatus:           "CG-DRAFT",
+var respecConfig = {
+  // specification status (e.g. WD, LCWD, NOTE, etc.). If in doubt use ED.
+  specStatus:           "CG-DRAFT",
 
-          // the specification's short name, as in http://www.w3.org/TR/short-name/
-          shortName:            "web-payments-browser-api",
+  // the specification's short name, as in http://www.w3.org/TR/short-name/
+  shortName:            "web-payments-browser-api",
 
-          // if you wish the publication date to be other than today, set this
-          // publishDate:  "2009-08-06",
+  // if you wish the publication date to be other than today, set this
+  // publishDate:  "2009-08-06",
 
-          // if there is a previously published draft, uncomment this and set its YYYY-MM-DD date
-          // and its maturity status
-          // previousPublishDate:  "1977-03-15",
-          // previousMaturity:  "WD",
+  // if there is a previously published draft, uncomment this and set its YYYY-MM-DD date
+  // and its maturity status
+  // previousPublishDate:  "1977-03-15",
+  // previousMaturity:  "WD",
 
-          // if there a publicly available Editor's Draft, this is the link
-          edDraftURI:           "https://web-payments.org/specs/source/web-payments-browser-api/",
+  // if there a publicly available Editor's Draft, this is the link
+  edDraftURI:           "https://web-payments.org/specs/source/web-payments-browser-api/",
 
-          // if this is a LCWD, uncomment and set the end of its review period
-          // lcEnd: "2009-08-05",
+  // if this is a LCWD, uncomment and set the end of its review period
+  // lcEnd: "2009-08-05",
 
-          // editors, add as many as you like
-          // only "name" is required
-          editors: [
-              { name: "Manu Sporny", url: "https://manu.sporny.org/",
-                company: "Digital Bazaar, Inc.", companyURL: "http://digitalbazaar.com/" },
-          ],
+  // editors, add as many as you like
+  // only "name" is required
+  editors: [
+      { name: "Manu Sporny", url: "https://manu.sporny.org/",
+        company: "Digital Bazaar, Inc.", companyURL: "http://digitalbazaar.com/" },
+  ],
 
-          // authors, add as many as you like.
-          // This is optional, uncomment if you have authors as well as editors.
-          // only "name" is required. Same format as editors.
+  // authors, add as many as you like.
+  // This is optional, uncomment if you have authors as well as editors.
+  // only "name" is required. Same format as editors.
 
-          authors: [
-              { name: "Manu Sporny", url: "https://manu.sporny.org/",
-                company: "Digital Bazaar, Inc.", companyURL: "http://digitalbazaar.com/" },
-              { name: "Dave Longley", url: "https://github.com/dlongley",
-                company: "Digital Bazaar, Inc.", companyURL: "http://digitalbazaar.com/" },
-          ],
+  authors: [
+    { name: "Manu Sporny", url: "https://manu.sporny.org/",
+      company: "Digital Bazaar, Inc.", companyURL: "http://digitalbazaar.com/" },
+    { name: "Dave Longley", url: "https://github.com/dlongley",
+      company: "Digital Bazaar, Inc.", companyURL: "http://digitalbazaar.com/" },
+  ],
 
-          // extend the bibliography entries
-          //localBiblio: {},
+  // extend the bibliography entries
+  //localBiblio: {},
 
-          // name of the WG
-          wg:           "W3C Web Payments Community Group",
+  // name of the WG
+  wg:           "W3C Web Payments Community Group",
 
-          // URI of the public WG page
-          wgURI:        "http://www.w3.org/community/webpayments/",
+  // URI of the public WG page
+  wgURI:        "http://www.w3.org/community/webpayments/",
 
-          // name (with the @w3c.org) of the public mailing to which comments are due
-          wgPublicList: "public-webpayments@w3.org",
+  // name (with the @w3c.org) of the public mailing to which comments are due
+  wgPublicList: "public-webpayments@w3.org",
 
-          // URI of the patent status for this WG, for Rec-track documents
-          // !!!! IMPORTANT !!!!
-          // This is important for Rec-track documents, do not copy a patent URI from a random
-          // document unless you know what you're doing. If in doubt ask your friendly neighbourhood
-          // Team Contact.
-          wgPatentURI:  "",
-          maxTocLevel: 4,
-          preProcess: [ ] /*,
-          alternateFormats: [ {uri: "diff-20111214.html", label: "diff to previous version"} ],
-          */
-      };
+  // URI of the patent status for this WG, for Rec-track documents
+  // !!!! IMPORTANT !!!!
+  // This is important for Rec-track documents, do not copy a patent URI from a random
+  // document unless you know what you're doing. If in doubt ask your friendly neighbourhood
+  // Team Contact.
+  wgPatentURI:  "",
+  maxTocLevel: 4,
+  preProcess: [ ] /*,
+  alternateFormats: [ {uri: "diff-20111214.html", label: "diff to previous version"} ],
+  */
+};
     </script>
-    <script>
-function updateReferences(base) {
-    // update references to properties
-
-    var baseURL = respecConfig.ariaSpecURLs[respecConfig.specStatus];
-
-    $.each(base.querySelectorAll("pref, sref, rref"), function(i, item) {
-        var parentNode = item.parentNode;
-        var content = item.textContent || item.innerText;
-        var sp = document.createElement("a");
-        sp.className = (item.localName === "pref" ? "property-reference" : (item.localName === "sref" ? "state-reference" : "role-reference"));
-        var URL = (item.localName === "pref" || item.localName === "sref") ? baseURL+"#" : "#";
-        var ref = item.getAttribute("title");
-        if (!ref) {
-            ref = content;
-        }
-        if (item.localName == 'rref') {
-            if (typeof localRoleInfo !== 'undefined' && localRoleInfo[ref]) {
-                ref = localRoleInfo[ref].fragID;
-            } else if (baseURL && roleInfo[ref]) {
-                ref = roleInfo[ref].fragID;
-                URL = baseURL + "#";
-            } else {
-                // no roleInfo structure.  Make an assumption
-                URL = baseURL + "#";
-            }
-        }
-        sp.href = URL + ref;
-        sp.setAttribute("title", content);
-        sp.innerHTML = content;
-        parentNode.replaceChild(sp, item);
-    });
+    <style>
+.sequence-diagram {
+  margin: auto;
 }
-
-// We should be able to remove terms that are not actually
-// referenced from the common definitions
-var termNames = [] ;
-
-function restrictReferences(utils, content) {
-    var base = document.createElement("div");
-    base.innerHTML = content;
-    updateReferences(base);
-
-    // strategy: Traverse the content finding all of the terms defined
-    $.each(base.querySelectorAll("dfn"), function(i, item) {
-        var $t = $(item) ;
-        var titles = $t.getDfnTitles();
-        var n = $t.makeID("dfn", titles[0]);
-        if (n) {
-            termNames[n] = $t.parent() ;
-        }
-    });
-
-    // add a handler to come in after all the definitions are resolved
-
-    respecEvents.sub('end', function(message) {
-        if (message == 'core/link-to-dfn') {
-            // all definitions are linked
-            $("a.internalDFN").each(function () {
-                var $item = $(this) ;
-                var r = $item.attr('href').replace(/^#/,"") ;
-                if (termNames[r]) {
-                    delete termNames[r] ;
-                }
-            });
-    // delete any terms that were not referenced.
-            Object.keys(termNames).forEach(function(term) {
-                var $p = $("#"+term) ;
-                if ($p) {
-                    var tList = $p.getDfnTitles();
-                    $p.parent().next().remove();
-                    $p.remove() ;
-                    tList.forEach(function( item ) {
-                        if (respecConfig.definitionMap[item]) {
-                            delete respecConfig.definitionMap[item];
-                        }
-                    });
-                }
-            });
-        }
-    });
-
-    respecEvents.sub ('end-all', function () {
-        $('body').attr('aria-busy', 'false');  // or, remove it entirely?
-    });
-
-    return (base.innerHTML);
-}
-    </script>
+    </style>
 </head>
 
 <body>
 <section id="abstract">
   <p>
-This document outlines how to register payment instruments, request payments,
+This document outlines how to register <a>payment instrument</a>s, request payments,
 and acknowledge payment requests using a polyfill-able browser API.
   </p>
 </section>
@@ -208,7 +125,7 @@ implementations will surface to enhance usability and transaction
 security.
   </p>
   <section class="informative">
-    <h2>How to Read this Document</h2>
+    <h2>About this Document</h2>
 
     <p>This document is a detailed specification for an application programming
       interface (API) for initiating payments from within a browser
@@ -221,6 +138,34 @@ security.
       <li>Software developers who want to implement the API.</li>
     </ul>
   </section>
+  <section>
+    <h3>How this Document is Organized</h3>
+
+    <p>
+This document is organized as follows:
+    </p>
+
+    <ul>
+        <li>
+<a href="#terminology">Section 2: Terminology</a> defines basic terminology
+used throughout this document.
+      </li>
+      <li>
+<a href="#a-basic-purchase-flow">Section 3: A Basic Purchase Flow</a> describes
+the basic payment flow at a high-level.
+      </li>
+      <li>
+<a href="#detailed-flows">Section 4: Detailed Flows</a> describes each
+flow provided by the browser API in detail.
+      </li>
+      <li>
+<a href="#the-application-programming-interface">Section 5:
+The Application Programming Interface</a> defines the browser API for 
+registering, initiating, and acknowledging payments.
+      </li>
+    </ul>
+  </section>
+</section>
 
   <section class="normative">
     <h2>Terminology</h2>
@@ -234,75 +179,96 @@ security.
 </section>
 
 <section>
-  <h2>Payment Flow Overview</h2>
+  <h2>A Basic Purchase Flow</h2>
+
+  <p>
+The diagram below outlines a basic tokenized credit card payment flow:
+  </p>
+
+  <script type='text/jumly+sequence'>
+@found "Payee server (merchant)", ->
+  @message "display offer", "Payer browser (customer)", ->
+    @message "click 'Pay'", "Payee server (merchant)", ->
+      @reply "payment request", "Payer browser (customer)"
+@found "Payer browser (customer)", ->
+  @message "select payment instrument", ->
+    @message "payment request + selected instrument", "Payer payment processor (wallet)", ->
+      @message "process request", ->
+        @reply "payment token", "Payer browser (customer)"
+@found "Payer browser (customer)", ->
+  @message "payment token", "Payee server (merchant)", ->
+    @message "use token", ->
+      @reply "deliver good/service", "Payer browser (customer)"
+  </script>
+
   <ol class="algorithm">
     <li>
-The payee's web page calls <code>navigator.payment.request(request)</code>.
+The <a>payee</a>'s web page calls <code>navigator.payment.request(request)</code>.
     </li>
     <li>
-The payment agent scans the list of previously registered payment instruments
+The payment agent scans the list of previously registered <a>payment instrument</a>s
 and finds matches against <code>acceptedSchemes</code> in
 <code>request</code>.
     </li>
     <li>
-A payment instrument is selected by the payment agent or the payer. The
+A <a>payment instrument</a> is selected by the payment agent or the <a>payer</a>. The
 process MAY consist of one or more of the following steps:
       <ol class="algorithm">
         <li>
 If there is only one instrument that matches, that is automatically set
-to the <em>selected payment instrument</em>.
+to the <em>selected <a>payment instrument</a></em>.
         </li>
         <li>
-If there is a pre-existing preference set by the payer that narrows the
-selection of the payment instrument to one match, the match is set to the
-<em>selected payment instrument</em>.
+If there is a pre-existing preference set by the <a>payer</a> that narrows the
+selection of the <a>payment instrument</a> to one match, the match is set to the
+<em>selected <a>payment instrument</a></em>.
         </li>
         <li>
-If there is more than one potential match, the payer is asked which
+If there is more than one potential match, the <a>payer</a> is asked which
 instrument they would like to use and the selection is set to the
-<em>selected payment instrument</em>
+<em>selected <a>payment instrument</a></em>
         </li>
         <li>
-If there are no matches, the payer is notified and may be taken to an
-alternate flow where a matching payment instrument is acquired.
+If there are no matches, the <a>payer</a> is notified and may be taken to an
+alternate flow where a matching <a>payment instrument</a> is acquired.
         </li>
       </ol>
     </li>
     <li>
-If the payment instrument does not require the payment flow to switch
-to a 3rd party payment processor (e.g. cryptocurrency),
+If the <a>payment instrument</a> does not require the payment flow to switch
+to a 3rd party <a>payment processor</a> (e.g. cryptocurrency),
 then the payment acknowledgement is generated locally and the web
 application that called <code>navigator.payment.request()</code> is
 sent the acknowledgement via <code>navigator.payment.acknowledge()</code>.
     </li>
     <li>
 If the instrument requires the payment flow to switch to a 3rd party
-payer payment processor (e.g. push-payment like a PayPal/Google Wallet-like instrument, ACH, ISO20022 style instrument):
+payer <a>payment processor</a> (e.g. push-payment like a PayPal/Google Wallet-like instrument, ACH, ISO20022 style instrument):
       <ol class="algorithm">
         <li>
 The payment agent forwards the <code>request</code>, and
-<em>selected payment instrument</em> via <code>postMessage</code> to the
-<code>paymentRequestService</code> in the payment instrument for approval.
+<em>selected <a>payment instrument</a></em> via <code>postMessage</code> to the
+<code>paymentRequestService</code> in the <a>payment instrument</a> for approval.
         </li>
       </ol>
     </li>
     <li>
 If the instrument requires the payment flow to switch to a 3rd party
-payee payment processor (e.g. pull-payment like non-EMV magstripe credit
+payee <a>payment processor</a> (e.g. pull-payment like non-EMV magstripe credit
 card with embossed PAN and CVV2, or tokenized credit card):
       <ol class="algorithm">
         <li>
 The payment agent forwards the request on via <code>postMessage()</code>
 to the <code>paymentRequestService</code> in the
-<code>acceptedScheme</code> (note that the payee
-sets this, not the payment instrument).
+<code>acceptedScheme</code> (note that the <a>payee</a>
+sets this, not the <a>payment instrument</a>).
         </li>
       </ol>
     </li>
     <li>
 The payment flow is then transferred to the entity that is going to
 generate the <em>payment acknowledgment</em> (locally installed
-payment instrument, payee's payment service provider, or payer's
+payment instrument, <a>payee</a>'s <a>payment service provider</a>, or <a>payer</a>'s
 payment service provider).
     </li>
     <li>
@@ -312,15 +278,10 @@ acknowledge that the payment failed, the <em>payment acknowledgement</em>
 is generated and <code>navigator.payment.acknowledge(acknowledgement)</code>
 is called.
   </ol>
-  <p>
-The diagram below outlines the basic payment flow described above.
-<img style="display: block; margin-left: auto; margin-right: auto;
-  max-height:100%; max-width:50%;" src="basicOfferAndPurchase.svg">
-  </p>
 </section>
 
 <section>
-  <h2>Detailed Payment Flow</h2>
+  <h2>Detailed Flows</h2>
   <p class="issue">
 Describe the payment flow in detail here using Adrian's flow diagram and Ian's
 steps.
@@ -330,11 +291,11 @@ steps.
     <h3>Payment Instrument Registration</h3>
     <ol>
       <li>
-The payer navigates to a payment service provider website to sign up.</li>
+The <a>payer</a> navigates to a <a>payment service provider</a> website to sign up.</li>
       </li>
       <li>
 During sign-up, the <code>navigator.payment.register()</code> call is made
-to register a payment instrument:
+to register a <a>payment instrument</a>:
       <pre class="example" title="Example of a credit card registration">
 var card = {
   '@context': 'https://w3id.org/web-payments/v1',
@@ -344,8 +305,8 @@ var card = {
   paymentRequestService: 'https://pay.example.com/services/cards'
 };
 
-// register the payment instrument - at this point, the interface asks the
-// person for approval to store the new payment instrument
+// register the <a>payment instrument</a> - at this point, the interface asks the
+// person for approval to store the new <a>payment instrument</a>
 var promise = navigator.payment.register(card);
 
 // this happens when the registration completes with success or a failure
@@ -363,13 +324,13 @@ promise.then(function(result) {
     <h3>Processing a Payment Request</h3>
     <ol>
       <li>
-The payer navigates to a payee's website.</li>
+The <a>payer</a> navigates to a <a>payee</a>'s website.</li>
       <li>
-The payer finds an item to payment and initiates the payment flow
+The <a>payer</a> finds an item to payment and initiates the payment flow
 (by clicking a button, swiping, speaking a voice command, etc.).
       </li>
       <li>
-The payee application generates a signed payment request, which is an
+The <a>payee</a> application generates a signed payment request, which is an
 [[!JSON-LD]] object that contains enough information to process the
 payment:
       <pre class="example" title="Example of a payment request">
@@ -413,11 +374,11 @@ promise.then(function(result) {
     <h3>Processing a Payment Acknowledgement</h3>
     <ol>
       <li>
-The payment service provider receives a payment request, authenticates the
-payer, and gets approval to proceed with the payment from the payer.
+The <a>payment service provider</a> receives a payment request, authenticates the
+payer, and gets approval to proceed with the payment from the <a>payer</a>.
       </li>
       <li>
-Once approval has been provided by the payer, the payment is processed
+Once approval has been provided by the <a>payer</a>, the payment is processed
       </li>
       <li>
 The payment service processor generates a signed payment acknowledgement
@@ -483,26 +444,26 @@ result of the payment.
       <dt>Promise register()</dt>
       <dd>
         <p>
-Typically called by a payment processor to register a payment instrument for
+Typically called by a payment processor to register a <a>payment instrument</a> for
 later use during a payment request.
         </p>
         <dl class="parameters">
           <dt>object instrument</dt>
           <dd>
-A [[!JSON-LD]] encoded payment instrument.
+A [[!JSON-LD]] encoded <a>payment instrument</a>.
           </dd>
         </dl>
       </dd>
       <dt>Promise request()</dt>
       <dd>
         <p>
-Typically called by a payee to initiate a payment. The instrument is
+Typically called by a <a>payee</a> to initiate a payment. The instrument is
 encoded in [[!JSON-LD]] format.
         </p>
         <dl class="parameters">
           <dt>object request</dt>
           <dd>
-Typically called by a payee to request a payment. The request is
+Typically called by a <a>payee</a> to request a payment. The request is
 encoded in [[!JSON-LD]] format.
           </dd>
         </dl>
@@ -530,7 +491,7 @@ payment request.
   <h2>Messages Addendum</h2>
 
   <p>
-Multiple types of payment instruments may be supported using this approach:
+Multiple types of <a>payment instrument</a>s may be supported using this approach:
   </p>
   <pre class="example" title="Example of Bitcoin registration">
 var bitcoin = {
@@ -543,8 +504,8 @@ var bitcoin = {
   paymentRequestService: 'https://bitcoin.example.com/services/bitcoin'
 };
 
-// register the payment instrument - at this point, the interface asks the
-// person for approval to store the new payment instrument
+// register the <a>payment instrument</a> - at this point, the interface asks the
+// person for approval to store the new <a>payment instrument</a>
 var promise = navigator.payment.register(bitcoin);
 
 // this happens when the registration completes with success or a failure
@@ -622,6 +583,10 @@ their input on the specification: ...
   </p>
 
 </section>
+
+<script src='//code.jquery.com/jquery-2.1.3.min.js' class='remove'></script>
+<script src='//coffeescript.org/extras/coffee-script.js' class='remove'></script>
+<script src='//jumly.tmtk.net/public/jumly.min.js' class='remove'></script>
 
 </body>
 </html>
