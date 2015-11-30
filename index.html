@@ -160,7 +160,7 @@ flow provided by the browser API in detail.
       </li>
       <li>
 <a href="#the-application-programming-interface">Section 5:
-The Application Programming Interface</a> defines the browser API for 
+The Application Programming Interface</a> defines the browser API for
 registering, initiating, and acknowledging payments.
       </li>
     </ul>
@@ -182,7 +182,15 @@ registering, initiating, and acknowledging payments.
   <h2>A Basic Purchase Flow</h2>
 
   <p>
-The diagram below outlines a basic tokenized credit card payment flow:
+The diagram below outlines a basic payment flow with no errors. The basic
+flow starts out with the <a>payee</a> offering the <a>payer</a> a
+payment request. The payer then selects an appropriate
+<a>payment instrument</a> using their user agent and either 1) processes
+the payment request locally if a local application is capable of processing
+the request, or 2) sends the payment request to a 3rd party for
+processing. The flow ends with the payment acknowledgement being returned
+to the payee for processing, and if no errors occured, the delivery of the
+good or service to the payer.
   </p>
 
   <script type='text/jumly+sequence'>
@@ -191,13 +199,17 @@ The diagram below outlines a basic tokenized credit card payment flow:
     @message "click 'Pay'", "Payee server (merchant)", ->
       @reply "payment request", "Payer browser (customer)"
 @found "Payer browser (customer)", ->
-  @message "select payment instrument", ->
-    @message "payment request + selected instrument", "Payer payment processor (wallet)", ->
-      @message "process request", ->
-        @reply "payment token", "Payer browser (customer)"
+  @message "select payment instrument"
+  @alt
+    "3rd party NOT required": ->
+      @message "generate payment acknowledgement"
+    "3rd party required": ->
+      @message "payment request + selected instrument", "Payer payment processor (wallet)", ->
+        @message "process request", ->
+          @reply "payment acknowledgement", "Payer browser (customer)"
 @found "Payer browser (customer)", ->
-  @message "payment token", "Payee server (merchant)", ->
-    @message "use token", ->
+  @message "payment acknowledgement", "Payee server (merchant)", ->
+    @message "process acknowledgement", ->
       @reply "deliver good/service", "Payer browser (customer)"
   </script>
 
@@ -452,6 +464,10 @@ later use during a payment request.
           <dd>
 A [[!JSON-LD]] encoded <a>payment instrument</a>.
           </dd>
+          <dt>object options</dt>
+          <dd>
+A set of options to use when registering the payment instrument.
+          </dd>
         </dl>
       </dd>
       <dt>Promise request()</dt>
@@ -466,6 +482,10 @@ encoded in [[!JSON-LD]] format.
 Typically called by a <a>payee</a> to request a payment. The request is
 encoded in [[!JSON-LD]] format.
           </dd>
+          <dt>object options</dt>
+          <dd>
+A set of options to use when requesting payment.
+          </dd>
         </dl>
       </dd>
       <dt>void acknowledge()</dt>
@@ -479,6 +499,10 @@ has been processed. The acknowledgement is encoded in [[!JSON-LD]] format.
           <dd>
 A [[!JSON-LD]] encoded payment acknowledgement describing the result of a
 payment request.
+          </dd>
+          <dt>object options</dt>
+          <dd>
+A set of options to use when processing the payment acknowledgement.
           </dd>
         </dl>
       </dd>
@@ -565,6 +589,169 @@ promise.then(function(acknowledgement) {
   // payment failed to be processed by the payment processor
 });
   </pre>
+
+  <p>
+Additional information may be requested along with the payment request, like
+a proof of age credential or optional shipping address, loyalty card, or
+government assistance credentials.
+  </p>
+
+  <pre class="example" title="Example of a payment request with additional information">
+var req = {
+  '@context': 'https://w3id.org/web-payments/v1',
+  type: 'PaymentRequest',
+  description: 'Payment to ExampleGrocer for groceries.',
+  acceptedScheme: {
+    scheme: 'https://w3id.org/payment-schemes#Visa',
+    transfer: {
+      amount: '4.35',
+      currency: 'USD'
+    },
+    destination: '20389472398',
+  },
+  requiredCredential: [{
+    type: 'ProofOfAgeCredential'
+  }],
+  optionalCredential: [{
+    type: 'ShippingAddressCredential'
+  }, {
+    type: 'ShopGoodLoyaltyCardCredential'
+  }, {
+    type: 'SnapCardCredential'
+  }],
+  paymentCompleteService: 'https://payee.example.com/services/paymentComplete?transaction=923847298',
+  signature: {
+    type: 'LinkedDataSignature2015',
+    creator: 'https://payee.example.com/keys/23',
+    created: '2015-09-23T20:21:34Z',
+    nonce: '239807882930744352',
+    signatureValue: 'OGQzNGVkMzVm4NTIyZTkZ...goYzI43Q3ODIyOWM32NjI='
+  }
+};
+
+// request payment and get a promise that is resolved on payment
+var promise = navigator.payment.request(req);
+
+// resolve the promise
+promise.then(function(result) {
+  // payment was processed by the payment processor
+}).catch(function(err) {
+  // payment failed to be processed by the payment processor
+});
+  </pre>
+
+  <p class="issue">
+There is a strong argument to simplify this interface by ensuring that 
+credentials are provided in a step prior to the payment request. The downside
+of this approach is that there would be two UI prompts to the customer to
+1) provide the appropriate credentials, and 2) provide the appropriate
+payment instrument. The upside is that keeping these things separate will
+enable each to improve independently of one another.
+  </p>
+
+</section>
+
+<section class="appendix informative">
+  <h2>Flows Addendum</h2>
+
+  <section>
+    <h3>Traditional Unencrypted Credit Card Flow</h3>
+  <p>
+The diagram below outlines a traditional unencrypted credit card flow
+where the user agent stores credit card details and forwards them on
+to a merchant for processing.
+  </p>
+
+  <script type='text/jumly+sequence'>
+@found "Payee payment processor"
+@found "Payee server (merchant)", ->
+  @message "display offer", "Payer browser (customer)", ->
+    @message "click 'Pay'", "Payee server (merchant)", ->
+      @reply "payment request", "Payer browser (customer)"
+@found "Payer browser (customer)", ->
+  @message "select payment instrument", ->
+    @message "payment instrument details (PAN, CVV2, address)", "Payee server (merchant)"
+@found "Payee server (merchant)", ->
+    @message "process payment", "Payee payment processor", ->
+      @message "funds captured", "Payee server (merchant)", ->
+        @message "deliver good/service", "Payer browser (customer)"
+  </script>
+  </section>
+
+  <section>
+    <h3>Tokenized Credit Card Flow</h3>
+  <p>
+The diagram below outlines a tokenized credit card flow where the token is
+generated via a local mobile wallet application available to the payer.
+  </p>
+
+  <script type='text/jumly+sequence'>
+@found "Payee payment processor"
+@found "Payee server (merchant)", ->
+  @message "display offer", "Payer browser (customer)", ->
+    @message "click 'Pay'", "Payee server (merchant)", ->
+      @reply "payment request", "Payer browser (customer)"
+@found "Payer browser (customer)", ->
+  @message "select payment instrument", ->
+    @message "payment request + selected instrument", "Payer Mobile Wallet", ->
+      @message "process request", ->
+        @reply "payment token", "Payer browser (customer)"
+@found "Payer browser (customer)", ->
+  @message "payment token", "Payee server (merchant)", ->
+    @message "use token", "Payee payment processor", ->
+      @message "funds captured", "Payee server (merchant)", ->
+        @message "deliver good/service", "Payer browser (customer)"
+  </script>
+  </section>
+
+  <section>
+    <h3>Push Payment</h3>
+  <p>
+The diagram below outlines a traditional push-payment (e.g. PayPal).
+  </p>
+
+  <script type='text/jumly+sequence'>
+@found "Payee server (merchant)", ->
+  @message "display offer", "Payer browser (customer)", ->
+    @message "click 'Pay'", "Payee server (merchant)", ->
+      @reply "payment request", "Payer browser (customer)"
+@found "Payer browser (customer)", ->
+  @message "select payment instrument", ->
+    @message "payment request + selected instrument", "Payment Service Provider", ->
+      @message "process request", ->
+        @reply "payment acknowledgement", "Payer browser (customer)"
+@found "Payer browser (customer)", ->
+  @message "payment acknowledgement", "Payee server (merchant)", ->
+    @message "verification", ->
+      @reply "deliver good/service", "Payer browser (customer)"
+  </script>
+  </section>
+
+  <section>
+    <h3>Crypto-currency Payment</h3>
+  <p>
+The diagram below outlines a cryptographic currency payment where the
+cryptocurrency application is available on the same system as the user
+agent.
+  </p>
+
+  <script type='text/jumly+sequence'>
+@found "Payee server (merchant)", ->
+  @message "display offer", "Payer browser (customer)", ->
+    @message "click 'Pay'", "Payee server (merchant)", ->
+      @reply "payment request", "Payer browser (customer)"
+@found "Payer browser (customer)", ->
+  @message "select payment instrument", ->
+    @message "payment request", "Cryptocurrency Application", ->
+      @message "process request", ->
+        @reply "payment proof", "Payer browser (customer)"
+@found "Payer browser (customer)", ->
+  @message "payment proof", "Payee server (merchant)", ->
+    @message "cryptographic verification", ->
+      @reply "deliver good/service", "Payer browser (customer)"
+  </script>
+  </section>
+
 
 </section>
 
