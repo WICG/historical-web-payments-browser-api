@@ -303,7 +303,8 @@ steps.
     <h3>Payment Instrument Registration</h3>
     <ol>
       <li>
-The <a>payer</a> navigates to a <a>payment service provider</a> website to sign up.</li>
+The <a>payer</a> navigates to a payment instrument provider website 
+(like their bank) to sign up.</li>
       </li>
       <li>
 During sign-up, the <code>navigator.payment.register()</code> call is made
@@ -330,6 +331,12 @@ promise.then(function(result) {
         </pre>
       </li>
     </ol>
+    <p class="issue">
+Clearly, registering a card number in the clear is a bad idea, so perhaps
+a tokenized card would be a better example. There are much more secure flows
+that we could demonstrate, but showing that this API works with 90%+ of the
+card-not-present transactions online today is important.
+    </p>
   </section>
 
   <section>
@@ -385,8 +392,8 @@ promise.then(function(result) {
     <h3>Processing a Payment Acknowledgement</h3>
     <ol>
       <li>
-The <a>payee</a>'s <a>payment service provider</a> receives a payment request, 
-authenticates the payer's card information, and gets approval to proceed with 
+The <a>payee</a>'s <a>payment service provider</a> receives a payment request,
+authenticates the payer's card information, and gets approval to proceed with
 the payment from the <a>payer</a>.
       </li>
       <li>
