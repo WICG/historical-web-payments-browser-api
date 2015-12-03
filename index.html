@@ -314,7 +314,7 @@ var card = {
   type: 'PaymentInstrument',
   scheme: 'https://w3id.org/payment-schemes#Visa',
   label: 'ExampleBank Visa Card',
-  paymentRequestService: 'https://pay.example.com/services/cards'
+  cardNumber: '4444444444444444'
 };
 
 // register the <a>payment instrument</a> - at this point, the interface asks the
@@ -342,7 +342,7 @@ The <a>payer</a> finds an item to payment and initiates the payment flow
 (by clicking a button, swiping, speaking a voice command, etc.).
       </li>
       <li>
-The <a>payee</a> application generates a signed payment request, which is an
+The <a>payee</a> application generates a signed payment request, which is a
 [[!JSON-LD]] object that contains enough information to process the
 payment:
       <pre class="example" title="Example of a payment request">
@@ -356,15 +356,14 @@ var req = {
       amount: '4.35',
       currency: 'USD'
     },
-    destination: '20389472398',
+    paymentRequestService: 'https://merchant-psp.example.com/services/getPaymentInfo'
   },
-  paymentCompleteService: 'https://payee.example.com/services/paymentComplete?transaction=923847298',
   signature: {
     type: 'LinkedDataSignature2015',
     creator: 'https://payee.example.com/keys/23',
     created: '2015-09-23T20:21:34Z',
-    nonce: '239807882930744352',
-    signatureValue: 'OGQzNGVkMzVm4NTIyZTkZ...goYzI43Q3ODIyOWM32NjI='
+    nonce: '239807882930744354',
+    signatureValue: '4NTIyOGQzNGVkMzVmZTkZ...3Q3ODgoYzI4IyOWM32NjI='
   }
 };
 
@@ -386,17 +385,17 @@ promise.then(function(result) {
     <h3>Processing a Payment Acknowledgement</h3>
     <ol>
       <li>
-The <a>payment service provider</a> receives a payment request, authenticates the
-payer, and gets approval to proceed with the payment from the <a>payer</a>.
+The <a>payee</a>'s <a>payment service provider</a> receives a payment request, 
+authenticates the payer's card information, and gets approval to proceed with 
+the payment from the <a>payer</a>.
       </li>
       <li>
-Once approval has been provided by the <a>payer</a>, the payment is processed
+Once approval has been provided by the <a>payer</a>, the payment is processed.
       </li>
       <li>
 The payment service processor generates a signed payment acknowledgement
 message, which is a [[!JSON-LD]] object that contains enough information to
-verify that the transaction has completed in success or failure by the
-payee application:
+verify that the transaction has completed successfully (or has failed):
         <pre class="example" title="Example of a payment acknowledgement">
 var acknowledgement = {
   '@context': 'https://w3id.org/web-payments/v1',
@@ -405,12 +404,11 @@ var acknowledgement = {
   selectedScheme: {
     scheme: 'https://w3id.org/payment-schemes#Visa',
     status: 'authorized',
-    token: '10025AB',
+    approvalCode: '10025AB',
     transfer: {
       amount: '4.35',
       currency: 'USD'
-    },
-    destination: '20389472398'
+    }
   },
   signature: {
     type: 'LinkedDataSignature2015',
@@ -568,7 +566,6 @@ var req = {
     },
     destination: '3QJmV3qfvL9SuYo34YihAf3sRCW3qSinyC'
   },
-  paymentCompleteService: 'https://payee.example.com/services/paymentComplete?transaction=923847298',
   signature: {
     type: 'LinkedDataSignature2015',
     creator: 'https://payee.example.com/keys/23',
@@ -619,7 +616,6 @@ var req = {
   }, {
     type: 'SnapCardCredential'
   }],
-  paymentCompleteService: 'https://payee.example.com/services/paymentComplete?transaction=923847298',
   signature: {
     type: 'LinkedDataSignature2015',
     creator: 'https://payee.example.com/keys/23',
@@ -641,7 +637,7 @@ promise.then(function(result) {
   </pre>
 
   <p class="issue">
-There is a strong argument to simplify this interface by ensuring that 
+There is a strong argument to simplify this interface by ensuring that
 credentials are provided in a step prior to the payment request. The downside
 of this approach is that there would be two UI prompts to the customer to
 1) provide the appropriate credentials, and 2) provide the appropriate
