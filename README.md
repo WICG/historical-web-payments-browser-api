@@ -9,8 +9,8 @@ requests for payment, and acknowledge requests for payment.
 
 Sending and receiving money on the Web is currently a manual process that
 requires the sharing of secrets, such as credit card numbers. Not only is
-the process not uniform across the same payment methods on different websites, 
-it is also a major target for phishing and other financial attacks. 
+the process not uniform across the same payment methods on different websites,
+it is also a major target for phishing and other financial attacks.
 
 # Vision
 
@@ -33,7 +33,7 @@ http://www.w3.org/Payments/IG/Roadmap/#web-payments-phase-1
 
 # Use Cases
 
-There are 17 use cases that we are attempting to partially (or fully) address 
+There are 17 use cases that we are attempting to partially (or fully) address
 in Phase I with this browser API:
 
 http://www.w3.org/Payments/IG/Roadmap/#use-cases
