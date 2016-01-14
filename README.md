@@ -5,6 +5,8 @@ to enable a better payment experience on the Web. The API enables web developers
 to register payment instruments (credit card, PayPal, Bitcoin, etc.), initiate
 requests for payment, and acknowledge requests for payment.
 
+The live version of this specification can be found [here](http://wicg.github.io/web-payments-browser-api/).
+
 # Problem
 
 Sending and receiving money on the Web is currently a manual process that
