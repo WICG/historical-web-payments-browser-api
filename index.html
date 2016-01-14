@@ -673,18 +673,17 @@ to a merchant for processing.
   </p>
 
   <script type='text/jumly+sequence'>
-@found "Payee payment processor"
 @found "Payee server (merchant)", ->
   @message "display offer", "Payer browser (customer)", ->
     @message "click 'Pay'", "Payee server (merchant)", ->
       @reply "payment request", "Payer browser (customer)"
-@found "Payer browser (customer)", ->
-  @message "select payment instrument", ->
-    @message "payment instrument details (PAN, CVV2, address)", "Payee server (merchant)"
-@found "Payee server (merchant)", ->
-    @message "process payment", "Payee payment processor", ->
-      @message "funds captured", "Payee server (merchant)", ->
-        @message "deliver good/service", "Payer browser (customer)"
+    @message "select payment app", "Payment App", ->
+      @message "select payment instrument (collect PAN, CVV2, address)", "Payment App"
+      @reply "payment acknowledgement", "Payer browser (customer)", ->
+    @reply "payment acknowledgement", "Payee server (merchant)"
+  @message "process payment", "Payee payment processor", ->
+    @reply "funds captured", "Payee server (merchant)"
+  @message "deliver good/service", "Payer browser (customer)"
   </script>
   </section>
 
@@ -696,28 +695,27 @@ generated via a local mobile wallet application available to the payer.
   </p>
 
   <script type='text/jumly+sequence'>
-@found "Payee payment processor"
 @found "Payee server (merchant)", ->
   @message "display offer", "Payer browser (customer)", ->
     @message "click 'Pay'", "Payee server (merchant)", ->
       @reply "payment request", "Payer browser (customer)"
-@found "Payer browser (customer)", ->
-  @message "select payment instrument", ->
-    @message "payment request + selected instrument", "Payer Mobile Wallet", ->
-      @message "process request", ->
-        @reply "payment token", "Payer browser (customer)"
-@found "Payer browser (customer)", ->
-  @message "payment token", "Payee server (merchant)", ->
-    @message "use token", "Payee payment processor", ->
-      @message "funds captured", "Payee server (merchant)", ->
-        @message "deliver good/service", "Payer browser (customer)"
+    @message "select payment app", "Payment App", ->
+      @message "select payment instrument", "Payment App"
+      @message "tokenization request", "Payer Mobile Wallet", ->
+        @reply "payment token", "Payment App"
+      @reply "payment acknowledgement w/token", "Payer browser (customer)", ->
+    @reply "payment acknowledgement w/token", "Payee server (merchant)"
+  @message "process payment + token", "Payee payment processor", ->
+    @reply "funds captured", "Payee server (merchant)"
+  @message "deliver good/service", "Payer browser (customer)"
   </script>
   </section>
 
   <section>
     <h3>Push Payment</h3>
   <p>
-The diagram below outlines a traditional push-payment (e.g. PayPal).
+The diagram below outlines a traditional push-payment using digital signatures
+to independently verify payment.
   </p>
 
   <script type='text/jumly+sequence'>
@@ -725,15 +723,15 @@ The diagram below outlines a traditional push-payment (e.g. PayPal).
   @message "display offer", "Payer browser (customer)", ->
     @message "click 'Pay'", "Payee server (merchant)", ->
       @reply "payment request", "Payer browser (customer)"
-@found "Payer browser (customer)", ->
-  @message "select payment instrument", ->
-    @message "payment request + selected instrument", "Payment Service Provider", ->
-      @message "process request", ->
-        @reply "payment acknowledgement", "Payer browser (customer)"
-@found "Payer browser (customer)", ->
-  @message "payment acknowledgement", "Payee server (merchant)", ->
-    @message "verification", ->
-      @reply "deliver good/service", "Payer browser (customer)"
+    @message "select payment app", "Payment App", ->
+      @message "select payment instrument", "Payment App"
+      @message "payment request + payment instrument", "Payment Service Provider", ->
+        @message "process request", ->
+          @reply "payment response", "Payment App", ->
+      @reply "payment acknowledgement", "Payer browser (customer)", ->
+    @reply "payment acknowledgement", "Payee server (merchant)"
+  @message "verification", ->
+  @message "deliver good/service", "Payer browser (customer)"
   </script>
   </section>
 
@@ -750,15 +748,13 @@ agent.
   @message "display offer", "Payer browser (customer)", ->
     @message "click 'Pay'", "Payee server (merchant)", ->
       @reply "payment request", "Payer browser (customer)"
-@found "Payer browser (customer)", ->
-  @message "select payment instrument", ->
-    @message "payment request", "Cryptocurrency Application", ->
-      @message "process request", ->
-        @reply "payment proof", "Payer browser (customer)"
-@found "Payer browser (customer)", ->
-  @message "payment proof", "Payee server (merchant)", ->
-    @message "cryptographic verification", ->
-      @reply "deliver good/service", "Payer browser (customer)"
+    @message "select payment app", "Payment App", ->
+      @message "select payment instrument", "Payment App"
+      @message "process request, cryptographic proof", ->
+      @reply "payment acknowledgement", "Payer browser (customer)", ->
+    @reply "payment acknowledgement", "Payee server (merchant)"
+  @message "cryptographic verification", ->
+  @message "deliver good/service", "Payer browser (customer)"
   </script>
   </section>
 
