@@ -85,8 +85,8 @@ var respecConfig = {
 <body>
 <section id="abstract">
   <p>
-This document outlines how to register <a>payment instrument</a>s, request payments,
-and acknowledge payment requests using a polyfill-able browser API.
+This document outlines how to register <a>payment app</a>s, request payments,
+and acknowledge payment requests using a polyfillable browser API.
   </p>
 </section>
 
@@ -184,13 +184,19 @@ registering, initiating, and acknowledging payments.
   <p>
 The diagram below outlines a basic payment flow with no errors. The basic
 flow starts out with the <a>payee</a> offering the <a>payer</a> a
-payment request. The payer then selects an appropriate
-<a>payment instrument</a> using their user agent and either 1) processes
-the payment request locally if a local application is capable of processing
-the request, or 2) sends the payment request to a 3rd party for
-processing. The flow ends with the payment acknowledgement being returned
-to the payee for processing, and if no errors occured, the delivery of the
-good or service to the payer.
+payment request. The <a>payer</a>'s user agent then helps them select a
+<a>payment app</a> that is compatible with one of the <a>payment method</a>s
+offered in the payment request. The <a>payment app</a> is responsible for
+processing the request and returning a payment acknowledgement to the user
+agent. How the <a>payment app</a> processes the request is an implementation
+detail; it may be done locally or the request may be sent to a 3rd party for
+processing. The flow ends with the user agent returning the payment
+acknowledgement the payee for processing and, if no errors occurred, the
+delivery of the good or service to the payer. There may be additional steps
+following the receipt of a payment acknowledgement that the payee must perform
+to execute the actual payment, such as communicating with their own
+<a>payment service provider</a>, but these are specific to the
+<a>payment method</a> used.
   </p>
 
   <script type='text/jumly+sequence'>
@@ -198,19 +204,19 @@ good or service to the payer.
   @message "display offer", "Payer browser (customer)", ->
     @message "click 'Pay'", "Payee server (merchant)", ->
       @reply "payment request", "Payer browser (customer)"
-@found "Payer browser (customer)", ->
-  @message "select payment instrument"
-  @alt
-    "3rd party NOT required": ->
-      @message "generate payment acknowledgement"
-    "3rd party required": ->
-      @message "payment request + selected instrument", "Payer payment processor (wallet)", ->
-        @message "process request", ->
-          @reply "payment acknowledgement", "Payer browser (customer)"
-@found "Payer browser (customer)", ->
-  @message "payment acknowledgement", "Payee server (merchant)", ->
-    @message "process acknowledgement", ->
-      @reply "deliver good/service", "Payer browser (customer)"
+    @message "select payment app", "Payment App", ->
+      @message "(optional) select payment instrument", "Payment App"
+      @alt
+        "3rd party NOT required": ->
+          @message "process request", "Payment App", ->
+        "3rd party required": ->
+          @message "payment request + (optional) payment instrument", "Payer payment processor (wallet)", ->
+            @message "process request", ->
+              @reply "payment response", "Payment App", ->
+      @reply "payment acknowledgement", "Payer browser (customer)", ->
+    @reply "payment acknowledgement", "Payee server (merchant)"
+  @message "process acknowledgement", ->
+    @message "deliver good/service", "Payer browser (customer)"
   </script>
 
   <ol class="algorithm">
@@ -218,77 +224,85 @@ good or service to the payer.
 The <a>payee</a>'s web page calls <code>navigator.payment.request(request)</code>.
     </li>
     <li>
-The payment agent scans the list of previously registered <a>payment instrument</a>s
-and finds matches against <code>acceptedSchemes</code> in
+The <a>payment mediator</a> scans the list of previously registered
+<a>payment app</a>s and finds matches that support
+<code>paymentMethod</code> in <code>acceptablePayment</code> in
 <code>request</code>.
     </li>
     <li>
-A <a>payment instrument</a> is selected by the payment agent or the <a>payer</a>. The
-process MAY consist of one or more of the following steps:
+A <a>payment app</a> is selected by the payment mediator or the <a>payer</a>.
+The process MAY consist of one or more of the following steps:
       <ol class="algorithm">
         <li>
-If there is only one instrument that matches, that is automatically set
-to the <em>selected <a>payment instrument</a></em>.
+If there is only one payment app that matches, that is automatically set
+to the <em>selected <a>payment app</a></em>.
         </li>
         <li>
 If there is a pre-existing preference set by the <a>payer</a> that narrows the
-selection of the <a>payment instrument</a> to one match, the match is set to the
-<em>selected <a>payment instrument</a></em>.
+selection of the <a>payment app</a> to one match, the match is set to the
+<em>selected <a>payment app</a></em>.
         </li>
         <li>
 If there is more than one potential match, the <a>payer</a> is asked which
-instrument they would like to use and the selection is set to the
-<em>selected <a>payment instrument</a></em>
+app they would like to use and the selection is set to the
+<em>selected <a>payment app</a></em>.
         </li>
         <li>
 If there are no matches, the <a>payer</a> is notified and may be taken to an
-alternate flow where a matching <a>payment instrument</a> is acquired.
+alternate flow where a matching <a>payment app</a> is acquired.
         </li>
       </ol>
     </li>
     <li>
-If the <a>payment instrument</a> does not require the payment flow to switch
-to a 3rd party <a>payment processor</a> (e.g. cryptocurrency),
-then the payment acknowledgement is generated locally and the web
-application that called <code>navigator.payment.request()</code> is
-sent the acknowledgement via <code>navigator.payment.acknowledge()</code>.
+If the <a>payment app</a> optionally requests the payer to select a
+payment instrument.
     </li>
     <li>
-If the instrument requires the payment flow to switch to a 3rd party
-payer <a>payment processor</a> (e.g. push-payment like a PayPal/Google Wallet-like instrument, ACH, ISO20022 style instrument):
+If the <a>payment app</a> does not require the use of a
+3rd party <a>payment service provider</a> or <a>payment processor</a>
+(e.g. cryptocurrency), then the payment is processed locally.
+    </li>
+    <li>
+If the <a>payment app</a> or <a>payment method</a> requires the use of a 3rd
+party payer <a>payment service provider</a> or <a>payment processor</a> (e.g.
+push-payment that uses a PayPal/Google Wallet-like instrument, ACH, ISO20022
+style instrument):
       <ol class="algorithm">
         <li>
-The payment agent forwards the <code>request</code>, and
-<em>selected <a>payment instrument</a></em> via <code>postMessage</code> to the
-<code>paymentRequestService</code> in the <a>payment instrument</a> for approval.
+The <a>payment app</a> forwards the <code>request</code> and
+<em>selected <a>payment instrument</a></em> (if previously
+selected) to the 3rd party for approval.
+        </li>
+        <li>
+The <a>payment processor</a>
         </li>
       </ol>
     </li>
     <li>
-If the instrument requires the payment flow to switch to a 3rd party
-payee <a>payment processor</a> (e.g. pull-payment like non-EMV magstripe credit
-card with embossed PAN and CVV2, or tokenized credit card):
+The <a>payment app</a> creates the payment acknowledgement, which includes any
+potential errors that occurred, and passes it to the
+<code>navigator.payment.acknowledge()</code> method. This
+method sends the payment acknowledgement to the Web application that called
+<code>navigator.payment.request()</code> by resolving the Promise returned
+from that method.
+    </li>
+    <li>
+If the <a>payment method</a> requires the payment flow to continue to a
+3rd party payee <a>payment service provider</a> or <a>payment processor</a>
+(e.g. pull-payment like non-EMV magstripe credit card with embossed PAN and
+CVV2, or tokenized credit card):
       <ol class="algorithm">
         <li>
-The payment agent forwards the request on via <code>postMessage()</code>
-to the <code>paymentRequestService</code> in the
-<code>acceptedScheme</code> (note that the <a>payee</a>
-sets this, not the <a>payment instrument</a>).
+The payee's Web application forwards the appropriate information
+(e.g. payment approval token) from the payment acknowledgement to their
+<a>payment service provider</a> or <a>payment processor</a>, which executes
+the payment.
         </li>
       </ol>
     </li>
     <li>
-The payment flow is then transferred to the entity that is going to
-generate the <em>payment acknowledgment</em> (locally installed
-payment instrument, <a>payee</a>'s <a>payment service provider</a>, or <a>payer</a>'s
-payment service provider).
+The payee delivers goods/services to the payer.
     </li>
-    <li>
-Once the entity in control of the payment flow finalizes the
-<em>payment acknowledgement</em>, even if the message is to
-acknowledge that the payment failed, the <em>payment acknowledgement</em>
-is generated and <code>navigator.payment.acknowledge(acknowledgement)</code>
-is called.
   </ol>
 </section>
 
@@ -298,60 +312,61 @@ is called.
 Describe the payment flow in detail here using Adrian's flow diagram and Ian's
 steps.
   </p>
-  <p class="issue">
-Show "Payment App" registration instead of "Payment Instrument" registration.
-Registration of payment instruments may be removed entirely from this
-specification, shifting focus to Payment Apps (behind which payment instrument
-details will be hidden).
-  </p>
 
   <section>
-    <h3>Payment Instrument Registration</h3>
+    <h3>Payment App Registration</h3>
     <ol>
       <li>
-The <a>payer</a> navigates to a payment instrument provider website
+The <a>payer</a> navigates to a <a>payment app</a> provider website
 (like their bank) to sign up.</li>
       </li>
       <li>
-During sign-up, the <code>navigator.payment.register()</code> call is made
-to register a <a>payment instrument</a>:
-      <pre class="example" title="Example of a credit card registration">
-var card = {
+During sign up, the <code>navigator.payment.registerApp()</code> call is made
+to register a <a>payment app</a>:
+      <pre class="example" title="Example of a payment app registration">
+var app = {
   '@context': 'https://w3id.org/web-payments/v1',
-  type: 'PaymentInstrument',
-  scheme: 'https://w3id.org/payment-schemes#Visa',
-  label: 'ExampleBank Visa Card',
-  cardNumber: '4444444444444444'
+  id: 'https://bank.example.com/app/',
+  type: 'PaymentApp',
+  name: 'ExampleBank App',
+  image: 'https://bank.example.com/icons/app.png',
+  url: 'https://bank.example.com/app/',
+  supportedPaymentMethod: [
+    'https://w3id.org/payment-methods#Visa',
+    'https://w3id.org/payment-methods#MasterCard'
+  ]
 };
 
-// register the <a>payment instrument</a> - at this point, the interface asks the
-// person for approval to store the new <a>payment instrument</a>
-var promise = navigator.payment.register(card);
+// register the <a>payment app</a> - at this point, the <a>payee interface</a>
+// asks the person for approval to register the new <a>payment app</a>
+var promise = navigator.payment.registerApp(app);
 
-// this happens when the registration completes with success or a failure
+// called when the registration completes
 promise.then(function(result) {
-  // card has been registered, do something
+  // app has been registered, do something
 }).catch(function(err) {
-  // card has not been registered, do something
+  // app has not been registered, do something
 });
         </pre>
       </li>
     </ol>
-    <p class="issue">
-Clearly, registering a card number in the clear is a bad idea, so perhaps
-a tokenized card would be a better example. There are much more secure flows
-that we could demonstrate, but showing that this API works with 90%+ of the
-card-not-present transactions online today is important.
-    </p>
   </section>
 
   <section>
     <h3>Processing a Payment Request</h3>
+
+    <p class="issue">
+Additional parts of the Payment Request may be digitally signed (such as
+payment method-specific data). For push-based payment methods, it is important
+that the payer's payment service provider can verify that certain pieces of
+information in the payment request have not been altered.
+    </p>
+
     <ol>
       <li>
 The <a>payer</a> navigates to a <a>payee</a>'s website.</li>
       <li>
-The <a>payer</a> finds an item to payment and initiates the payment flow
+The <a>payer</a> finds an item to buy and initiates the payment flow
 (by clicking a button, swiping, speaking a voice command, etc.).
       </li>
       <li>
@@ -359,17 +374,16 @@ The <a>payee</a> application generates a signed payment request, which is a
 [[!JSON-LD]] object that contains enough information to process the
 payment:
       <pre class="example" title="Example of a payment request">
-var req = {
+var request = {
   '@context': 'https://w3id.org/web-payments/v1',
   type: 'PaymentRequest',
   description: 'Payment to ExampleMerch for widgets',
-  acceptedScheme: {
-    scheme: 'https://w3id.org/payment-schemes#Visa',
+  acceptablePayment: {
+    paymentMethod: 'https://w3id.org/payment-methods#Visa',
     transfer: {
       amount: '4.35',
       currency: 'USD'
-    },
-    paymentRequestService: 'https://merchant-psp.example.com/services/getPaymentInfo'
+    }
   },
   signature: {
     type: 'LinkedDataSignature2015',
@@ -380,14 +394,17 @@ var req = {
   }
 };
 
-// request payment and get a promise that is resolved on payment
-var promise = navigator.payment.request(req);
+// request payment and get a promise that will resolve to
+// a payment acknowledgement
+var promise = navigator.payment.request(request);
 
-// resolve the promise
-promise.then(function(result) {
-  // payment was processed by the payment processor
+// called when the payment request has been processed
+promise.then(function(acknowledgement) {
+  // payment request was at least partially processed, do something with the
+  // acknowledgement, such as check its approval code or forward an approval
+  // token to actually execute the payment
 }).catch(function(err) {
-  // payment failed to be processed by the payment processor
+  // payment request failed
 });
       </pre>
       </li>
@@ -395,27 +412,39 @@ promise.then(function(result) {
   </section>
 
   <section>
-    <h3>Processing a Payment Acknowledgement</h3>
+    <h3>Generating a Payment Acknowledgement</h3>
+
+    <p class="issue">
+Additional parts of the Payment Acknowledgment may be digitally signed (such as
+payment method-specific data). For push-based payment methods, this is one
+mechanism that a payee can use to verify that a payment was processed.
+    </p>
+
     <ol>
       <li>
-The <a>payee</a>'s <a>payment service provider</a> receives a payment request,
-authenticates the payer's card information, and gets approval to proceed with
-the payment from the <a>payer</a>.
+The <a>payee</a>'s <a>payment app</a> receives a payment request, obtains
+and authenticates the payer's <a>payment instrument</a> information, and gets
+approval to proceed with the payment from the <a>payer</a>.
       </li>
       <li>
-Once approval has been provided by the <a>payer</a>, the payment is processed.
+Once approval has been provided by the <a>payer</a>, the payment
+acknowledgement is transmitted to the <a>payee</a>'s web application.
       </li>
       <li>
-The payment service processor generates a signed payment acknowledgement
-message, which is a [[!JSON-LD]] object that contains enough information to
-verify that the transaction has completed successfully (or has failed):
+The <a>payment app</a> or a <a>payment service processor</a> it works with
+generates an optionally signed payment acknowledgement message, which is a
+[[!JSON-LD]] object that contains enough information to verify that the payment
+request has completed successfully (or has failed). The <a>payment app</a>
+resolves the Promise that the <a>payer</a>'s web application is waiting on
+by calling <code>navigator.payment.acknowledge</code> and passing the
+payment acknowledgement message.
         <pre class="example" title="Example of a payment acknowledgement">
 var acknowledgement = {
   '@context': 'https://w3id.org/web-payments/v1',
   type: 'PaymentAcknowledgement',
   description: 'Payment to ExampleMerch for widgets',
-  selectedScheme: {
-    scheme: 'https://w3id.org/payment-schemes#Visa',
+  payment: {
+    paymentMethod: 'https://w3id.org/payment-methods#Visa',
     status: 'authorized',
     approvalCode: '10025AB',
     transfer: {
@@ -464,27 +493,27 @@ result of the payment.
       made available via the <code>navigator.payment</code> object.</p>
 
     <dl title="interface NavigatorPayment" class="idl">
-      <dt>Promise register()</dt>
+      <dt>Promise registerApp()</dt>
       <dd>
         <p>
-Typically called by a payment processor to register a <a>payment instrument</a> for
-later use during a payment request.
+Typically called by a <a>payment service provider</a> to register a
+<a>payment app</a> for later use during a payment request.
         </p>
         <dl class="parameters">
-          <dt>object instrument</dt>
+          <dt>object app</dt>
           <dd>
-A [[!JSON-LD]] encoded <a>payment instrument</a>.
+A [[!JSON-LD]] encoded manifest for a <a>payment app</a>.
           </dd>
           <dt>object options</dt>
           <dd>
-A set of options to use when registering the payment instrument.
+A set of options to use when registering the payment app.
           </dd>
         </dl>
       </dd>
       <dt>Promise request()</dt>
       <dd>
         <p>
-Typically called by a <a>payee</a> to initiate a payment. The instrument is
+Typically called by a <a>payee</a> to initiate a payment. The request is
 encoded in [[!JSON-LD]] format.
         </p>
         <dl class="parameters">
@@ -502,7 +531,7 @@ A set of options to use when requesting payment.
       <dt>void acknowledge()</dt>
       <dd>
         <p>
-Typically called by a payment processor to acknowledge that a payment request
+Typically called by a <a>payment app</a> to acknowledge that a payment request
 has been processed. The acknowledgement is encoded in [[!JSON-LD]] format.
         </p>
         <dl class="parameters">
@@ -526,53 +555,56 @@ A set of options to use when processing the payment acknowledgement.
   <h2>Messages Addendum</h2>
 
   <p>
-Multiple types of <a>payment instrument</a>s may be supported using this approach:
+Multiple types of <a>payment app</a>s, each supporting multiple types of
+<a>payment method</a>s and <a>payment instrument</a>s may be supported using
+this approach:
   </p>
-  <pre class="example" title="Example of Bitcoin registration">
-var bitcoin = {
+  <pre class="example" title="Example of Bitcoin App registration">
+var app = {
   '@context': 'https://w3id.org/web-payments/v1',
-  type: 'PaymentInstrument',
-  scheme: 'https://w3id.org/payment-schemes#Bitcoin',
-  id: 'bitcoin:19Cgacam5sVryog9QQKjFo1GApy34Qat83',
-  label: 'BitExample Bitcoin Account',
-  privateKeyBitcoin: '5JSjcscTvQcCb2h7LxFGwEzVqHM6HqC6xanxwZtymRZg5Z1yWot',
-  paymentRequestService: 'https://bitcoin.example.com/services/bitcoin'
+  id: 'https://bitcoin-wallet.example.com/app/',
+  type: 'PaymentApp',
+  name: 'Example Bitcoin App',
+  image: 'https://bitcoin-wallet.example.com/icons/app.png',
+  url: 'https://bitcoin-wallet.example.com/app/',
+  supportedPaymentMethod: [
+    'https://w3id.org/payment-methods#Bitcoin'
+  ]
 };
 
-// register the <a>payment instrument</a> - at this point, the interface asks the
-// person for approval to store the new <a>payment instrument</a>
-var promise = navigator.payment.register(bitcoin);
+// register the <a>payment app</a> - at this point, the <a>payee interface</a>
+// asks the person for approval to register the new <a>payment app</a>
+var promise = navigator.payment.registerApp(app);
 
-// this happens when the registration completes with success or a failure
+// called when the registration completes
 promise.then(function(result) {
-  // bitcoin instrument has been registered, do something
+  // app has been registered, do something
 }).catch(function(err) {
-  // bitcoin instrument has not been registered, do something
+  // app has not been registered, do something
 });
   </pre>
 
   <p>
-Multiple payment requests may be collected into a single request.
+Multiple acceptable payments may be collected into a single payment request.
   </p>
 
   <pre class="example" title="Example of a complex payment request">
-var req = {
+var request = {
   '@context': 'https://w3id.org/web-payments/v1',
   type: 'PaymentRequest'
   description: 'Payment to ExampleMerch for Widget 1'
-  acceptedScheme: [{
-    scheme: [
-      'https://w3id.org/payment-schemes#Visa',
-      'https://w3id.org/payment-schemes#Mastercard',
-      'https://w3id.org/payment-schemes#Discover'
+  acceptablePayment: [{
+    paymentMethod: [
+      'https://w3id.org/payment-methods#Visa',
+      'https://w3id.org/payment-methods#Mastercard',
+      'https://w3id.org/payment-methods#Discover'
     ],
     transfer: {
       amount: '4.35',
       currency: 'USD'
-    },
-    destination: '20389472398'
+    }
   }, {
-    scheme: 'https://w3id.org/payment-schemes#Bitcoin',
+    paymentMethod: 'https://w3id.org/payment-methods#Bitcoin',
     transfer: {
       amount: '0.0177',
       currency: 'BTC'
@@ -588,74 +620,34 @@ var req = {
   }
 };
 
-// request payment and get a promise that is resolved on payment acknowledgement
-var promise = navigator.payment.request(req);
+// request payment and get a promise that will resolve to
+// a payment acknowledgement
+var promise = navigator.payment.request(request);
 
-// resolve the promise (performed in the next section)
+// called when the payment request has been processed
 promise.then(function(acknowledgement) {
-  // payment was processed by the payment processor
-  // acknowledgement may contain scheme-specific information
+  // payment request was at least partially processed, do something with the
+  // acknowledgement, such as check its approval code or forward an approval
+  // token to actually execute the payment
 }).catch(function(err) {
-  // payment failed to be processed by the payment processor
-});
-  </pre>
-
-  <p>
-Additional information may be requested along with the payment request, like
-a proof of age credential or optional shipping address, loyalty card, or
-government assistance credentials.
-  </p>
-
-  <pre class="example" title="Example of a payment request with additional information">
-var req = {
-  '@context': 'https://w3id.org/web-payments/v1',
-  type: 'PaymentRequest',
-  description: 'Payment to ExampleGrocer for groceries.',
-  acceptedScheme: {
-    scheme: 'https://w3id.org/payment-schemes#Visa',
-    transfer: {
-      amount: '4.35',
-      currency: 'USD'
-    },
-    destination: '20389472398',
-  },
-  requiredCredential: [{
-    type: 'ProofOfAgeCredential'
-  }],
-  optionalCredential: [{
-    type: 'ShippingAddressCredential'
-  }, {
-    type: 'ShopGoodLoyaltyCardCredential'
-  }, {
-    type: 'SnapCardCredential'
-  }],
-  signature: {
-    type: 'LinkedDataSignature2015',
-    creator: 'https://payee.example.com/keys/23',
-    created: '2015-09-23T20:21:34Z',
-    nonce: '239807882930744352',
-    signatureValue: 'OGQzNGVkMzVm4NTIyZTkZ...goYzI43Q3ODIyOWM32NjI='
-  }
-};
-
-// request payment and get a promise that is resolved on payment
-var promise = navigator.payment.request(req);
-
-// resolve the promise
-promise.then(function(result) {
-  // payment was processed by the payment processor
-}).catch(function(err) {
-  // payment failed to be processed by the payment processor
+  // payment request failed
 });
   </pre>
 
   <p class="issue">
-There is a strong argument to simplify this interface by ensuring that
-credentials are provided in a step prior to the payment request. The downside
-of this approach is that there would be two UI prompts to the customer to
-1) provide the appropriate credentials, and 2) provide the appropriate
-payment instrument. The upside is that keeping these things separate will
-enable each to improve independently of one another.
+The section that included required and optional credentials in the payment
+request has been removed. It is recommended that this feature be implemented
+via another API that can work in conjunction with the payment API. This
+helps with separation of concerns and prevents creating an overly-prescriptive
+API that doesn't suffer from inversion of control issues or the need to
+expose internal state via the public API. A potential downside to this approach
+is that a simple implementation would present two different UI prompts to the
+user. Strategies to mitigate this are being explored, such as the ability to
+allow the web application to keep a shared UI open until requesting its
+closure. The basic idea is to "start a UI flow" that may involve both
+requesting credentials, determining pricing information, and then requesting
+payment -- without inverting control and relying on a rigid system of
+events or exposed state machine information.
   </p>
 
 </section>
