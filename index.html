@@ -647,7 +647,16 @@ allow the web application to keep a shared UI open until requesting its
 closure. The basic idea is to "start a UI flow" that may involve both
 requesting credentials, determining pricing information, and then requesting
 payment -- without inverting control and relying on a rigid system of
-events or exposed state machine information.
+events or exposed state machine information. A UI flow could potentially be
+started via a flag in the options of one of the APIs that supports it or
+via an explicit independent API call. From that point on, APIs that support
+the feature can be called to request/perform actions on the UI and would
+receive promises upon their completion. As many of these APIs can be called
+as needed -- and then a final call to close the UI can be made (either via an
+option or an explicit independent call). The idea is similar to opening
+a new window and running a separate Web application, but the UI would be
+provided by the browser and would only interact with a small subset of APIs
+(eg: for now, credentials and payment APIs).
   </p>
 
 </section>
