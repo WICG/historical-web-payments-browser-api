@@ -635,8 +635,9 @@ promise.then(function(acknowledgement) {
   </pre>
 
   <p class="issue">
-The section that included required and optional credentials in the payment
-request has been removed. It is recommended that this feature be implemented
+The section that included required and optional credentials (such as shipping
+address, proof of age, loyalty cards, etc.) in the payment request has been
+removed. It is recommended that this feature be implemented
 via another API that can work in conjunction with the payment API, (the
 primary target is the Credential Management API). This helps with separation of
 concerns and prevents creating an overly-prescriptive API that doesn't suffer
