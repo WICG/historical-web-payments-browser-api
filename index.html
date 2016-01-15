@@ -637,11 +637,12 @@ promise.then(function(acknowledgement) {
   <p class="issue">
 The section that included required and optional credentials in the payment
 request has been removed. It is recommended that this feature be implemented
-via another API that can work in conjunction with the payment API. This
-helps with separation of concerns and prevents creating an overly-prescriptive
-API that doesn't suffer from inversion of control issues or the need to
-expose internal state via the public API. A potential downside to this approach
-is that a simple implementation would present two different UI prompts to the
+via another API that can work in conjunction with the payment API, (the
+primary target is the Credential Management API). This helps with separation of
+concerns and prevents creating an overly-prescriptive API that doesn't suffer
+from inversion of control issues or the need to expose internal state via the
+public API. A potential downside to this approach is that a simple
+implementation would present two different UI prompts to the
 user. Strategies to mitigate this are being explored, such as the ability to
 allow the web application to keep a shared UI open until requesting its
 closure. The basic idea is to "start a UI flow" that may involve both
