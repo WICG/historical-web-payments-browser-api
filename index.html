@@ -422,9 +422,11 @@ mechanism that a payee can use to verify that a payment was processed.
 
     <ol>
       <li>
-The <a>payee</a>'s <a>payment app</a> receives a payment request, obtains
-and authenticates the payer's <a>payment instrument</a> information, and gets
-approval to proceed with the payment from the <a>payer</a>.
+The <a>payee</a>'s <a>payment app</a> receives a payment request (for a
+Web-based payment app, this is done via
+<code>navigator.payment.getPendingRequest</code>), obtains and authenticates
+the payer's <a>payment instrument</a> information, and gets approval to proceed
+with the payment from the <a>payer</a>.
       </li>
       <li>
 Once approval has been provided by the <a>payer</a>, the payment
@@ -439,30 +441,36 @@ resolves the Promise that the <a>payer</a>'s web application is waiting on
 by calling <code>navigator.payment.acknowledge</code> and passing the
 payment acknowledgement message.
         <pre class="example" title="Example of a payment acknowledgement">
-var acknowledgement = {
-  '@context': 'https://w3id.org/web-payments/v1',
-  type: 'PaymentAcknowledgement',
-  description: 'Payment to ExampleMerch for widgets',
-  payment: {
-    paymentMethod: 'https://w3id.org/payment-methods#Visa',
-    status: 'authorized',
-    approvalCode: '10025AB',
-    transfer: {
-      amount: '4.35',
-      currency: 'USD'
-    }
-  },
-  signature: {
-    type: 'LinkedDataSignature2015',
-    creator: 'https://payment-service-provider.example.com/keys/12',
-    created: '2015-09-23T20:23:15Z',
-    nonce: '239807882930744352',
-    signatureValue: 'm4NTIyZTOGQzNGVkMzVkZ...OWM32NjIgoYzI43Q3ODIy='
-  }
-};
+// Web-based payment app gets request via `getPendingRequest`
+navigator.payment.getPendingRequest().then(function(paymentRequest) {
+  // process payment request ...
 
-// acknowledge that the payment was processed
-navigator.payment.acknowledge(acknowledgement);
+  // generate acknowledgement
+  var acknowledgement = {
+    '@context': 'https://w3id.org/web-payments/v1',
+    type: 'PaymentAcknowledgement',
+    description: 'Payment to ExampleMerch for widgets',
+    payment: {
+      paymentMethod: 'https://w3id.org/payment-methods#Visa',
+      status: 'authorized',
+      approvalCode: '10025AB',
+      transfer: {
+        amount: '4.35',
+        currency: 'USD'
+      }
+    },
+    signature: {
+      type: 'LinkedDataSignature2015',
+      creator: 'https://payment-service-provider.example.com/keys/12',
+      created: '2015-09-23T20:23:15Z',
+      nonce: '239807882930744352',
+      signatureValue: 'm4NTIyZTOGQzNGVkMzVkZ...OWM32NjIgoYzI43Q3ODIy='
+    }
+  };
+
+  // acknowledge that the payment was processed
+  navigator.payment.acknowledge(acknowledgement);
+});
         </pre>
       </li>
     </ol>
@@ -527,6 +535,13 @@ encoded in [[!JSON-LD]] format.
 A set of options to use when requesting payment.
           </dd>
         </dl>
+      </dd>
+      <dt>Promise getPendingRequest()</dt>
+      <dd>
+        <p>
+Called by a <a>payment app</a> to get the pending payment request. The returned
+Promise resolves to the request, which is encoded in [[!JSON-LD]] format.
+        </p>
       </dd>
       <dt>void acknowledge()</dt>
       <dd>
