@@ -482,6 +482,81 @@ result of the payment.
     following API.</p>
 
   <section>
+    <h3>Object Interfaces</h3>
+
+    <section>
+      <h4>PaymentApplication</h4>
+
+      <pre class="idl">
+interface PaymentApplication {
+  attribute DOMString id;
+  attribute (DOMString or Sequence &lt;DOMString&gt;) type;
+  attribute DOMString name;
+  attribute DOMString image;
+  attribute DOMString url;
+  attribute (DOMString or Sequence &lt;DOMString&gt;) supportedPaymentMethod;
+};
+      </pre>
+
+      <p>
+A <a><code>PaymentApplication</code></a> is a dictionary that is used to
+describe a <a>payment app</a>.
+      </p>
+      <dl>
+        <dt><code>id</code></dt>
+        <dd>
+A URL identifier for the <a>payment app</a> that will be used by the
+implementation to differentiate one payment application from another. For
+example: <code>https://bank.example.com/generic-brand-rewards-card</code>
+        </dd>
+        <dt><code>type</code></dt>
+        <dd>
+An type identifier associated with the object, typically set to
+<code>PaymentApplication</code>. The set of available types MAY be extended
+in the future to add things like <code>OfflineApplication</code> to identify
+payment applications that are capable of running in an offline mode.
+        </dd>
+        <dt><code>name</code></dt>
+        <dd>
+Human readable text that will be used to identify the payment application.
+This text MAY be displayed to the <a>payer</a> in a <a>payment app</a>
+selection interface. For example, <code>Red Bank Visa Card</code>.
+        </dd>
+        <dt><code>image</code></dt>
+        <dd>
+A brand image or logo associated of the payment application. This image
+MAY be displayed to the <a>payer</a> in a <a>payment app</a> selection
+interface.
+        </dd>
+        <dt><code>url</code></dt>
+        <dd>
+The target URL for the <a>PaymentRequest</a>. This URL should be capable of
+processing a pending payment request, generating a payment acknowledgement,
+and responding with the final result.
+        </dd>
+        <dt><code>supportedPaymentMethod</code></dt>
+        <dd>
+One or more payment method identifiers, which may be simple strings or URLs.
+For example, <code>VisaLegacy</code> or
+<code>https://newnetwork.example.com/methods/SuperCard</code>
+        </dd>
+
+        <pre class="example">
+var app = {
+  id: 'https://bank.example.com/generic-brand-rewards-card',
+  type: 'PaymentApplication',
+  name: 'ExampleBank App',
+  image: 'https://bank.example.com/icons/app.png',
+  url: 'https://bank.example.com/web-payments/',
+  supportedPaymentMethod: [
+    'VisaLegacy', 'VisaTokenized', 'https://newnetwork.example.com/methods/SuperCard'
+  ]
+};
+        </pre>
+    </section>
+  </section>
+
+  <section>
     <h3>NavigatorPayment</h3>
 
     <p>Navigator Payment is the name of the high-level programming
