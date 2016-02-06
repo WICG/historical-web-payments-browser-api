@@ -28,7 +28,7 @@ var respecConfig = {
   // previousMaturity:  "WD",
 
   // if there a publicly available Editor's Draft, this is the link
-  edDraftURI:           "https://web-payments.org/specs/source/web-payments-browser-api/",
+  edDraftURI:           "https://wicg.github.io/web-payments-browser-api/",
 
   // if this is a LCWD, uncomment and set the end of its review period
   // lcEnd: "2009-08-05",
@@ -38,6 +38,9 @@ var respecConfig = {
   editors: [
       { name: "Manu Sporny", url: "https://manu.sporny.org/",
         company: "Digital Bazaar, Inc.", companyURL: "http://digitalbazaar.com/" },
+      { name: "Dave Longley", url: "https://github.com/dlongley",
+        company: "Digital Bazaar, Inc.", companyURL: "http://digitalbazaar.com/" },
+
   ],
 
   // authors, add as many as you like.
@@ -85,8 +88,11 @@ var respecConfig = {
 <body>
 <section id="abstract">
   <p>
-This document outlines how to register <a>payment app</a>s, request payments,
-and acknowledge payment requests using a polyfillable browser API.
+This document outlines a low-level API for registering <a>payment app</a>s,
+requesting payments, and acknowledge payment requests using a polyfillable
+browser API. There is also a higher-level ecommerce
+<a href="https://github.com/w3c/webpayments/wiki/Checkout-API">Checkout API</a> that utilizes
+this low-level API.
   </p>
 </section>
 
@@ -221,12 +227,12 @@ to execute the actual payment, such as communicating with their own
 
   <ol class="algorithm">
     <li>
-The <a>payee</a>'s web page calls <code>navigator.payment.request(request)</code>.
+The <a>payee</a>'s web page calls <code>navigator.payment.request(req)</code>.
     </li>
     <li>
 The <a>payment mediator</a> scans the list of previously registered
 <a>payment app</a>s and finds matches that support
-<code>paymentMethod</code> in <code>acceptablePayment</code> in
+<code>paymentMethod</code> in <code>acceptablePaymentMethod</code> in
 <code>request</code>.
     </li>
     <li>
@@ -325,7 +331,6 @@ During sign up, the <code>navigator.payment.registerApp()</code> call is made
 to register a <a>payment app</a>:
       <pre class="example" title="Example of a payment app registration">
 var app = {
-  '@context': 'https://w3id.org/web-payments/v1',
   id: 'https://bank.example.com/app/',
   type: 'PaymentApp',
   name: 'ExampleBank App',
@@ -375,22 +380,14 @@ The <a>payee</a> application generates a signed payment request, which is a
 payment:
       <pre class="example" title="Example of a payment request">
 var request = {
-  '@context': 'https://w3id.org/web-payments/v1',
   type: 'PaymentRequest',
   description: 'Payment to ExampleMerch for widgets',
-  acceptablePayment: {
+  acceptablePaymentMethod: {
     paymentMethod: 'https://w3id.org/payment-methods#Visa',
     transfer: {
       amount: '4.35',
       currency: 'USD'
     }
-  },
-  signature: {
-    type: 'LinkedDataSignature2015',
-    creator: 'https://payee.example.com/keys/23',
-    created: '2015-09-23T20:21:34Z',
-    nonce: '239807882930744354',
-    signatureValue: '4NTIyOGQzNGVkMzVmZTkZ...3Q3ODgoYzI4IyOWM32NjI='
   }
 };
 
@@ -447,7 +444,6 @@ navigator.payment.getPendingRequest().then(function(paymentRequest) {
 
   // generate acknowledgement
   var acknowledgement = {
-    '@context': 'https://w3id.org/web-payments/v1',
     type: 'PaymentAcknowledgement',
     description: 'Payment to ExampleMerch for widgets',
     payment: {
@@ -458,13 +454,6 @@ navigator.payment.getPendingRequest().then(function(paymentRequest) {
         amount: '4.35',
         currency: 'USD'
       }
-    },
-    signature: {
-      type: 'LinkedDataSignature2015',
-      creator: 'https://payment-service-provider.example.com/keys/12',
-      created: '2015-09-23T20:23:15Z',
-      nonce: '239807882930744352',
-      signatureValue: 'm4NTIyZTOGQzNGVkMzVkZ...OWM32NjIgoYzI43Q3ODIy='
     }
   };
 
@@ -566,6 +555,88 @@ A set of options to use when processing the payment acknowledgement.
   </section> <!-- end of NavigatorPayment -->
 </section>
 
+<section>
+  <h2>Extensibility</h2>
+
+  <p>
+In general, the WebIDL descriptions provided in this specification outline
+the specific objects, properties, and values that an implementation MAY depend
+on. It is expected that other properties and values will be stored in objects
+like PaymentApp, PaymentRequest, and PaymentAcknowledgement. Implementations
+MUST preserve unknown properties and values.
+  </p>
+
+  <p>
+While this specification does not suggest a single extension mechanism, it
+does assert that extensibility MUST be possible.
+  </p>
+
+  <section>
+    <h3>Extending Messages Using JSON-LD</h3>
+
+    <p>
+It is possible to interpret and extend PaymentApp, PaymentRequest, and
+PaymentAcknowledgement messages in this specification by using JSON-LD. To
+interpret the previously stated objects as JSON-LD, the following transformation
+SHOULD be applied:
+    </p>
+    <ol>
+      <li>
+If a <code>@context</code> property does not exist, add one and assign the
+value <code>"https://w3id.org/payments/v1"</code> to it.
+      </li>
+      <li>
+Serialize the object to JSON.
+      </li>
+    </ol>
+    <p>
+Any application interpreting an object in this specification as JSON-LD MUST
+ensure that if the <code>@context</code> property exists, that the value
+associated is either
+<code>"https://w3id.org/payments/v1"</code>, or that value is the first item
+in a list of contexts. Developers MUST ensure that any property used in these
+objects MUST NOT conflict with terms defined in
+<code>"https://w3id.org/payments/v1"</code>.
+    </p>
+  </section>
+</section>
+
+<section>
+  <h2>Security Considerations</h2>
+
+  <section>
+    <h3>Message Integrity</h3>
+    <p>
+It is possible to sign any JSON-LD based message by using
+Linked Data Signatures, like so:
+    </p>
+
+    <pre class="example" title="Example of a signed payment acknowledgement">
+// generate acknowledgement
+var acknowledgement = {
+  type: 'PaymentAcknowledgement',
+  description: 'Payment to ExampleMerch for widgets',
+  payment: {
+    paymentMethod: 'https://w3id.org/payment-methods#Visa',
+    status: 'authorized',
+    approvalCode: '10025AB',
+    transfer: {
+      amount: '4.35',
+      currency: 'USD'
+    }
+  },
+  signature: {
+    type: 'LinkedDataSignature2015',
+    creator: 'https://payment-service-provider.example.com/keys/12',
+    created: '2015-09-23T20:23:15Z',
+    nonce: '239807882930744352',
+    signatureValue: 'm4NTIyZTOGQzNGVkMzVkZ...OWM32NjIgoYzI43Q3ODIy='
+  }
+};
+      </pre>
+  </section>
+</section>
+
 <section class="appendix informative">
   <h2>Messages Addendum</h2>
 
@@ -576,7 +647,6 @@ this approach:
   </p>
   <pre class="example" title="Example of Bitcoin App registration">
 var app = {
-  '@context': 'https://w3id.org/web-payments/v1',
   id: 'https://bitcoin-wallet.example.com/app/',
   type: 'PaymentApp',
   name: 'Example Bitcoin App',
@@ -605,10 +675,9 @@ Multiple acceptable payments may be collected into a single payment request.
 
   <pre class="example" title="Example of a complex payment request">
 var request = {
-  '@context': 'https://w3id.org/web-payments/v1',
   type: 'PaymentRequest'
   description: 'Payment to ExampleMerch for Widget 1'
-  acceptablePayment: [{
+  acceptablePaymentMethod: [{
     paymentMethod: [
       'https://w3id.org/payment-methods#Visa',
       'https://w3id.org/payment-methods#Mastercard',
@@ -625,14 +694,7 @@ var request = {
       currency: 'BTC'
     },
     destination: '3QJmV3qfvL9SuYo34YihAf3sRCW3qSinyC'
-  },
-  signature: {
-    type: 'LinkedDataSignature2015',
-    creator: 'https://payee.example.com/keys/23',
-    created: '2015-09-23T20:21:34Z',
-    nonce: '239847230947223423',
-    signatureValue: 'OGQzNGVkMzVm4NTIyZTkZ...goYzI43Q3ODIyOWM32NjI='
-  }
+  }]
 };
 
 // request payment and get a promise that will resolve to
@@ -648,33 +710,6 @@ promise.then(function(acknowledgement) {
   // payment request failed
 });
   </pre>
-
-  <p class="issue">
-The section that included required and optional credentials (such as shipping
-address, proof of age, loyalty cards, etc.) in the payment request has been
-removed. It is recommended that this feature be implemented
-via another API that can work in conjunction with the payment API, (the
-primary target is the Credential Management API). This helps with separation of
-concerns and prevents creating an overly-prescriptive API that doesn't suffer
-from inversion of control issues or the need to expose internal state via the
-public API. A potential downside to this approach is that a simple
-implementation would present two different UI prompts to the
-user. Strategies to mitigate this are being explored, such as the ability to
-allow the web application to keep a shared UI open until requesting its
-closure. The basic idea is to "start a UI flow" that may involve both
-requesting credentials, determining pricing information, and then requesting
-payment -- without inverting control and relying on a rigid system of
-events or exposed state machine information. A UI flow could potentially be
-started via a flag in the options of one of the APIs that supports it or
-via an explicit independent API call. From that point on, APIs that support
-the feature can be called to request/perform actions on the UI and would
-receive promises upon their completion. As many of these APIs can be called
-as needed -- and then a final call to close the UI can be made (either via an
-option or an explicit independent call). The idea is similar to opening
-a new window and running a separate Web application, but the UI would be
-provided by the browser and would only interact with a small subset of APIs
-(eg: for now, credentials and payment APIs).
-  </p>
 
 </section>
 
