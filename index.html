@@ -584,21 +584,130 @@ var request = {
 
       <pre class="idl">
 interface PaymentAcknowledgement {
+  attribute (DOMString or Sequence &lt;DOMString&gt;) type;
+  attribute DOMString description;
+  attribute Payment payment;
 };
       </pre>
 
       <p>
 A <a><code>PaymentAcknowledgement</code></a> is an object that is used to
-communicate the result of processing a payment request to a <a>payee</a>.
+express the result of processing a payment request to a <a>payee</a>.
       </p>
       <dl>
-        <dt><code></code></dt>
+        <dt><code>type</code></dt>
         <dd>
+An type identifier associated with the object, typically set to
+<code>PaymentAcknowledgement</code>. The set of available types MAY be extended
+in the future to add things like <code>Receipt</code> to identify
+acknowledgements that contain receipt information.
+        </dd>
+        <dt><code>description</code></dt>
+        <dd>
+Human readable text that will be used to identify what the payment was for.
+This text MAY be displayed to the <a>payer</a>. For example,
+<code>Payment to ExampleMerch for widgets</code>.
+        </dd>
+        <dt><code>payment</code></dt>
+        <dd>
+Information such as the payment method used and the monetary transfer amount.
+Payment method specific information, such as the status of the payment, may
+also be included. The presence and meaning of this extra information is
+dependent on the payment method. The payment information may be used by the
+<a>payee</a> or their associated <a>payment service provider</a> to, for
+example, finalize a payment or display information to the <a>payer</a>.
         </dd>
       </dl>
 
       <pre class="example">
 var acknowledgement = {
+  type: 'PaymentAcknowledgement',
+  description: 'Payment to ExampleMerch for widgets',
+  payment: {
+    paymentMethod: 'https://w3id.org/payment-methods#Visa',
+    status: 'authorized',
+    approvalCode: '10025AB',
+    transfer: {
+      amount: '4.35',
+      currency: 'USD'
+    }
+  }
+};
+      </pre>
+    </section>
+
+    <section>
+      <h4>Payment</h4>
+
+      <pre class="idl">
+interface Payment {
+  attribute DOMString paymentMethod;
+  attribute CurrencyAmount transfer;
+};
+      </pre>
+
+      <p>
+A <code>Payment</code> is an object that is used to express details of
+a payment such as the payment method used and the amount transferred.
+      </p>
+      <dl>
+        <dt><code>paymentMethod</code></dt>
+        <dd>
+One or more payment method identifiers, which may be simple strings or URLs.
+For example, <code>VisaLegacy</code> or
+<code>https://newnetwork.example.com/methods/SuperCard</code>
+        </dd>
+        <dt><code>transfer</code></dt>
+        <dd>
+The <code>CurrencyAmount</code> associated with the payment.
+        </dd>
+      </dl>
+
+      <pre class="example">
+var payment = {
+  paymentMethod: 'https://w3id.org/payment-methods#Visa',
+  transfer: {
+    amount: '4.35',
+    currency: 'USD'
+  }
+};
+      </pre>
+    </section>
+
+    <section>
+      <h4>CurrencyAmount</h4>
+
+      <pre class="idl">
+interface CurrencyAmount {
+  attribute DOMString amount;
+  attribute DOMString currency;
+};
+      </pre>
+
+      <p>
+A <code>CurrencyAmount</code> is an object that is used to express a currency
+and monetary amount.
+      </p>
+      <dl>
+        <dt><code>amount</code></dt>
+        <dd>
+A string containing a decimal monetary value. If a decimal separator is present,
+the string must use a single U+002E FULL STOP character as the decimal
+separator. All other characters must be characters in the range U+0030 DIGIT
+ZERO (0) to U+0039 DIGIT NINE (9).
+        </dd>
+        <dt><code>currency</code></dt>
+        <dd>
+A string that SHOULD contain a three-letter alphabetic code for the currency as
+defined by [ISO4217]. For example, "USD" for US Dollars. It MAY also contain
+a URL.
+        </dd>
+      </dl>
+
+      <pre class="example">
+var transfer = {
+  amount: '4.35',
+  currency: 'USD'
 };
       </pre>
     </section>
