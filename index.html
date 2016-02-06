@@ -388,7 +388,7 @@ var request = {
   description: 'Payment to ExampleMerch for widgets',
   acceptablePayment: {
     paymentMethod: 'https://w3id.org/payment-methods#Visa',
-    requestedAmount: {
+    paymentAmount: {
       amount: '4.35',
       currency: 'USD'
     }
@@ -459,7 +459,7 @@ navigator.payment.getPendingRequest().then(function(paymentRequest) {
       paymentMethod: 'https://w3id.org/payment-methods#Visa',
       status: 'authorized',
       approvalCode: '10025AB',
-      requestedAmount: {
+      paymentAmount: {
         amount: '4.35',
         currency: 'USD'
       }
@@ -509,8 +509,7 @@ interface PaymentApplication {
       </pre>
 
       <p>
-A <a><code>PaymentApplication</code></a> is an object that is used to
-describe a <a>payment app</a>.
+A <a><code>PaymentApplication</code></a> describes a <a>payment app</a>.
       </p>
       <dl>
         <dt><code>id</code></dt>
@@ -573,13 +572,13 @@ var app = {
 interface PaymentRequest {
   attribute (DOMString or Sequence &lt;DOMString&gt;) type;
   attribute DOMString description;
-  attribute (AcceptablePaymentTerm or Sequence &lt;AcceptablePaymentTerm&gt;) acceptablePayment;
+  attribute (AcceptablePayment or Sequence &lt;AcceptablePayment&gt;) acceptablePayment;
 };
       </pre>
 
       <p>
-A <a><code>PaymentRequest</code></a> is an object that is used to
-request a payment from a <a>payee</a>.
+A <a><code>PaymentRequest</code></a> expresses a payment that is requested
+by a <a>payee</a>.
       </p>
       <dl>
         <dt><code>type</code></dt>
@@ -606,7 +605,7 @@ var request = {
   description: 'Payment to ExampleMerch for widgets',
   acceptablePayment: {
     paymentMethod: 'VisaTokenized',
-    requestedAmount: {
+    paymentAmount: {
       amount: '4.35',
       currency: 'USD'
     }
@@ -615,15 +614,15 @@ var request = {
       </pre>
 
       <pre class="idl">
-interface AcceptablePaymentTerm {
+interface AcceptablePayment {
   attribute (DOMString or Sequence &lt;DOMString&gt;) paymentMethod;
-  attribute FinancialAmount requestedAmount;
+  attribute FinancialAmount paymentAmount;
 };
       </pre>
 
       <p>
-An <a><code>AcceptablePaymentTerm</code></a> is an object that is used to
-express the terms under which a payment request may be fulfilled.
+An <a><code>AcceptablePayment</code></a> expresses the terms under which a
+payment request may be fulfilled.
       </p>
       <dl>
         <dt><code>paymentMethod</code></dt>
@@ -633,7 +632,7 @@ For example, <code>VisaLegacy</code> or
 <code>https://newnetwork.example.com/methods/SuperCard</code>
 
         </dd>
-        <dt><code>requestedAmount</code></dt>
+        <dt><code>paymentAmount</code></dt>
         <dd>
 The amount of financial value requested by the <a>payee</a>.
         </dd>
@@ -693,8 +692,8 @@ interface PaymentAcknowledgement {
       </pre>
 
       <p>
-A <a><code>PaymentAcknowledgement</code></a> is an object that is used to
-express the result of processing a payment request to a <a>payee</a>.
+A <a><code>PaymentAcknowledgement</code></a> expresses the result of processing
+a payment request.
       </p>
       <dl>
         <dt><code>type</code></dt>
@@ -712,12 +711,12 @@ This text MAY be displayed to the <a>payer</a>. For example,
         </dd>
         <dt><code>payment</code></dt>
         <dd>
-Information such as the payment method used and the monetary transfer amount.
-Payment method specific information, such as the status of the payment, may
-also be included. The presence and meaning of this extra information is
-dependent on the payment method. The payment information may be used by the
-<a>payee</a> or their associated <a>payment service provider</a> to, for
-example, finalize a payment or display information to the <a>payer</a>.
+Information such as the payment method used and the payment amount. Payment
+method specific information, such as the status of the payment, may also be
+included. The presence and meaning of this extra information is dependent on
+the payment method. The payment information may be used by the <a>payee</a> or
+their associated <a>payment service provider</a> to, for example, finalize a
+payment or display information to the <a>payer</a>.
         </dd>
       </dl>
 
@@ -729,7 +728,7 @@ var acknowledgement = {
     paymentMethod: 'https://w3id.org/payment-methods#Visa',
     status: 'authorized',
     approvalCode: '10025AB',
-    transfer: {
+    paymentAmount: {
       amount: '4.35',
       currency: 'USD'
     }
@@ -744,13 +743,13 @@ var acknowledgement = {
       <pre class="idl">
 interface Payment {
   attribute DOMString paymentMethod;
-  attribute FinancialAmount transfer;
+  attribute FinancialAmount paymentAmount;
 };
       </pre>
 
       <p>
-A <code>Payment</code> is an object that is used to express details of
-a payment such as the payment method used and the amount transferred.
+A <code>Payment</code> expresses details of a payment such as the payment
+method used and the payment amount.
       </p>
       <dl>
         <dt><code>paymentMethod</code></dt>
@@ -759,16 +758,16 @@ One or more payment method identifiers, which may be simple strings or URLs.
 For example, <code>VisaLegacy</code> or
 <code>https://newnetwork.example.com/methods/SuperCard</code>
         </dd>
-        <dt><code>transfer</code></dt>
+        <dt><code>paymentAmount</code></dt>
         <dd>
-The <code>CurrencyAmount</code> associated with the payment.
+The <code>FinancialAmount</code> associated with the payment.
         </dd>
       </dl>
 
       <pre class="example">
 var payment = {
   paymentMethod: 'https://w3id.org/payment-methods#Visa',
-  transfer: {
+  paymentAmount: {
     amount: '4.35',
     currency: 'USD'
   }
@@ -926,7 +925,7 @@ var acknowledgement = {
     paymentMethod: 'https://w3id.org/payment-methods#Visa',
     status: 'authorized',
     approvalCode: '10025AB',
-    requestedAmount: {
+    paymentAmount: {
       amount: '4.35',
       currency: 'USD'
     }
@@ -989,13 +988,13 @@ var request = {
       'https://w3id.org/payment-methods#Mastercard',
       'https://w3id.org/payment-methods#Discover'
     ],
-    requestedAmount: {
+    paymentAmount: {
       amount: '4.35',
       currency: 'USD'
     }
   }, {
     paymentMethod: 'https://w3id.org/payment-methods#Bitcoin',
-    requestedAmount: {
+    paymentAmount: {
       amount: '0.0177',
       currency: 'BTC'
     },
