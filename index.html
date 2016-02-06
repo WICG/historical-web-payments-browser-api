@@ -789,10 +789,11 @@ A set of options to use when processing the payment acknowledgement.
 
   <p>
 In general, the WebIDL descriptions provided in this specification outline
-the specific objects, properties, and values that an implementation MAY depend
-on. It is expected that other properties and values will be stored in objects
-like PaymentApp, PaymentRequest, and PaymentAcknowledgement. Implementations
-MUST preserve unknown properties and values.
+the specific interfaces, properties, and values that an implementation MAY
+depend on. It is expected that other properties and values will be stored in
+objects that implement the various interfaces in this specification (e.g.
+PaymentApp, PaymentRequest, PaymentAcknowledgement, etc.). Implementations MUST
+preserve unrecognized properties and their associated values.
   </p>
 
   <p>
@@ -804,29 +805,41 @@ does assert that extensibility MUST be possible.
     <h3>Extending Messages Using JSON-LD</h3>
 
     <p>
-It is possible to interpret and extend PaymentApp, PaymentRequest, and
-PaymentAcknowledgement messages in this specification by using JSON-LD. To
-interpret the previously stated objects as JSON-LD, the following transformation
-SHOULD be applied:
+The interfaces (e.g. PaymentApp, PaymentRequest, PaymentAcknowledgement, etc.)
+in this specification are designed to optionally accept JSON-LD objects. In
+order to ensure a JSON-LD object can be passed to the API properly, the
+following transformation MUST be applied:
     </p>
     <ol>
       <li>
 If a <code>@context</code> property does not exist, add one and assign the
 value <code>"https://w3id.org/payments/v1"</code> to it. If a
 <code>@context</code> does exist, ensure its value is
-<code>"https://w3id.org/payments/v1</code>, if not, perform JSON-LD compaction
-on the message using that context. This MUST be done as there is no requirement
-for API implementations to perform any JSON-LD processing at all.
+<code>"https://w3id.org/payments/v1"</code>. If its value does not match,
+perform JSON-LD compaction on the object using that context. This MUST be done
+as there is no requirement for API implementations to perform any JSON-LD
+processing.
       </li>
       <li>
-Serialize the object to JSON.
+Pass the resulting object to the API.
       </li>
     </ol>
+
     <p>
-Any application interpreting a message in this specification as JSON-LD MUST
-ensure that if the <code>@context</code> property exists, that the value
-associated is <code>"https://w3id.org/payments/v1"</code>.
+Any application receiving an interface from the API can similarly interpret
+it as a JSON-LD object. In this case, the application MUST ensure that if the
+<code>@context</code> property exists, that the value associated is
+<code>"https://w3id.org/payments/v1"</code>. If the <code>@context</code>
+does not exist, the object can be assumed to have a <code>@context</code>
+of <code>"https://w3id.org/payments/v1"</code>.
     </p>
+
+  <p class="issue">
+Can we simplify the above `@context` check (when receiving an interface from
+the API) so it's unnecessary by adding an optional `@context` property with
+a required value of "https://w3id.org/payments/v1" to the appropriate
+interfaces?
+  </p>
   </section>
 </section>
 
