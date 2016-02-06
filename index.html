@@ -388,7 +388,7 @@ var request = {
   description: 'Payment to ExampleMerch for widgets',
   acceptablePayment: {
     paymentMethod: 'https://w3id.org/payment-methods#Visa',
-    transfer: {
+    requestedAmount: {
       amount: '4.35',
       currency: 'USD'
     }
@@ -459,7 +459,7 @@ navigator.payment.getPendingRequest().then(function(paymentRequest) {
       paymentMethod: 'https://w3id.org/payment-methods#Visa',
       status: 'authorized',
       approvalCode: '10025AB',
-      transfer: {
+      requestedAmount: {
         amount: '4.35',
         currency: 'USD'
       }
@@ -550,8 +550,9 @@ One or more payment method identifiers, which may be simple strings or URLs.
 For example, <code>VisaLegacy</code> or
 <code>https://newnetwork.example.com/methods/SuperCard</code>
         </dd>
+      </dl>
 
-        <pre class="example">
+      <pre class="example">
 var app = {
   id: 'https://bank.example.com/generic-brand-rewards-card',
   type: 'PaymentApplication',
@@ -562,7 +563,7 @@ var app = {
     'VisaLegacy', 'VisaTokenized', 'https://newnetwork.example.com/methods/SuperCard'
   ]
 };
-        </pre>
+      </pre>
     </section>
 
     <section>
@@ -570,6 +571,9 @@ var app = {
 
       <pre class="idl">
 interface PaymentRequest {
+  attribute (DOMString or Sequence &lt;DOMString&gt;) type;
+  attribute DOMString description;
+  attribute (AcceptablePaymentTerm or Sequence &lt;AcceptablePaymentTerm&gt;) acceptablePayment;
 };
       </pre>
 
@@ -578,14 +582,102 @@ A <a><code>PaymentRequest</code></a> is an object that is used to
 request a payment from a <a>payee</a>.
       </p>
       <dl>
-        <dt><code></code></dt>
+        <dt><code>type</code></dt>
         <dd>
+An type identifier associated with the object, typically set to
+<code>PaymentRequest</code>. The set of available types MAY be extended
+in the future to add things like <code>SubscriptionRequest</code> to identify
+payment requests that may have some recurring quality to them.
+        </dd>
+        <dt><code>description</code></dt>
+        <dd>
+A human-readable description of the reason the payment request was initiated.
+This text MAY be displayed to the <a>payer</a> in a payment interface.
+For example, <code>Payment for widgets from Acme Anvil Emporium</code>.
+        </dd>
+        <dt><code>acceptablePayment</code></dt>
+        <dd>
+One or more ways that the <a>payee</a> can accept payment for the request.
+        </dd>
+      </dl>
+      <pre class="example">
+var request = {
+  type: 'PaymentRequest',
+  description: 'Payment to ExampleMerch for widgets',
+  acceptablePayment: {
+    paymentMethod: 'VisaTokenized',
+    requestedAmount: {
+      amount: '4.35',
+      currency: 'USD'
+    }
+  }
+};
+      </pre>
+
+      <pre class="idl">
+interface AcceptablePaymentTerm {
+  attribute (DOMString or Sequence &lt;DOMString&gt;) paymentMethod;
+  attribute FinancialAmount requestedAmount;
+};
+      </pre>
+
+      <p>
+An <a><code>AcceptablePaymentTerm</code></a> is an object that is used to
+express the terms under which a payment request may be fulfilled.
+      </p>
+      <dl>
+        <dt><code>paymentMethod</code></dt>
+        <dd>
+One or more payment method identifiers, which may be simple strings or URLs.
+For example, <code>VisaLegacy</code> or
+<code>https://newnetwork.example.com/methods/SuperCard</code>
+
+        </dd>
+        <dt><code>requestedAmount</code></dt>
+        <dd>
+The amount of financial value requested by the <a>payee</a>.
         </dd>
       </dl>
 
-      <pre class="example">
-var request = {
+      <pre class="idl">
+interface FinancialAmount {
+  attribute DOMString amount;
+  attribute DOMString currency;
 };
+      </pre>
+      <p>
+A <a><code>FinancialAmount</code></a> interface is used to express a scalar
+financial value.
+      </p>
+      <dl>
+        <dt><code><dfn>currency</dfn></code></dt>
+        <dd>
+<code>currency</code> is a string containing a three-character alphaneumeric
+code for the currency as defined by [[!ISO4217]] or a URL for a currency
+identifier. For example, <code>"USD"</code> for US Dollars or
+<code>"https://example.com/currencies/experimental-XYZ"</code> for a new
+experimental currency.
+        </dd>
+        <dt><code><dfn>amount</dfn></code></dt>
+        <dd>
+A string containing the decimal monetary value. The string MUST use a single
+U+002E FULL STOP character as the decimal separator. The string MUST begin
+with a single U+002D HYPHEN-MINUS character if the value is negative. All
+other characters must be characters in the range U+0030 DIGIT ZERO (0) to
+U+0039 DIGIT NINE (9).
+<div class="note">
+The string should match the regular expression
+<code>^-?[0-9]+(\.[0-9]+)?$</code>.
+</div>
+        </dd>
+      </dl>
+
+      <p>The following example shows how to represent $55.00 US Dollars.</p>
+      <pre class="example highlight">
+{
+  "amount" : "55.00"
+  "currency": "USD",
+}
       </pre>
     </section>
 
@@ -652,7 +744,7 @@ var acknowledgement = {
       <pre class="idl">
 interface Payment {
   attribute DOMString paymentMethod;
-  attribute CurrencyAmount transfer;
+  attribute FinancialAmount transfer;
 };
       </pre>
 
@@ -680,44 +772,6 @@ var payment = {
     amount: '4.35',
     currency: 'USD'
   }
-};
-      </pre>
-    </section>
-
-    <section>
-      <h4>CurrencyAmount</h4>
-
-      <pre class="idl">
-interface CurrencyAmount {
-  attribute DOMString amount;
-  attribute DOMString currency;
-};
-      </pre>
-
-      <p>
-A <code>CurrencyAmount</code> is an object that is used to express a currency
-and monetary amount.
-      </p>
-      <dl>
-        <dt><code>amount</code></dt>
-        <dd>
-A string containing a decimal monetary value. If a decimal separator is present,
-the string must use a single U+002E FULL STOP character as the decimal
-separator. All other characters must be characters in the range U+0030 DIGIT
-ZERO (0) to U+0039 DIGIT NINE (9).
-        </dd>
-        <dt><code>currency</code></dt>
-        <dd>
-A string that SHOULD contain a three-letter alphabetic code for the currency as
-defined by [ISO4217]. For example, "USD" for US Dollars. It MAY also contain
-a URL.
-        </dd>
-      </dl>
-
-      <pre class="example">
-var transfer = {
-  amount: '4.35',
-  currency: 'USD'
 };
       </pre>
     </section>
@@ -872,7 +926,7 @@ var acknowledgement = {
     paymentMethod: 'https://w3id.org/payment-methods#Visa',
     status: 'authorized',
     approvalCode: '10025AB',
-    transfer: {
+    requestedAmount: {
       amount: '4.35',
       currency: 'USD'
     }
@@ -935,13 +989,13 @@ var request = {
       'https://w3id.org/payment-methods#Mastercard',
       'https://w3id.org/payment-methods#Discover'
     ],
-    transfer: {
+    requestedAmount: {
       amount: '4.35',
       currency: 'USD'
     }
   }, {
     paymentMethod: 'https://w3id.org/payment-methods#Bitcoin',
-    transfer: {
+    requestedAmount: {
       amount: '0.0177',
       currency: 'BTC'
     },
