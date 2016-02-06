@@ -375,9 +375,8 @@ The <a>payer</a> finds an item to buy and initiates the payment flow
 (by clicking a button, swiping, speaking a voice command, etc.).
       </li>
       <li>
-The <a>payee</a> application generates a signed payment request, which is a
-[[!JSON-LD]] object that contains enough information to process the
-payment:
+The <a>payee</a> application generates a signed payment request that
+contains enough information to process the payment:
       <pre class="example" title="Example of a payment request">
 var request = {
   type: 'PaymentRequest',
@@ -431,8 +430,8 @@ acknowledgement is transmitted to the <a>payee</a>'s web application.
       </li>
       <li>
 The <a>payment app</a> or a <a>payment service processor</a> it works with
-generates an optionally signed payment acknowledgement message, which is a
-[[!JSON-LD]] object that contains enough information to verify that the payment
+generates a payment acknowledgement message
+that contains enough information to verify that the payment
 request has completed successfully (or has failed). The <a>payment app</a>
 resolves the Promise that the <a>payer</a>'s web application is waiting on
 by calling <code>navigator.payment.acknowledge</code> and passing the
@@ -497,9 +496,9 @@ Typically called by a <a>payment service provider</a> to register a
 <a>payment app</a> for later use during a payment request.
         </p>
         <dl class="parameters">
-          <dt>object app</dt>
+          <dt>PaymentApplication app</dt>
           <dd>
-A [[!JSON-LD]] encoded manifest for a <a>payment app</a>.
+A description of the <a>payment app</a>.
           </dd>
           <dt>object options</dt>
           <dd>
@@ -510,14 +509,12 @@ A set of options to use when registering the payment app.
       <dt>Promise request()</dt>
       <dd>
         <p>
-Typically called by a <a>payee</a> to initiate a payment. The request is
-encoded in [[!JSON-LD]] format.
+Typically called by a <a>payee</a> to initiate a payment.
         </p>
         <dl class="parameters">
-          <dt>object request</dt>
+          <dt>PaymentRequest request</dt>
           <dd>
-Typically called by a <a>payee</a> to request a payment. The request is
-encoded in [[!JSON-LD]] format.
+Typically called by a <a>payee</a> to request a payment.
           </dd>
           <dt>object options</dt>
           <dd>
@@ -529,20 +526,19 @@ A set of options to use when requesting payment.
       <dd>
         <p>
 Called by a <a>payment app</a> to get the pending payment request. The returned
-Promise resolves to the request, which is encoded in [[!JSON-LD]] format.
+Promise resolves to the request.
         </p>
       </dd>
       <dt>void acknowledge()</dt>
       <dd>
         <p>
 Typically called by a <a>payment app</a> to acknowledge that a payment request
-has been processed. The acknowledgement is encoded in [[!JSON-LD]] format.
+has been processed.
         </p>
         <dl class="parameters">
-          <dt>object acknowledgement</dt>
+          <dt>PaymentAcknowledgement acknowledgement</dt>
           <dd>
-A [[!JSON-LD]] encoded payment acknowledgement describing the result of a
-payment request.
+Describes the result of a payment request.
           </dd>
           <dt>object options</dt>
           <dd>
@@ -563,7 +559,7 @@ In general, the WebIDL descriptions provided in this specification outline
 the specific objects, properties, and values that an implementation MAY depend
 on. It is expected that other properties and values will be stored in objects
 like PaymentApp, PaymentRequest, and PaymentAcknowledgement. Implementations
-MUST preserve unrecognized properties and their associated values.
+MUST preserve unknown properties and values.
   </p>
 
   <p>
