@@ -579,20 +579,20 @@ SHOULD be applied:
     <ol>
       <li>
 If a <code>@context</code> property does not exist, add one and assign the
-value <code>"https://w3id.org/payments/v1"</code> to it.
+value <code>"https://w3id.org/payments/v1"</code> to it. If a
+<code>@context</code> does exist, ensure its value is
+<code>"https://w3id.org/payments/v1</code>, if not, perform JSON-LD compaction
+on the message using that context. This MUST be done as there is no requirement
+for API implementations to perform any JSON-LD processing at all.
       </li>
       <li>
 Serialize the object to JSON.
       </li>
     </ol>
     <p>
-Any application interpreting an object in this specification as JSON-LD MUST
+Any application interpreting a message in this specification as JSON-LD MUST
 ensure that if the <code>@context</code> property exists, that the value
-associated is either
-<code>"https://w3id.org/payments/v1"</code>, or that value is the first item
-in a list of contexts. Developers MUST ensure that any property used in these
-objects MUST NOT conflict with terms defined in
-<code>"https://w3id.org/payments/v1"</code>.
+associated is <code>"https://w3id.org/payments/v1"</code>.
     </p>
   </section>
 </section>
