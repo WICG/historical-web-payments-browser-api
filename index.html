@@ -367,6 +367,11 @@ that the payer's payment service provider can verify that certain pieces of
 information in the payment request have not been altered.
     </p>
 
+    <p class="issue">
+Can we make `type` a default attribute with a value of `PaymentRequest`? If
+not, we may want to exclude it here and mention it in the extension section.
+    </p>
+
     <ol>
       <li>
 The <a>payer</a> navigates to a <a>payee</a>'s website.</li>
@@ -414,6 +419,11 @@ promise.then(function(acknowledgement) {
 Additional parts of the Payment Acknowledgment may be digitally signed (such as
 payment method-specific data). For push-based payment methods, this is one
 mechanism that a payee can use to verify that a payment was processed.
+    </p>
+
+    <p class="issue">
+Can we make `type` a default attribute with a value of `PaymentAcknowledgement`?
+If not, we may want to exclude it here and mention it in the extension section.
     </p>
 
     <ol>
