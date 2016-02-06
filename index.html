@@ -232,7 +232,7 @@ The <a>payee</a>'s web page calls <code>navigator.payment.request(req)</code>.
     <li>
 The <a>payment mediator</a> scans the list of previously registered
 <a>payment app</a>s and finds matches that support
-<code>paymentMethod</code> in <code>acceptablePaymentMethod</code> in
+<code>paymentMethod</code> in <code>acceptablePayment</code> in
 <code>request</code>.
     </li>
     <li>
@@ -386,7 +386,7 @@ contains enough information to process the payment:
 var request = {
   type: 'PaymentRequest',
   description: 'Payment to ExampleMerch for widgets',
-  acceptablePaymentMethod: {
+  acceptablePayment: {
     paymentMethod: 'https://w3id.org/payment-methods#Visa',
     transfer: {
       amount: '4.35',
@@ -929,7 +929,7 @@ Multiple acceptable payments may be collected into a single payment request.
 var request = {
   type: 'PaymentRequest'
   description: 'Payment to ExampleMerch for Widget 1'
-  acceptablePaymentMethod: [{
+  acceptablePayment: [{
     paymentMethod: [
       'https://w3id.org/payment-methods#Visa',
       'https://w3id.org/payment-methods#Mastercard',
