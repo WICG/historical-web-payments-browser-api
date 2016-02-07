@@ -195,7 +195,9 @@
         Method Identifier</dfn> is defined by the Payment Method Identifiers specification
         [[!METHODIDENTIFIERS]].</dd>
         <dt>Browser Payment API</dt>
-        <dd>The low-level API that supports the initiation of payment can be found in [[PAYMENTAPI]].</dd>
+        <dd>The low-level API that supports the initiation of payment can be found in [[!PAYMENTAPI]].
+        This specification depends on <dfn>PaymentRequest</dfn> and <dfn>NavigatorPayment</dfn> as defined in [[!PAYMENTAPI]].
+        </dd>
         <dt>HTML5</dt>
         <dd>The terms <dfn>global object</dfn>,
         <dfn>queue a task</dfn>, <dfn>browsing context</dfn>, and
@@ -238,8 +240,10 @@
 [Constructor]
 interface Checkout {
   Promise&lt;Checkout&gt; send((PaymentItem or sequence &lt;PaymentItem&gt;) purchaseInfo);
-  Promise&lt;Checkout&gt; request(DOMString payerInfo);
-  Promise&lt;CheckoutDetails&gt; start();
+  Promise&lt;Checkout&gt; request(DOMString payerInfo, optional sequence &lt;ShippingOption&gt; options);
+  Promise&lt;Checkout&gt; start();
+  Promise cancel(DOMString reason);
+  Promise finish(PaymentRequest request);
 };
       </pre>
 
@@ -270,26 +274,45 @@ This API is also designed so that the flow occurs in a straightforward, determin
       <p>The following example shows how to construct a <a><code>Checkout</code></a> and begin the
       user interaction:</p>
 
-      <pre id="checkout-example" class="example highlight">
+      <pre id="init-checkout-example" class="example highlight" title="Initiating a normal checkout flow">
 // create checkout
 var checkout = new Checkout();
 checkout
-  .send(lineItemEstimate)      // will send estimate to UI
+  .send(items, recalculateShipping) // send line item estimate to UI and recalculate if shipping options change
+  .request('shippingOption', shippingOptions) // request UI collect shippingOption
   .request('shippingAddress')  // requests UI collect shippingAddress
   .request('somethingElse')    // requests UI collect something else
   .start()                     // start the checkout UI
   .then(finishCheckout);       // checkout UI has collected the info
+      </pre>
 
-function finishCheckout(data) {
+      <pre id="recalculate-shipping-example" class="example highlight" title="Recalculate line items based on shipping option or address change">
+function recalculateShipping(checkoutDetails) {
+  // recalculate line items based on checkout details like shipping address
+  for(let item of checkoutDetails.items) {
+    // new shipping cost
+    if(item.id === 'shipping') {
+      item.amount = newShippingAmount;
+    }
+    // new tax amount
+    if(item.id === 'tax') {
+      item.amount = newTaxAmount;
+    }
+  }
+};
+      </pre>
+
+      <pre id="finish-checkout-example" class="example highlight" title="Complete a checkout flow by requesting payment">
+function finishCheckout(checkoutDetails) {
   // got requested checkout data, eg:
-  // data.shippingAddress
+  // checkoutDetails.shippingAddress
 
   // if desired, instead call checkout.cancel();
 
   // do some async stuff to build a payment request
   // note that the merchant site writes this
   // 'buildPaymentRequest' method
-  buildPaymentRequest(data).then(function(paymentRequest) {
+  buildPaymentRequest(checkoutDetails).then(function(paymentRequest) {
     // complete, the checkout.finish() call invokes
     // `navigator.payment.request(paymentRequest)` internally
     return checkout.finish(paymentRequest);
@@ -309,10 +332,7 @@ function finishCheckout(data) {
       <section>
         <h2>send()</h2>
         <p>
-          The <code><dfn>send</dfn></code> method is called when the page wants to begin user interaction for the
-          payment request. The <code>send</code> method will return a <a>Promise</a> that will be resolved when the
-          <a>user accepts the payment request</a>. Some kind of user interface will be shown to the user to facilitate the
-          payment request after the <code>send</code> method returns.
+          The <code><dfn>send</dfn></code> method is ...
         </p>
 
         <p>
@@ -328,10 +348,7 @@ function finishCheckout(data) {
       <section>
         <h2>request()</h2>
         <p>
-          The <code><dfn>request</dfn></code> method is called when the page wants to begin user interaction for the
-          payment request. The <code>send</code> method will return a <a>Promise</a> that will be resolved when the
-          <a>user accepts the payment request</a>. Some kind of user interface will be shown to the user to facilitate the
-          payment request after the <code>request</code> method returns.
+          The <code><dfn>request</dfn></code> method is ...
         </p>
 
         <p>
@@ -346,13 +363,39 @@ function finishCheckout(data) {
 
       <section>
         <h2>start()</h2>
-        <p>The <code><dfn>start</dfn></code> method must be called after the user has accepted the payment
-        request and the <a><em>acceptPromise</em></a> has been resolved. The <code>complete</code> method
-        takes a boolean argument that indicates the payment was successfully processed if <code>true</code> and
-        that processing failed if <code>false</code>. Calling the <code>complete</code> method tells the user
-        agent that the user interaction is over (and should cause any remaining user interface to be closed).</p>
+        <p>
+          The <code><dfn>start</dfn></code> method must ...
+        </p>
 
         <p>The <a><code>start</code></a> method MUST act as follows:</p>
+        <ol>
+          <li>
+            ...
+          </li>
+        </ol>
+      </section>
+
+      <section>
+        <h2>cancel()</h2>
+        <p>
+          The <code><dfn>cancel</dfn></code> method must ...
+        </p>
+
+        <p>The <a><code>cancel</code></a> method MUST act as follows:</p>
+        <ol>
+          <li>
+            ...
+          </li>
+        </ol>
+      </section>
+
+      <section>
+        <h2>finish()</h2>
+        <p>
+          The <code><dfn>finish</dfn></code> method must ...
+        </p>
+
+        <p>The <a><code>finish</code></a> method MUST act as follows:</p>
         <ol>
           <li>
             ...
@@ -367,18 +410,6 @@ function finishCheckout(data) {
           address. It is <em>null</em> by default.
           When a user provides a shipping address, the <a>shipping address changed algorithm</a> runs.
         </p>
-        <p>
-          <code><dfn>onshippingaddresschange</dfn></code> is an <code>EventHandler</code> for an
-          <code>Event</code> named <code>shippingaddresschange</code>.
-        </p>
-      </section>
-
-      <section>
-        <h2>shippingOption</h2>
-        <p>
-          <code><dfn>onshippingoptionchange</dfn></code> is an <code>EventHandler</code> for an
-          <code>Event</code> named <code>shippingoptionchange</code>.
-        </p>
       </section>
 
       <div class="issue" data-number="32" title="Should the web page be able to provide status information before calling complete()">
@@ -392,7 +423,8 @@ function finishCheckout(data) {
       <pre class="idl">
 dictionary CheckoutDetails {
   sequence&lt;PaymentItem&gt; items;
-  sequence&lt;ShippingOption&gt; shippingOptions;
+  ShippingAddress shippingAddress;
+  ShippingOption shippingOption;
 };
       </pre>
 
@@ -526,24 +558,6 @@ dictionary CheckoutDetails {
           A <a><code>CurrencyAmount</code></a> containing the monetary amount for the item.
         </dd>
       </dl>
-    </section>
-
-    <section>
-      <h2>Events</h2>
-
-      <section class="informative">
-        <h2>Summary</h2>
-
-        <table>
-          <tr><th>Event name</th><th>Interface</th><th>Dispatched when...</th></tr>
-          <tr>
-            <td><code>shippingaddresschange</code></td>
-            <td><a>CheckoutUpdateEvent</a></td>
-            <td>The user provides a new shipping address.</td>
-          </tr>
-        </table>
-      </section>
-
     </section>
 
     <section>
