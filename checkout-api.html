@@ -1,0 +1,679 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Checkout API</title>
+    <meta charset='utf-8'>
+    <script src='https://www.w3.org/Tools/respec/respec-w3c-common'
+            async class='remove'></script>
+    <script class='remove'>
+      var respecConfig = {
+          specStatus: "CG-DRAFT",
+          shortName:  "checkout-api",
+          editors: [
+                {   name:       "TBD",
+                    company:    "TBD" },
+          ],
+          authors: [
+                {   name:       "Adrian Bateman",
+                    company:    "Microsoft Corporation" },
+                {   name:       "Zach Koch",
+                    company:    "Google" },
+                {   name:       "Dave Longley",
+                    company:    "Digital Bazaar" }
+          ],
+          //previousMaturity: "FPWD",
+          //previousPublishDate:  "1977-03-15",
+          wg:           "Web Platform Incubator Community Group",
+          wgURI:        "https://www.w3.org/community/wicg/",
+
+          issueBase:    "https://github.com/WICG/web-payments-browser-api/issues/",
+
+          localBiblio:  {
+              "PAYMENTARCH": {
+                  title:    "Payment Request Architecture"
+              ,   href:     "architecture.html"
+              ,   authors:  [
+                      "Adrian Bateman"
+                  ]
+              ,   status:   "CG-DRAFT"
+              },
+              "METHODIDENTIFIERS": {
+                  title:    "Payment Method Identifiers"
+              ,   href:     "method-identifiers.html"
+              ,   authors:  [
+                      "Adrian Bateman"
+                  ]
+              ,   status:   "CG-DRAFT"
+              },
+              "PAYMENTAPI": {
+                  title:    "Browser Payment API"
+              ,   href:     "http://wicg.github.io/web-payments-browser-api/"
+              ,   authors:  [
+                      "Manu Sporny", "David Longley"
+                  ]
+              ,   status:   "CG-DRAFT"
+              }
+          }
+      };
+    </script>
+    <style>
+    dt { margin-top: 0.75em; }
+    table { margin-top: 0.75em; border-collapse:collapse; border-style:hidden hidden none hidden }
+    table thead { border-bottom:solid }
+    table tbody th:first-child { border-left:solid }
+    table td, table th { border-left:solid; border-right:solid; border-bottom:solid thin; vertical-align:top; padding:0.2em }
+    li { margin-top: 0.5em; margin-bottom: 0.5em;}
+    </style>
+  </head>
+  <body>
+    <section id='abstract'>
+      <p>
+        This specification describes a high-level electronic commerce checkout API to enable merchants (i.e. web sites selling
+        physical or digital goods) to provide a simple checkout flow for their customers.
+        Merchants that do not want the browser to handle the checkout flow
+        may use the more low-level <a href="wicg.github.io/web-payments-browser-api/">browser payment API</a>
+        to request payment. User agents (e.g. browsers) will facilitate the checkout flow between
+        merchant and user.
+      </p>
+    </section>
+
+    <section id='sotd'>
+      <p>
+        The Web Platform Incubator Community Group is incubating this specification to gather
+        feedback to refine the API. The specification is intended to align with the chartered scope
+        of the <a href="http://www.w3.org/Payments/WG/">Web Payments Working Group</a> and it is
+        possible that work on the API may be transferred to that group in future.
+      </p>
+      <p>
+        If you wish to make comments regarding this document, please contribute to the
+        <a href="https://github.com/WICG/Checkout/issues">issues list</a> in the
+        <a href="https://github.com/WICG/Checkout">GitHub repo</a>. Pull requests with
+        proposed text changes are welcome, but please note that you will be asked to join the Web
+        Platform Incubator Community Group and agree to the CLA for any substantive proposals.
+      </p>
+    </section>
+
+    <section class='informative'>
+      <h2>Introduction</h2>
+        <p>Buying things on the
+        web, particularly on mobile, is a frustrating experience for users. Every web site has its own flow
+        and its own validation rules, and most require users to manually type in the same set of information
+        over and over again. Likewise, it is difficult and time consuming for developers to create good
+        checkout flows that support various payment schemes.</p>
+
+        <p>This specification describes a high-level API that allows <a>user agents</a> (e.g. browsers) to
+        aid in the ecommerce checkout flow between the three key parties in every transaction: the merchant (e.g. an
+        online web store), the buyer (e.g. the user buying from the online web store), and the
+        <a>Payment Method</a> (e.g. credit card). Information necessary to process and confirm a
+        transaction is passed between the <a>Payment Method</a> and the merchant via the <a>user agent</a>
+        with the buyer confirming and authorizing as necessary across the
+        checkout flow.</p>
+
+        <p>In addition to better, more consistent checkout experience, this also enables web sites to take
+        advantage of more secure payment schemes (e.g. tokenization and system-level authentication)
+        that are not possible with standard JavaScript libraries. This has the potential to reduce
+        liability for the merchant and helps protect sensitive user information.</p>
+
+        <p>While many merchants are not interested in designing the entire checkout flow, some
+        may have special requirements that this API may not support. In those cases, merchants that do not want the browser to handle the checkout flow
+        may use the more low-level <a href="wicg.github.io/web-payments-browser-api/">browser payment API</a>
+        to request payment.</p>
+
+        <p>The API described in this document forms part of the Payment Request system described in
+        the Payment Request Architecture [[PAYMENTARCH]] document.</p>
+
+      <section id="goals">
+        <h2>Goals</h2>
+        <ul>
+          <li>Allow the user-agent to act as intermediary between merchants, users, and <a>payment
+          methods</a> in an electronic commerce checkout flow</li>
+          <li>Standardize (to the extent that it makes sense) the communication flow between a
+          merchant, user-agent, and <a>payment method</a> when checking out online</li>
+          <li>Allow <a>payment methods</a> to bring more secure payment transactions to the web</li>
+        </ul>
+      </section>
+
+      <section id="non-goals">
+        <h2>Non-goals</h2>
+          <ul>
+            <li>Not trying to create a new <a>payment method</a></li>
+            <li>Not trying to integrate directly with payment processors</li>
+          </ul>
+      </section>
+
+    </section>
+
+    <section id='conformance'>
+      <p>
+        As well as sections marked as non-normative, all authoring guidelines, diagrams, examples,
+        and notes in this specification are non-normative. Everything else in this specification is
+        normative.
+      </p>
+      <p>
+        This specification defines one class of products:
+      </p>
+      <dl>
+      <dt><dfn>Conforming user agent</dfn></dt>
+      <dd>
+        <p>
+        A <dfn data-lt="user agents">user agent</dfn> MUST behave as described in this specification
+        in order to be considered conformant.
+        </p>
+        <p>
+        User agents MAY implement algorithms given in this
+        specification in any way desired, so long as the end result is
+        indistinguishable from the result that would be obtained by the
+        specification's algorithms.
+        </p>
+        <p>
+        A conforming Payment Request API user agent MUST also be a
+        <em>conforming implementation</em> of the IDL fragments
+        of this specification, as described in the
+        “Web IDL” specification. [[!WEBIDL]]
+        </p>
+
+        <aside class="note">
+        This specification uses both the terms "conforming user agent(s)"
+        and "user agent(s)" to refer to this product class.
+        </aside>
+      </dd>
+    </section>
+
+    <section id="dependencies">
+      <h3>Dependencies</h3>
+      <p>
+      This specification relies on several other underlying specifications.
+      </p>
+      <dl>
+        <dt>Payment Request Document Architecture</dt>
+        <dd>The terms <dfn data-lt="payment method|payment methods">Payment Method</dfn> and
+        <dfn data-lt="payment app|payment apps">Payment App</dfn> are defined by the Payment Request
+        Architecture document [[PAYMENTARCH]].</dd>
+        <dt>Payment Method Identifiers</dt>
+        <dd>The term <dfn data-lt="payment method identifier|payment method identifiers">Payment
+        Method Identifier</dfn> is defined by the Payment Method Identifiers specification
+        [[!METHODIDENTIFIERS]].</dd>
+        <dt>Browser Payment API</dt>
+        <dd>The low-level API that supports the initiation of payment can be found in [[PAYMENTAPI]].</dd>
+        <dt>HTML5</dt>
+        <dd>The terms <dfn>global object</dfn>,
+        <dfn>queue a task</dfn>, <dfn>browsing context</dfn>, and
+        <dfn>top-level browsing context</dfn> are defined by [[!HTML5]].</dd>
+        <dt>ECMA-262 6th Edition, The ECMAScript 2015 Language Specification</dt>
+        <dd>
+          The terms <dfn>Promise</dfn>, <dfn>JSON.stringify</dfn>, and <dfn>JSON.parse</dfn> are
+          defined by [[!ECMA-262-2015]].
+          <p>The term <dfn>JSON object</dfn> used in this specification means an object that can
+          be serialized to a string using <a>JSON.stringify</a> and later deserialized back to an object
+          using <a>JSON.parse</a> with no loss of data.</p>
+        </dd>
+        <dt>DOM4</dt>
+        <dd>
+        The <code><dfn>Event</dfn></code> type and the term <dfn>fire an event</dfn> are defined by [[!DOM4]].
+        <p><dfn>DOMException</dfn> and the following DOMException types from [[!DOM4]] are used:</p>
+        <table>
+        <tr><th>Type</th><th>Message (optional)</th></tr>
+        <tr><td><code><dfn>InvalidAccessError</dfn></code></td><td>The object does not support the operation or argument</td></tr>
+        <tr><td><code><dfn>InvalidStateError</dfn></code></td><td>The object is in an invalid state</td></tr>
+        <tr><td><code><dfn>NotSupportedError</dfn></code></td><td>The payment method was not supported</td></tr>
+        <tr><td><code><dfn>SecurityError</dfn></code></td><td>The operation is only supported in a secure context</td></tr>
+        <tr><td><code><dfn>SyntaxError</dfn></code></td><td>A required parameter was missing or out-of-range</td></tr>
+        </table>
+        </dd>
+        <dt>WebIDL</dt>
+        <dd>When this specification says to <dfn>throw</dfn> an error, the <a>user agent</a> must throw an
+        error as described in [[!WEBIDL]]. When this occurs in a sub-algorithm, this results in
+        termination of execution of the sub-algorithm and all ancestor algorithms until one is
+        reached that explicitly describes procedures for catching exceptions.</dd>
+        <dt>Secure Contexts</dt>
+        <dd>The term <dfn>secure context</dfn> is defined by the Secure Contexts specification
+        [[!POWERFUL-FEATURES]].</dd>
+      </dl>
+    </section>
+
+    <section>
+      <h2>The <dfn>Checkout</dfn> Interface</h2>
+      <pre class="idl">
+[Constructor]
+interface Checkout {
+  Promise&lt;Checkout&gt; send((PaymentItem or sequence &lt;PaymentItem&gt;) purchaseInfo);
+  Promise&lt;Checkout&gt; request(DOMString payerInfo);
+  Promise&lt;CheckoutDetails&gt; start();
+};
+      </pre>
+
+      <p>
+This API allows merchants to collect the information they need to create a payment request message but keeps the users in the same seamless, in-browser checkout process. It will let a merchant site specify a line item estimate (if necessary) and request a number of pieces of information, such as a shipping address, that it needs before it can prepare the payment request message. Once the merchant site has specified the information it needs, it tells the browser to start the checkout process and waits for a promise to resolve.
+      </p>
+
+      <p>
+The browser then opens a UI to take the user through the checkout process. Once the user has made all of their selections, the user (for example) clicks a button to see their total. Upon clicking, the promise the merchant was waiting on resolves with the requested information and the in-browser UI will wait for the merchant site to call "finish" with the payment request message (which can be generated asynchronously if desired). The merchant can also call "cancel" instead.
+      </p>
+
+      <p>
+Once finish is called, it internally calls navigator.payment.request(paymentRequest) and returns a promise, which will resolve to an error or a payment acknowledgement. This causes the in-browser UI to show the price and payment app selection screen, just like it would have if called independently. If the user selects a payment app and completes their payment, the merchant site will receive a payment acknowledgement via the resolved promise, otherwise, it will receive an error.
+      </p>
+
+      <p class="issue">
+Note: If a "back" feature for the in-browser UI is desirable at this point, one option is to return a promise in the error that can be waited on, again, to resolve once the user is ready for the merchant site to generate the payment request message based on their changes.
+      </p>
+
+      <p class="issue">
+This API can be used to give merchant sites a full, in-browser, checkout experience, but builds on top of the navigator.payment.request API. It could also be modified (internally) to build on top of other future APIs that expose simple, low-level mechanisms for independently requesting things like shipping address or other "identity credentials/verifiable claims" (this is aimed at supporting The Extensible Web Manifesto approach). These APIs are not yet exposed as low-level APIs, but this approach is an attempt to do some future proofing should they be standardized at some point.
+      </p>
+
+      <p class="issue">
+This API is also designed so that the flow occurs in a straightforward, deterministic way. It intentionally avoids events and exposing state management to the merchant site. The merchant site does not have to deal with multiple events coming from the in-browser UI and the subsequent management of any asynchronous work it generates. Rather, once the user has made their selections and chosen all of the necessary information, it will be informed. The in-browser UI will not allow further action until the merchant site responds with a payment request message.
+      </p>
+
+      <p>The following example shows how to construct a <a><code>Checkout</code></a> and begin the
+      user interaction:</p>
+
+      <pre id="checkout-example" class="example highlight">
+// create checkout
+var checkout = new Checkout();
+checkout
+  .send(lineItemEstimate)      // will send estimate to UI
+  .request('shippingAddress')  // requests UI collect shippingAddress
+  .request('somethingElse')    // requests UI collect something else
+  .start()                     // start the checkout UI
+  .then(finishCheckout);       // checkout UI has collected the info
+
+function finishCheckout(data) {
+  // got requested checkout data, eg:
+  // data.shippingAddress
+
+  // if desired, instead call checkout.cancel();
+
+  // do some async stuff to build a payment request
+  // note that the merchant site writes this
+  // 'buildPaymentRequest' method
+  buildPaymentRequest(data).then(function(paymentRequest) {
+    // complete, the checkout.finish() call invokes
+    // `navigator.payment.request(paymentRequest)` internally
+    return checkout.finish(paymentRequest);
+  }).catch(function(err) {
+    // user did not complete checkout
+    // potentially check `err` for another promise if they didn't fully cancel
+    if(err.retryPromise) { // bikeshed name
+      return err.retryPromise.then(finishCheckout);
+    }
+    throw err;
+  }).then(function(acknowledgement) {
+    // handle acknowledgement from payment app
+  });
+}
+      </pre>
+
+      <section>
+        <h2>send()</h2>
+        <p>
+          The <code><dfn>send</dfn></code> method is called when the page wants to begin user interaction for the
+          payment request. The <code>send</code> method will return a <a>Promise</a> that will be resolved when the
+          <a>user accepts the payment request</a>. Some kind of user interface will be shown to the user to facilitate the
+          payment request after the <code>send</code> method returns.
+        </p>
+
+        <p>
+          The <a><code>send</code></a> method MUST act as follows:
+        </p>
+        <ol>
+          <li>
+            ...
+          </li>
+        </ol>
+      </section>
+
+      <section>
+        <h2>request()</h2>
+        <p>
+          The <code><dfn>request</dfn></code> method is called when the page wants to begin user interaction for the
+          payment request. The <code>send</code> method will return a <a>Promise</a> that will be resolved when the
+          <a>user accepts the payment request</a>. Some kind of user interface will be shown to the user to facilitate the
+          payment request after the <code>request</code> method returns.
+        </p>
+
+        <p>
+          The <a><code>request</code></a> method MUST act as follows:
+        </p>
+        <ol>
+          <li>
+            ...
+          </li>
+        </ol>
+      </section>
+
+      <section>
+        <h2>start()</h2>
+        <p>The <code><dfn>start</dfn></code> method must be called after the user has accepted the payment
+        request and the <a><em>acceptPromise</em></a> has been resolved. The <code>complete</code> method
+        takes a boolean argument that indicates the payment was successfully processed if <code>true</code> and
+        that processing failed if <code>false</code>. Calling the <code>complete</code> method tells the user
+        agent that the user interaction is over (and should cause any remaining user interface to be closed).</p>
+
+        <p>The <a><code>start</code></a> method MUST act as follows:</p>
+        <ol>
+          <li>
+            ...
+          </li>
+        </ol>
+      </section>
+
+      <section>
+        <h2>shippingAddress</h2>
+        <p>
+          <code><dfn>shippingAddress</dfn></code> is populated when the user provides a shipping
+          address. It is <em>null</em> by default.
+          When a user provides a shipping address, the <a>shipping address changed algorithm</a> runs.
+        </p>
+        <p>
+          <code><dfn>onshippingaddresschange</dfn></code> is an <code>EventHandler</code> for an
+          <code>Event</code> named <code>shippingaddresschange</code>.
+        </p>
+      </section>
+
+      <section>
+        <h2>shippingOption</h2>
+        <p>
+          <code><dfn>onshippingoptionchange</dfn></code> is an <code>EventHandler</code> for an
+          <code>Event</code> named <code>shippingoptionchange</code>.
+        </p>
+      </section>
+
+      <div class="issue" data-number="32" title="Should the web page be able to provide status information before calling complete()">
+      There is an open issue about whether there should be a way for a merchant to keep the user
+      informed about the progress of a tranaction after the user approves the payment request.
+      </div>
+    </section>
+
+    <section>
+      <h2>CheckoutDetails dictionary</h2>
+      <pre class="idl">
+dictionary CheckoutDetails {
+  sequence&lt;PaymentItem&gt; items;
+  sequence&lt;ShippingOption&gt; shippingOptions;
+};
+      </pre>
+
+      <p>
+        The <code><dfn>CheckoutDetails</dfn></code> dictionary is passed to the <a><code>Checkout</code></a>
+        constructor and provides information about the requested transaction. The <code>CheckoutDetails</code>
+        dictionary is also used to update the payment request using <a><code>updateCheckout</code></a>.
+      </p>
+      <p>
+        The following fields are part of the <code>CheckoutDetails</code> dictionary:
+      </p>
+      <dl>
+        <dt><code>items</code></dt>
+        <dd>
+          This sequence of <a><code>PaymentItem</code></a> dictionaries indicates what the payment
+          request is for. The sequence must contain at least one <code>PaymentItem</code>. The last
+          <code>PaymentItem</code> in the sequence represents the total amount of the payment
+          request. It is the responsibility of the calling code to ensure that the total amount is
+          the sum of the preceding items. The <a>user agent</a> MAY not validate that this is true.
+        </dd>
+        <dt><code>shippingOptions</code></dt>
+        <dd>
+          A sequence containing the different shipping options that the use may choose from.
+          <p>If the sequence is empty, then this indicates that the merchant
+          cannot ship to the current <a><code>shippingAddress</code></a>.</p>
+          <div class="issue" data-number="2" title="Shipping: should merchant supply supported destinations">
+            <p>We will support shipping restrictions by allowing the web page to call <code>updateCheckout</code>
+            with an empty <code>shippingOptions</code> sequence.</p>
+            <p>We still need to decide how the web page tells the user why they cannot ship to that address.</p>
+          </div>
+        </dd>
+      </dl>
+    </section>
+
+    <section>
+      <h2>PaymentItem dictionary</h2>
+      <pre class="idl">
+        dictionary PaymentItem {
+          string id;
+          string label;
+          CurrencyAmount amount;
+          boolean shipping;
+        };
+      </pre>
+      <p>
+        A sequence of one or more <code>PaymentItem</code> dictionaries is included in the <a><code>CheckoutDetails</code></a>
+        dictionary to indicate the what the payment request is for and the value asked for.
+      </p>
+      <p>
+        The following fields MUST be included in a <code>PaymentItem</code> for it to be valid:
+      </p>
+      <dl>
+        <dt><code>id</code></dt>
+        <dd>This is a string identifier used to reference this <code>PaymentItem</code>. It MUST be
+        unique for a given <a><code>Checkout</code></a>.</dd>
+        <dt><code>label</code></dt>
+        <dd>This is a human-readable description of the item. The <a>user agent</a> may display
+        this to the user.</dd>
+        <dt><code>amount</code></dt>
+        <dd>
+          A <a><code>CurrencyAmount</code></a> containing the monetary amount for the item.
+          <div class="issue" data-number="19" title="Clarity on Currency Conversion">
+            There is an open issue about whether there needs to be consideration of differences between
+            the currency specified by the merchant for the transaction amount and the currencies that
+            the <a>payment method</a> might support.
+          </div>
+        </dd>
+      </dl>
+      <p>
+        The following fields are optional and MAY be included in a <code>PaymentItem</code>:
+      </p>
+      <dl>
+        <dt><code>shipping</code></dt>
+        <dd>If the <code>shipping</code> field is included, then it indicates whether this
+        item represents the shipping cost when set to <code>true</code>. The <a>user agent</a>
+        MAY use this value to display the item differently in the user interface, perhaps
+        relating it to the available shipping options.</dd>
+      </dl>
+    </section>
+
+    <section>
+      <h2>ShippingAddress interface</h2>
+      <pre class="idl">
+        interface ShippingAddress {
+          /* [...] fields TBC */
+        };
+      </pre>
+      <p>
+        If the <a>requestShipping</a> flag was set to <code>true</code> in the <a>CheckoutDetails</a>
+        passed to the <a>Checkout</a> constructor, then the <a>user agent</a> will populate the
+        <code>shippingAddress</code> field of the <a><code>Checkout</code></a> object with
+        the user's selected shipping address.
+      </p>
+      <div class="issue" data-number="28" title="Write-up proposal for shipping address fields">
+        The fields of the <a><code>ShippingAddress</code></a> interface are
+        yet to be defined.
+      </div>
+      <div class="issue" data-number="16" title="Merchant requesting arbitrary data from the UA">
+        There is an open question about what data beyond shipping address the merchant might be able
+        to request from the <a>user agent</a>. For example, billing address, contact phone number, e-mail
+        address, or proof of age.
+      </div>
+    </section>
+
+    <section>
+      <h2>ShippingOption interface</h2>
+      <pre class="idl">
+        dictionary ShippingOption {
+          string id;
+          string label;
+          CurrencyAmount amount;
+        };
+      </pre>
+      <p>
+        The <a>ShippingOption</a> dictionary has fields describing a shipping option. A web page can
+        provide the user with one or more shipping options by calling the <a>updateCheckout</a>
+        method in response to a change event.
+      </p>
+      <p>
+        The following fields MUST be included in a <code>PaymentItem</code> for it to be valid:
+      </p>
+      <dl>
+        <dt><code>id</code></dt>
+        <dd>This is a string identifier used to reference this <code>ShippingOption</code>. It MUST be
+        unique for a given <a><code>Checkout</code></a>.</dd>
+        <dt><code>label</code></dt>
+        <dd>This is a human-readable description of the item. The <a>user agent</a> SHOULD use this
+        string to display the shipping option to the user.</dd>
+        <dt><code>amount</code></dt>
+        <dd>
+          A <a><code>CurrencyAmount</code></a> containing the monetary amount for the item.
+        </dd>
+      </dl>
+    </section>
+
+    <section>
+      <h2>Events</h2>
+
+      <section class="informative">
+        <h2>Summary</h2>
+
+        <table>
+          <tr><th>Event name</th><th>Interface</th><th>Dispatched when...</th></tr>
+          <tr>
+            <td><code>shippingaddresschange</code></td>
+            <td><a>CheckoutUpdateEvent</a></td>
+            <td>The user provides a new shipping address.</td>
+          </tr>
+        </table>
+      </section>
+
+    </section>
+
+    <section>
+      <h2>Algorithms</h2>
+
+      <p class="issue">This entire section is out of date and needs to be updated if the approach above is deemed useful by the WG.</p>
+
+      <p>When the <a><code>Checkout</code></a> object is in the <code>interactive</code> state,
+      the <a>user agent</a> will trigger the following algorithms based on user interaction.</p>
+
+      <section>
+        <h2>Shipping address changed algorithm</h2>
+        <p>
+          The <dfn>shipping address changed algorithm</dfn> runs when the user provides a new shipping
+          address. It MUST run the following steps:
+        </p>
+        <ol>
+          <li>Let <em>request</em> be the <a><code>Checkout</code></a> object that the user is
+          interacting with.</li>
+          <li>Let <em>name</em> be <code><dfn>shippingaddresschange</dfn></code>.</li>
+          <li>
+            Set the <a><code>shippingAddress</code></a> attribute on <em>request</em> to the
+            shipping address provided by the user.
+          </li>
+          <li>
+            Run the <a>Checkout updated algorithm</a> with <em>request</em> and <em>name</em>.
+          </li>
+        </ol>
+      </section>
+
+      <section>
+        <h2>User agent delegates payment request algorithm</h2>
+
+        <p>
+          The <a><code>Checkout</code></a> interface allows a web page to call <code>abort</code>
+          to tell the <a>user agent</a> to abort the payment request and to tear down any user interface that
+          might be shown. For example, a web page may choose to do this the goods they are selling are
+          only available for a limited amount of time. If the user does not accept the payment request
+          within the allowed time period, then the request will be aborted.
+        </p>
+        <p>
+          A <a>user agent</a> may not always be able to abort a request. For example, if the <a>user agent</a>
+          has delegated responsibility for the request to another app. To support this situation,
+          the <a>user agent</a> must run the <dfn>User agent delegates payment request algorithm</dfn>.
+          The algorithm MUST run the following steps:
+        </p>
+
+        <ol>
+          <li>
+            Let <em>request</em> be the <a><code>Checkout</code></a> object that the user is
+            interacting with.
+          </li>
+          <li>
+            If the <em>updating</em> flag on <em>request</em> is <em>true</em>, then terminate this
+            algorithm and take no further action. The <a>user agent</a> user interface should ensure
+            that this never occurs.
+          </li>
+          <li>
+            If the <a><code>state</code></a> of <em>request</em> is not <code>interactive</code>,
+            then terminate this algorithm and take no further action. The <a>user agent</a> user
+            interface should ensure that this never occurs.
+          </li>
+          <li>
+            Set the <a><code>state</code></a> of <em>request</em> to <code>delegated</code>.
+          </li>
+        </ol>
+
+        <div class="issue" data-number="33" title="Should we support a delegated state for Checkout?">
+          <p>We believe there are <a>user agent</a> configurations that can cause the UI to get into a state
+          where cancellation by the web page during user interaction is difficult. Users should still
+          be able to cancel the payment but script will not be able to. We need to investigate in more
+          detail the consequences of this and whether it is really needed.</p>
+          <p>If we specify <code>delegated</code> then it isn't necessary for all <a>user agents</a> to be
+          able to move to this state but it would be necessary for all payment flows that wish to call
+          <a><code>abort</code></a> to account for the situation where this may fail in the <code>delegated</code>
+          state.</p>
+        </div>
+      </section>
+
+      <section>
+        <h2>User accepts the payment request algorithm</h2>
+        <p>
+          The <dfn data-lt="user accepts the payment request">user accepts the payment request
+          algorithm</dfn> runs when the user accepts the payment request and confirms that they want
+          to pay. It MUST run the following steps:
+        </p>
+        <ol>
+          <li>
+            Let <em>request</em> be the <a><code>Checkout</code></a> object that the user is
+            interacting with.
+          </li>
+          <li>
+            If the <em>updating</em> flag on <em>request</em> is <em>true</em>, then terminate this
+            algorithm and take no further action. The <a>user agent</a> user interface should ensure
+            that this never occurs.
+          </li>
+          <li>
+            If the <a><code>state</code></a> of <em>request</em> is not <code>interactive</code> and
+            the not <code>delegated</code>, then terminate this algorithm and take no further action.
+            The <a>user agent</a> user interface should ensure that this never occurs.
+          </li>
+          <li>
+            If the <code>requestShipping</code> value of <em>options</em> stored in <em>request</em>
+            is <code>true</code>, then if the <code>shippingAddress</code> attribute of <em>request</em>
+            is <code>null</code> or if the <code>shippingOption</code> attribute of <em>request</em>
+            is <code>null</code>, then terminate this algorithm and take no further action. This should
+            never occur.
+          </li>
+          <li>
+            Let <em>response</em> be a new <a><code>PaymentResponse</code></a>.
+          </li>
+          <li>
+            Set the <code>methodName</code> attribute value of <em>response</em> to the <a>payment method identifier</a>
+            for the <a>payment method</a> that the user selected to accept the payment.
+          </li>
+          <li>
+            Set the <code>details</code> attribute value of <em>response</em> to a <a>JSON object</a>
+            containing the <a>payment method</a> specific message used by the merchant to process
+            the transaction.
+          </li>
+          <li>
+            Set the <a><code>state</code></a> of <em>request</em> to <code>accepted</code>.
+          </li>
+          <li>
+            Resolve the pending <a><em>acceptPromise</em></a> for the <em>request</em> that was returned
+            by the <a><code>send</code></a> method call that started the payment request.
+          </li>
+        </ol>
+      </section>
+    </section>
+
+  </body>
+</html>
