@@ -329,7 +329,7 @@ The <a>payer</a> navigates to a <a>payment app</a> provider website
       <li>
 During sign up, the <code>navigator.payment.registerApp()</code> call is made
 to register a <a>payment app</a>:
-      <pre class="example" title="Example of a payment app registration">
+      <pre class="example highlight" title="Example of a payment app registration">
 var app = {
   id: 'https://bank.example.com/app/',
   type: 'PaymentApp',
@@ -382,7 +382,7 @@ The <a>payer</a> finds an item to buy and initiates the payment flow
       <li>
 The <a>payee</a> application generates a signed payment request that
 contains enough information to process the payment:
-      <pre class="example" title="Example of a payment request">
+      <pre class="example highlight" title="Example of a payment request">
 var request = {
   type: 'PaymentRequest',
   description: 'Payment to ExampleMerch for widgets',
@@ -446,7 +446,7 @@ request has completed successfully (or has failed). The <a>payment app</a>
 resolves the Promise that the <a>payer</a>'s web application is waiting on
 by calling <code>navigator.payment.acknowledge</code> and passing the
 payment acknowledgement message.
-        <pre class="example" title="Example of a payment acknowledgement">
+        <pre class="example highlight" title="Example of a payment acknowledgement">
 // Web-based payment app gets request via `getPendingRequest`
 navigator.payment.getPendingRequest().then(function(paymentRequest) {
   // process payment request ...
@@ -487,8 +487,8 @@ result of the payment.
   </p>
 
   <p>This API provides a clean mechanism that enables developers to
-    initiate payments in a User Agent.
-    A conformant payment agent MUST implement the entirety of the
+    initiate payments in a user agent.
+    A conformant user agent MUST implement the entirety of the
     following API.</p>
 
   <section>
@@ -509,51 +509,54 @@ interface PaymentApplication {
       </pre>
 
       <p>
-A <a><code>PaymentApplication</code></a> describes a <a>payment app</a>.
+A <a><code>PaymentApplication</code></a> describes a <a>payment app</a>,
+primarily for the purposes of registration.
       </p>
       <dl>
         <dt><code>id</code></dt>
         <dd>
 A URL identifier for the <a>payment app</a> that will be used by the
 implementation to differentiate one payment application from another. For
-example: <code>https://bank.example.com/generic-brand-rewards-card</code>
+example: <code>"https://bank.example.com/generic-brand-rewards-app"</code>
         </dd>
         <dt><code>type</code></dt>
         <dd>
-An type identifier associated with the object, typically set to
-<code>PaymentApplication</code>. The set of available types MAY be extended
-in the future to add things like <code>OfflineApplication</code> to identify
+A type identifier associated with the object, typically set to
+<code>"PaymentApplication"</code>. The set of available types MAY be extended
+in the future to add things like <code>"OfflineApplication"</code> to identify
 payment applications that are capable of running in an offline mode.
         </dd>
         <dt><code>name</code></dt>
         <dd>
 Human readable text that will be used to identify the payment application.
 This text MAY be displayed to the <a>payer</a> in a <a>payment app</a>
-selection interface. For example, <code>Red Bank Visa Card</code>.
+selection interface. For example, <code>"Red Bank Visa Card"</code>.
         </dd>
         <dt><code>image</code></dt>
         <dd>
-A brand image or logo associated of the payment application. This image
-MAY be displayed to the <a>payer</a> in a <a>payment app</a> selection
-interface.
+A URL to a brand image or logo associated of the payment application. This
+image MAY be displayed to the <a>payer</a> in a <a>payment app</a> selection
+interface. For example:
+<code>"https://bank.example.com/generic-brand-rewards-app.png"</code>
         </dd>
         <dt><code>url</code></dt>
         <dd>
 The target URL for the <a>PaymentRequest</a>. This URL should be capable of
 processing a pending payment request, generating a payment acknowledgement,
-and responding with the final result.
+and responding with the final result. For example:
+<code>"https://bank.example.com/web-payments"</code>
         </dd>
         <dt><code>supportedPaymentMethod</code></dt>
         <dd>
 One or more payment method identifiers, which may be simple strings or URLs.
-For example, <code>VisaLegacy</code> or
-<code>https://newnetwork.example.com/methods/SuperCard</code>
+For example, <code>"VisaLegacy"</code> or
+<code>"https://newnetwork.example.com/methods/SuperCard"</code>
         </dd>
       </dl>
 
-      <pre class="example">
+      <pre class="example highlight">
 var app = {
-  id: 'https://bank.example.com/generic-brand-rewards-card',
+  id: 'https://bank.example.com/generic-brand-rewards-app',
   type: 'PaymentApplication',
   name: 'ExampleBank App',
   image: 'https://bank.example.com/icons/app.png',
@@ -584,22 +587,22 @@ by a <a>payee</a>.
         <dt><code>type</code></dt>
         <dd>
 An type identifier associated with the object, typically set to
-<code>PaymentRequest</code>. The set of available types MAY be extended
-in the future to add things like <code>SubscriptionRequest</code> to identify
+<code>"PaymentRequest"</code>. The set of available types MAY be extended
+in the future to add things like <code>"SubscriptionRequest"</code> to identify
 payment requests that may have some recurring quality to them.
         </dd>
         <dt><code>description</code></dt>
         <dd>
 A human-readable description of the reason the payment request was initiated.
 This text MAY be displayed to the <a>payer</a> in a payment interface.
-For example, <code>Payment for widgets from Acme Anvil Emporium</code>.
+For example, <code>"Payment for widgets from Acme Anvil Emporium"</code>.
         </dd>
         <dt><code>acceptablePayment</code></dt>
         <dd>
 One or more ways that the <a>payee</a> can accept payment for the request.
         </dd>
       </dl>
-      <pre class="example">
+      <pre class="example highlight">
 var request = {
   type: 'PaymentRequest',
   description: 'Payment to ExampleMerch for widgets',
@@ -628,8 +631,8 @@ payment request may be fulfilled.
         <dt><code>paymentMethod</code></dt>
         <dd>
 One or more payment method identifiers, which may be simple strings or URLs.
-For example, <code>VisaLegacy</code> or
-<code>https://newnetwork.example.com/methods/SuperCard</code>
+For example, <code>"VisaLegacy"</code> or
+<code>"https://newnetwork.example.com/methods/SuperCard"</code>
 
         </dd>
         <dt><code>paymentAmount</code></dt>
@@ -674,8 +677,8 @@ The string should match the regular expression
       <p>The following example shows how to represent $55.00 US Dollars.</p>
       <pre class="example highlight">
 {
-  "amount" : "55.00"
-  "currency": "USD",
+  amount: "55.00"
+  currency: "USD",
 }
       </pre>
     </section>
@@ -699,15 +702,15 @@ a payment request.
         <dt><code>type</code></dt>
         <dd>
 An type identifier associated with the object, typically set to
-<code>PaymentAcknowledgement</code>. The set of available types MAY be extended
-in the future to add things like <code>Receipt</code> to identify
+<code>"PaymentAcknowledgement"</code>. The set of available types MAY be
+extended in the future to add things like <code>Receipt</code> to identify
 acknowledgements that contain receipt information.
         </dd>
         <dt><code>description</code></dt>
         <dd>
 Human readable text that will be used to identify what the payment was for.
 This text MAY be displayed to the <a>payer</a>. For example,
-<code>Payment to ExampleMerch for widgets</code>.
+<code>"Payment to ExampleMerch for widgets"</code>.
         </dd>
         <dt><code>payment</code></dt>
         <dd>
@@ -720,7 +723,7 @@ payment or display information to the <a>payer</a>.
         </dd>
       </dl>
 
-      <pre class="example">
+      <pre class="example highlight">
 var acknowledgement = {
   type: 'PaymentAcknowledgement',
   description: 'Payment to ExampleMerch for widgets',
@@ -755,8 +758,8 @@ payment method used and the payment amount.
         <dt><code>paymentMethod</code></dt>
         <dd>
 One or more payment method identifiers, which may be simple strings or URLs.
-For example, <code>VisaLegacy</code> or
-<code>https://newnetwork.example.com/methods/SuperCard</code>
+For example, <code>"VisaLegacy"</code> or
+<code>"https://newnetwork.example.com/methods/SuperCard"</code>
         </dd>
         <dt><code>paymentAmount</code></dt>
         <dd>
@@ -764,7 +767,7 @@ The <code>FinancialAmount</code> associated with the payment.
         </dd>
       </dl>
 
-      <pre class="example">
+      <pre class="example highlight">
 var payment = {
   paymentMethod: 'https://w3id.org/payment-methods#Visa',
   paymentAmount: {
@@ -855,7 +858,8 @@ In general, the WebIDL descriptions provided in this specification outline
 the specific interfaces, properties, and values that an implementation MAY
 depend on. It is expected that other properties and values will be stored in
 objects that implement the various interfaces in this specification (e.g.
-PaymentApp, PaymentRequest, PaymentAcknowledgement, etc.). Implementations MUST
+<a>PaymentApplication</a>, <a>PaymentRequest</a>,
+<a>PaymentAcknowledgement</a>, etc.). Implementations MUST
 preserve unrecognized properties and their associated values.
   </p>
 
@@ -868,8 +872,10 @@ does assert that extensibility MUST be possible.
     <h3>Extending Messages Using JSON-LD</h3>
 
     <p>
-The interfaces (e.g. PaymentApp, PaymentRequest, PaymentAcknowledgement, etc.)
-in this specification are designed to optionally accept JSON-LD objects. In
+The interfaces in this specification (e.g.
+<a>PaymentApplication</a>, <a>PaymentRequest</a>,
+<a>PaymentAcknowledgement</a>, etc.)
+are designed to optionally accept JSON-LD objects. In
 order to ensure a JSON-LD object can be passed to the API properly, the
 following transformation MUST be applied:
     </p>
@@ -891,10 +897,10 @@ Pass the resulting object to the API.
     <p>
 Any application receiving an interface from the API can similarly interpret
 it as a JSON-LD object. In this case, the application MUST ensure that if the
-<code>@context</code> property exists, that the value associated is
+<code>@context</code> property exists and that the value associated is
 <code>"https://w3id.org/payments/v1"</code>. If the <code>@context</code>
-does not exist, the object can be assumed to have a <code>@context</code>
-of <code>"https://w3id.org/payments/v1"</code>.
+does not exist, it MUST be assumed that the object has a <code>@context</code>
+property with the value of <code>"https://w3id.org/payments/v1"</code>.
     </p>
 
   <p class="issue">
@@ -916,7 +922,7 @@ It is possible to sign any JSON-LD based message by using
 Linked Data Signatures, like so:
     </p>
 
-    <pre class="example" title="Example of a signed payment acknowledgement">
+    <pre class="example highlight" title="Example of a signed payment acknowledgement">
 // generate acknowledgement
 var acknowledgement = {
   type: 'PaymentAcknowledgement',
@@ -950,7 +956,7 @@ Multiple types of <a>payment app</a>s, each supporting multiple types of
 <a>payment method</a>s and <a>payment instrument</a>s may be supported using
 this approach:
   </p>
-  <pre class="example" title="Example of Bitcoin App registration">
+  <pre class="example highlight" title="Example of Bitcoin App registration">
 var app = {
   id: 'https://bitcoin-wallet.example.com/app/',
   type: 'PaymentApp',
@@ -978,7 +984,7 @@ promise.then(function(result) {
 Multiple acceptable payments may be collected into a single payment request.
   </p>
 
-  <pre class="example" title="Example of a complex payment request">
+  <pre class="example highlight" title="Example of a complex payment request">
 var request = {
   type: 'PaymentRequest'
   description: 'Payment to ExampleMerch for Widget 1'
