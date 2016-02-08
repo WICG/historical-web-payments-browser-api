@@ -383,7 +383,7 @@ var checkout = new Checkout();
 checkout
   .set('paymentItem', paymentItems)            // send line item estimate to UA
   .request('shippingAddress')                  // request shippingAddress from UA
-  .request('shippingOption', shippingOptions)  // request shippingAddress from UA
+  .request('shippingOption', shippingOptions)  // request shippingOption from UA
   .start()                                     // start the checkout UI
   .then(finishCheckout);                       // checkout UI has collected the info
 
