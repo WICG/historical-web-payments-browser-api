@@ -316,35 +316,39 @@ responds with a call to "continue" or a payment request message.
       <p>The following example shows how to construct a <a><code>Checkout</code></a> and begin the
       user interaction:</p>
 
-      <pre id="init-checkout-example" class="example highlight" title="Initiating a normal checkout flow with no upfront shipping options">
-// create checkout
+      <pre id="init-checkout-example" class="example highlight" title="A simple checkout flow">
 var checkout = new Checkout();
 checkout
-  .set('paymentItem', paymentItems)            // send line item estimate to UA
-  .request('shippingAddress')                  // request shippingAddress from UA
-  .start()                                     // start the checkout UI
-  .then(finishCheckout);                       // checkout UI has collected the info
+  .set('paymentItem', paymentItems)  // send line item estimate to UA
+  .start()                           // start the checkout UI
+  .then(finishCheckout);             // checkout UI has collected the info
+
+function finishCheckout(checkoutDetails) {
+  // create a payment request from the checkout details
+  var paymentRequest = customCreatePaymentRequest(checkoutDetails);
+
+  // finish checkout will call `navigator.payment.request` internally
+  checkout.finish(paymentRequest).then(function(acknowledgement) {
+    // handle acknowledgement from payment app
+  });
+}
       </pre>
 
+      <pre id="init-checkout-example" class="example highlight" title="A checkout flow requesting shipping address">
+var checkout = new Checkout();
+checkout
+  .set('paymentItem', paymentItems)  // send line item estimate to UA
+  .request('shippingAddress')        // request shippingAddress from UA
+  .start()                           // start the checkout UI
+  .then(finishCheckout);             // checkout UI has collected the info
 
-      <pre id="finish-checkout-example" class="example highlight" title="Complete a checkout flow by requesting payment">
 function finishCheckout(checkoutDetails) {
-  // got requested checkout data, eg:
-  // checkoutDetails.shippingAddress
-
-  // if desired, call checkout.cancel(); and return
-
-  // if the shipping address is OK, and no shipping option has been picked
-  // yet, request that the user pick a certain shipping option and continue
-  if(isAddressOk(checkoutDetails.shippingAddress) &&
-    !checkoutDetails.shippingOption) {
-    return checkout
-      .request('shippingOption', shippingOptions)
-      .continue().then(finishCheckout);
+  if(!isAddressAcceptable(checkoutDetails.shippingAddress)) {
+    return checkout.cancel('We cannot ship to your address.');
   }
 
-  // if desired, recalculate line item details based on
-  // `checkoutDetails.shippingAddress` and call `send()`
+  // recalculate line item details based on `checkoutDetails.shippingAddress`
+  // and call `send()` so the browser can show the updated info
   // note this could also be done asynchronously
   for(let item of checkoutDetails.items) {
     // new shipping cost
@@ -356,22 +360,110 @@ function finishCheckout(checkoutDetails) {
       item.amount = newTaxAmount(checkoutDetails;
     }
   }
-  // this will schedule the new payment items to be sent once `finish` is
-  // called
   checkout.send('paymentItem', checkoutDetails.items);
 
-  // everything required is present in the checkout details, so build the
-  // payment request and then call finish with it
+  // create a payment request from the checkout details
+  var paymentRequest = customCreatePaymentRequest(checkoutDetails);
 
-  // do some merchant-site specific async stuff to create a payment request
+  checkout.finish(paymentRequest).catch(function(err) {
+    // user clicked "back" to change their shipping address
+    if(err.retryPromise) { // bikeshed name
+      // continue the flow as usual
+      return err.retryPromise.then(finishCheckout);
+    }
+    throw err;
+  }).then(function(acknowledgement) {
+    // handle acknowledgement from payment app
+  });
+}
+      </pre>
+
+      <pre id="init-checkout-example" class="example highlight" title="A checkout flow requesting shipping address and shipping option">
+var checkout = new Checkout();
+checkout
+  .set('paymentItem', paymentItems)            // send line item estimate to UA
+  .request('shippingAddress')                  // request shippingAddress from UA
+  .request('shippingOption', shippingOptions)  // request shippingAddress from UA
+  .start()                                     // start the checkout UI
+  .then(finishCheckout);                       // checkout UI has collected the info
+
+function finishCheckout(checkoutDetails) {
+  if(!isAddressAcceptable(checkoutDetails.shippingAddress)) {
+    return checkout.cancel('We cannot ship to your address.');
+  }
+
+  // recalculate line item details based on `checkoutDetails.shippingAddress`
+  // and `checkoutDetails.shippingOption` call `send()` so the browser can
+  // show the updated info
+  for(let item of checkoutDetails.items) {
+    // new shipping cost
+    if(item.id === 'shipping') {
+      item.amount = newShippingAmount(checkoutDetails);
+    }
+    // new tax amount
+    if(item.id === 'tax') {
+      item.amount = newTaxAmount(checkoutDetails;
+    }
+  }
+  checkout.send('paymentItem', checkoutDetails.items);
+
+  // create a payment request from the checkout details
+  var paymentRequest = customCreatePaymentRequest(checkoutDetails);
+
+  checkout.finish(paymentRequest).catch(function(err) {
+    // user clicked "back" to change their shipping address or option
+    if(err.retryPromise) { // bikeshed name
+      // continue the flow as usual
+      return err.retryPromise.then(finishCheckout);
+    }
+    throw err;
+  }).then(function(acknowledgement) {
+    // handle acknowledgement from payment app
+  });
+}
+      </pre>
+
+      <pre id="init-checkout-example" class="example highlight" title="A checkout flow requesting shipping address and address-dependent shipping option">
+var checkout = new Checkout();
+checkout
+  .set('paymentItem', paymentItems)  // send line item estimate to UA
+  .request('shippingAddress')        // request shippingAddress from UA
+  .start()                           // start the checkout UI
+  .then(finishCheckout);             // checkout UI has collected the info
+
+function finishCheckout(checkoutDetails) {
+  if(!isAddressAcceptable(checkoutDetails.shippingAddress)) {
+    return checkout.cancel('We cannot ship to your address.');
+  }
+
+  // no shipping option has been picked yet, request that the user pick a
+  // certain shipping option based on their address and continue
+  if(!checkoutDetails.shippingOption) {
+    return checkout
+      .request('shippingOption', createShippingOptions(checkoutDetails))
+      .continue().then(finishCheckout);
+  }
+
+  // recalculate line item details based on `checkoutDetails.shippingAddress`
+  // and `checkoutDetails.shippingOption` call `send()` so the browser can
+  // show the updated info
+  for(let item of checkoutDetails.items) {
+    // new shipping cost
+    if(item.id === 'shipping') {
+      item.amount = newShippingAmount(checkoutDetails);
+    }
+    // new tax amount
+    if(item.id === 'tax') {
+      item.amount = newTaxAmount(checkoutDetails;
+    }
+  }
+  checkout.send('paymentItem', checkoutDetails.items);
+
+  // asynchronously create a payment request from the checkout details
   customCreatePaymentRequest(checkoutDetails).then(function(paymentRequest) {
-    // complete, the checkout.finish() call invokes
-    // `navigator.payment.request(paymentRequest)` internally
     return checkout.finish(paymentRequest);
   }).catch(function(err) {
-    // user did not complete checkout
-    // potentially check `err` for another promise if the user hit "back"
-    // and didn't completely cancel the checkout
+    // user clicked "back" to change their shipping address or option
     if(err.retryPromise) { // bikeshed name
       // continue the flow as usual
       return err.retryPromise.then(finishCheckout);
