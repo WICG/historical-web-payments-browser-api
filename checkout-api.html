@@ -489,14 +489,6 @@ function finishCheckout(checkoutDetails) {
         </ol>
       </section>
 
-      <section>
-        <h2>shippingAddress</h2>
-        <p>
-          <code><dfn>shippingAddress</dfn></code> is populated when the user provides a shipping
-          address. It is <em>null</em> by default.
-        </p>
-      </section>
-
       <div class="issue" data-number="32" title="Should the web page be able to provide status information before calling complete()">
       There is an open issue about whether there should be a way for a merchant to keep the user
       informed about the progress of a transaction after the user approves the payment request.
@@ -530,9 +522,15 @@ dictionary CheckoutDetails {
           responsibility of the calling code to ensure that the total amount is the sum of the
           preceding items. The <a>user agent</a> MAY not validate that this is true.
         </dd>
+        <dt><code>shippingAddress</code></dt>
+        <dd>
+          The shipping address that the user selected. If the shipping address
+          is <code>null</code>, then this indicates that the user has not yet
+          selected a shipping address.
+        </dd>
         <dt><code>shippingOption</code></dt>
         <dd>
-          The shipping option that the user selected. <p>If the option is
+          The shipping option that the user selected. If the option is
           <code>null</code>, then this indicates that the user has not yet
           selected a shipping option.
         </dd>
