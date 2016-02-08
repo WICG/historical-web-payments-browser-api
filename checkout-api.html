@@ -239,87 +239,141 @@
       <pre class="idl">
 [Constructor]
 interface Checkout {
-  Promise&lt;Checkout&gt; send((PaymentItem or sequence &lt;PaymentItem&gt;) purchaseInfo);
-  Promise&lt;Checkout&gt; request(DOMString payerInfo, optional sequence &lt;ShippingOption&gt; options);
-  Promise&lt;Checkout&gt; start();
+  Checkout send(DOMString itemType, optional sequence &lt;CheckoutItem&gt; items);
+  Checkout request(DOMString optionType, optional sequence &lt;CheckoutOption&gt; options);
+  Promise&lt;CheckoutDetails&gt; start();
+  Promise&lt;CheckoutDetails&gt; continue();
   Promise cancel(DOMString reason);
   Promise finish(PaymentRequest request);
 };
       </pre>
 
       <p>
-This API allows merchants to collect the information they need to create a payment request message but keeps the users in the same seamless, in-browser checkout process. It will let a merchant site specify a line item estimate (if necessary) and request a number of pieces of information, such as a shipping address, that it needs before it can prepare the payment request message. Once the merchant site has specified the information it needs, it tells the browser to start the checkout process and waits for a promise to resolve.
+This API allows merchants to collect the information they need to create a
+payment request message but keeps the users in the same seamless, in-browser
+checkout process. It will let a merchant site specify a line item estimate
+(if necessary) and request a number of pieces of information, such as a shipping
+address, that it needs before it can prepare the payment request message. Once
+the merchant site has specified the information it needs, it tells the browser
+to start the checkout process and waits for a promise to resolve.
       </p>
 
       <p>
-The browser then opens a UI to take the user through the checkout process. Once the user has made all of their selections, the user (for example) clicks a button to see their total. Upon clicking, the promise the merchant was waiting on resolves with the requested information and the in-browser UI will wait for the merchant site to call "finish" with the payment request message (which can be generated asynchronously if desired). The merchant can also call "cancel" instead.
+The browser then opens a UI to take the user through the checkout process. Once
+the user has made all of their selections, the user (for example) clicks a
+button to see their total. Upon clicking, the promise the merchant was waiting
+on resolves with the requested information and the in-browser UI will wait for
+the merchant site to call "finish" with the payment request message (which can
+be generated asynchronously if desired). The merchant can also call "cancel"
+instead. Sometimes the merchant may need to request information piecemeal; for
+example, the merchant may need to request a shipping address before a set of
+shipping options can be provided for the user to select from. In this case,
+the merchant may request that the user select from a list of shipping options
+and then call "continue", which will return a Promise that the merchant site
+can wait for, just like when calling "start". Then, once the Promise resolves,
+the merchant can finally call "finish".
       </p>
 
       <p>
-Once finish is called, it internally calls navigator.payment.request(paymentRequest) and returns a promise, which will resolve to an error or a payment acknowledgement. This causes the in-browser UI to show the price and payment app selection screen, just like it would have if called independently. If the user selects a payment app and completes their payment, the merchant site will receive a payment acknowledgement via the resolved promise, otherwise, it will receive an error.
+Once finish is called, it internally calls navigator.payment.request(paymentRequest)
+and returns a promise, which will resolve to an error or a payment
+acknowledgement. This causes the in-browser UI to show the price and payment
+app selection screen, just like it would have if called independently. If the
+user selects a payment app and completes their payment, the merchant site will
+eceive a payment acknowledgement via the resolved promise, otherwise, it will
+receive an error.
       </p>
 
       <p class="issue">
-Note: If a "back" feature for the in-browser UI is desirable at this point, one option is to return a promise in the error that can be waited on, again, to resolve once the user is ready for the merchant site to generate the payment request message based on their changes.
+Note: If a "back" feature for the in-browser UI is desirable at this point,
+one option is to return a promise in the error that can be waited on, again, to
+resolve once the user is ready for the merchant site to generate the payment
+request message based on their changes.
       </p>
 
       <p class="issue">
-This API can be used to give merchant sites a full, in-browser, checkout experience, but builds on top of the navigator.payment.request API. It could also be modified (internally) to build on top of other future APIs that expose simple, low-level mechanisms for independently requesting things like shipping address or other "identity credentials/verifiable claims" (this is aimed at supporting The Extensible Web Manifesto approach). These APIs are not yet exposed as low-level APIs, but this approach is an attempt to do some future proofing should they be standardized at some point.
+This API can be used to give merchant sites a full, in-browser, checkout
+experience, but builds on top of the navigator.payment.request API. It could
+also be modified (internally) to build on top of other future APIs that expose
+simple, low-level mechanisms for independently requesting things like shipping
+address or other "identity credentials/verifiable claims" (this is aimed at
+supporting The Extensible Web Manifesto approach). These APIs are not yet
+exposed as low-level APIs, but this approach is an attempt to do some future
+proofing should they be standardized at some point.
       </p>
 
       <p class="issue">
-This API is also designed so that the flow occurs in a straightforward, deterministic way. It intentionally avoids events and exposing state management to the merchant site. The merchant site does not have to deal with multiple events coming from the in-browser UI and the subsequent management of any asynchronous work it generates. Rather, once the user has made their selections and chosen all of the necessary information, it will be informed. The in-browser UI will not allow further action until the merchant site responds with a payment request message.
+This API is also designed so that the flow occurs in a straightforward,
+deterministic, singular way. It intentionally avoids events and exposing state
+management to the merchant site. The merchant site does not have to deal with
+multiple events coming from the in-browser UI and the subsequent management of
+any asynchronous work it generates. Rather, once the user has made their
+selections and chosen all of the necessary information, it will be informed.
+The in-browser UI will not allow further action until the merchant site
+responds with a call to "continue" or a payment request message.
       </p>
 
       <p>The following example shows how to construct a <a><code>Checkout</code></a> and begin the
       user interaction:</p>
 
-      <pre id="init-checkout-example" class="example highlight" title="Initiating a normal checkout flow">
+      <pre id="init-checkout-example" class="example highlight" title="Initiating a normal checkout flow with no upfront shipping options">
 // create checkout
 var checkout = new Checkout();
 checkout
-  .send(items, recalculateShipping) // send line item estimate to UI and recalculate if shipping options change
-  .request('shippingOption', shippingOptions) // request UI collect shippingOption
-  .request('shippingAddress')  // requests UI collect shippingAddress
-  .request('somethingElse')    // requests UI collect something else
-  .start()                     // start the checkout UI
-  .then(finishCheckout);       // checkout UI has collected the info
+  .set('paymentItem', paymentItems)            // send line item estimate to UA
+  .request('shippingAddress')                  // request shippingAddress from UA
+  .start()                                     // start the checkout UI
+  .then(finishCheckout);                       // checkout UI has collected the info
       </pre>
 
-      <pre id="recalculate-shipping-example" class="example highlight" title="Recalculate line items based on shipping option or address change">
-function recalculateShipping(checkoutDetails) {
-  // recalculate line items based on checkout details like shipping address
-  for(let item of checkoutDetails.items) {
-    // new shipping cost
-    if(item.id === 'shipping') {
-      item.amount = newShippingAmount;
-    }
-    // new tax amount
-    if(item.id === 'tax') {
-      item.amount = newTaxAmount;
-    }
-  }
-};
-      </pre>
 
       <pre id="finish-checkout-example" class="example highlight" title="Complete a checkout flow by requesting payment">
 function finishCheckout(checkoutDetails) {
   // got requested checkout data, eg:
   // checkoutDetails.shippingAddress
 
-  // if desired, instead call checkout.cancel();
+  // if desired, call checkout.cancel(); and return
 
-  // do some async stuff to build a payment request
-  // note that the merchant site writes this
-  // 'buildPaymentRequest' method
-  buildPaymentRequest(checkoutDetails).then(function(paymentRequest) {
+  // if the shipping address is OK, and no shipping option has been picked
+  // yet, request that the user pick a certain shipping option and continue
+  if(isAddressOk(checkoutDetails.shippingAddress) &&
+    !checkoutDetails.shippingOption) {
+    return checkout
+      .request('shippingOption', shippingOptions)
+      .continue().then(finishCheckout);
+  }
+
+  // if desired, recalculate line item details based on
+  // `checkoutDetails.shippingAddress` and call `send()`
+  // note this could also be done asynchronously
+  for(let item of checkoutDetails.items) {
+    // new shipping cost
+    if(item.id === 'shipping') {
+      item.amount = newShippingAmount(checkoutDetails);
+    }
+    // new tax amount
+    if(item.id === 'tax') {
+      item.amount = newTaxAmount(checkoutDetails;
+    }
+  }
+  // this will schedule the new payment items to be sent once `finish` is
+  // called
+  checkout.send('paymentItem', checkoutDetails.items);
+
+  // everything required is present in the checkout details, so build the
+  // payment request and then call finish with it
+
+  // do some merchant-site specific async stuff to create a payment request
+  customCreatePaymentRequest(checkoutDetails).then(function(paymentRequest) {
     // complete, the checkout.finish() call invokes
     // `navigator.payment.request(paymentRequest)` internally
     return checkout.finish(paymentRequest);
   }).catch(function(err) {
     // user did not complete checkout
-    // potentially check `err` for another promise if they didn't fully cancel
+    // potentially check `err` for another promise if the user hit "back"
+    // and didn't completely cancel the checkout
     if(err.retryPromise) { // bikeshed name
+      // continue the flow as usual
       return err.retryPromise.then(finishCheckout);
     }
     throw err;
@@ -332,7 +386,8 @@ function finishCheckout(checkoutDetails) {
       <section>
         <h2>send()</h2>
         <p>
-          The <code><dfn>send</dfn></code> method is ...
+          The <code><dfn>send</dfn></code> method queues checkout items to
+          send to the user agent, typically for display.
         </p>
 
         <p>
@@ -348,7 +403,8 @@ function finishCheckout(checkoutDetails) {
       <section>
         <h2>request()</h2>
         <p>
-          The <code><dfn>request</dfn></code> method is ...
+          The <code><dfn>request</dfn></code> method requests information
+          from the user agent that is required to create the payment request.
         </p>
 
         <p>
@@ -367,7 +423,37 @@ function finishCheckout(checkoutDetails) {
           The <code><dfn>start</dfn></code> method must ...
         </p>
 
+        <p>The <a><code>start</code></a> call returns a Promise that
+        resolves to a <a><code>CheckoutDetails</code></a> dictionary. If enough
+        information is present in the details to perform a payment request, a
+        web site creates the payment request and calls <a><code>finish</code></a>.
+        Otherwise, the web site may request more information by calling
+        <a><code>request</code></a> followed by <a><code>continue</code></a>.
+        </p>
+
         <p>The <a><code>start</code></a> method MUST act as follows:</p>
+        <ol>
+          <li>
+            ...
+          </li>
+        </ol>
+      </section>
+
+      <section>
+        <h2>continue()</h2>
+        <p>
+          The <code><dfn>continue</dfn></code> method must ...
+        </p>
+
+        <p>The <a><code>continue</code></a> call returns a Promise that
+        resolves to a <a><code>CheckoutDetails</code></a> dictionary. If enough
+        information is present in the details to perform a payment request, a
+        web site creates the payment request and calls <a><code>finish</code></a>.
+        Otherwise, the web site may request more information by calling
+        <a><code>request</code></a> followed by <a><code>continue</code></a>.
+        </p>
+
+        <p>The <a><code>continue</code></a> method MUST act as follows:</p>
         <ol>
           <li>
             ...
@@ -408,13 +494,12 @@ function finishCheckout(checkoutDetails) {
         <p>
           <code><dfn>shippingAddress</dfn></code> is populated when the user provides a shipping
           address. It is <em>null</em> by default.
-          When a user provides a shipping address, the <a>shipping address changed algorithm</a> runs.
         </p>
       </section>
 
       <div class="issue" data-number="32" title="Should the web page be able to provide status information before calling complete()">
       There is an open issue about whether there should be a way for a merchant to keep the user
-      informed about the progress of a tranaction after the user approves the payment request.
+      informed about the progress of a transaction after the user approves the payment request.
       </div>
     </section>
 
@@ -429,9 +514,9 @@ dictionary CheckoutDetails {
       </pre>
 
       <p>
-        The <code><dfn>CheckoutDetails</dfn></code> dictionary is passed to the <a><code>Checkout</code></a>
-        constructor and provides information about the requested transaction. The <code>CheckoutDetails</code>
-        dictionary is also used to update the payment request using <a><code>updateCheckout</code></a>.
+        Promises returned by <a><code>start</code></a> and <a><code>continue</code></a>
+        resolve to a <code><dfn>CheckoutDetails</dfn></code> dictionary. It
+        provides the information requested from the user agent.
       </p>
       <p>
         The following fields are part of the <code>CheckoutDetails</code> dictionary:
@@ -439,32 +524,53 @@ dictionary CheckoutDetails {
       <dl>
         <dt><code>items</code></dt>
         <dd>
-          This sequence of <a><code>PaymentItem</code></a> dictionaries indicates what the payment
-          request is for. The sequence must contain at least one <code>PaymentItem</code>. The last
-          <code>PaymentItem</code> in the sequence represents the total amount of the payment
-          request. It is the responsibility of the calling code to ensure that the total amount is
-          the sum of the preceding items. The <a>user agent</a> MAY not validate that this is true.
+          This sequence of <a><code>PaymentItem</code></a> dictionaries indicates details about
+          what the checkout is for. The sequence must contain at least one <code>PaymentItem</code>. The last
+          <code>PaymentItem</code> in the sequence represents the total payment requested. It is the
+          responsibility of the calling code to ensure that the total amount is the sum of the
+          preceding items. The <a>user agent</a> MAY not validate that this is true.
         </dd>
-        <dt><code>shippingOptions</code></dt>
+        <dt><code>shippingOption</code></dt>
         <dd>
-          A sequence containing the different shipping options that the use may choose from.
-          <p>If the sequence is empty, then this indicates that the merchant
-          cannot ship to the current <a><code>shippingAddress</code></a>.</p>
-          <div class="issue" data-number="2" title="Shipping: should merchant supply supported destinations">
-            <p>We will support shipping restrictions by allowing the web page to call <code>updateCheckout</code>
-            with an empty <code>shippingOptions</code> sequence.</p>
-            <p>We still need to decide how the web page tells the user why they cannot ship to that address.</p>
-          </div>
+          The shipping option that the user selected. <p>If the option is
+          <code>null</code>, then this indicates that the user has not yet
+          selected a shipping option.
         </dd>
+      </dl>
+    </section>
+
+    <section>
+      <h2>CheckoutItem interface</h2>
+      <pre class="idl">
+        dictionary CheckoutItem {
+          string id;
+          string label;
+        };
+      </pre>
+
+      <p>
+        The <a>CheckoutItem</a> dictionary is a base class for other types
+        of items. A web page may supply different types of information to a
+        user agent, typically for display to a user.
+      </p>
+
+      <p>
+        The following fields MUST be included in a <code>CheckoutItem</code> for it to be valid:
+      </p>
+      <dl>
+        <dt><code>id</code></dt>
+        <dd>This is a string identifier used to reference this <code>CheckoutItem</code>. It MUST be
+        unique for a given <a><code>Checkout</code></a>.</dd>
+        <dt><code>label</code></dt>
+        <dd>This is a human-readable description of the item. The <a>user agent</a> SHOULD use this
+        string to display the item to the user.</dd>
       </dl>
     </section>
 
     <section>
       <h2>PaymentItem dictionary</h2>
       <pre class="idl">
-        dictionary PaymentItem {
-          string id;
-          string label;
+        dictionary PaymentItem : CheckoutOption {
           CurrencyAmount amount;
           boolean shipping;
         };
@@ -474,15 +580,10 @@ dictionary CheckoutDetails {
         dictionary to indicate the what the payment request is for and the value asked for.
       </p>
       <p>
-        The following fields MUST be included in a <code>PaymentItem</code> for it to be valid:
+        In addition to the required fields for a <a><code>CheckoutOption</code></a>, the
+        following fields MUST be included in a <code>PaymentItem</code> for it to be valid:
       </p>
       <dl>
-        <dt><code>id</code></dt>
-        <dd>This is a string identifier used to reference this <code>PaymentItem</code>. It MUST be
-        unique for a given <a><code>Checkout</code></a>.</dd>
-        <dt><code>label</code></dt>
-        <dd>This is a human-readable description of the item. The <a>user agent</a> may display
-        this to the user.</dd>
         <dt><code>amount</code></dt>
         <dd>
           A <a><code>CurrencyAmount</code></a> containing the monetary amount for the item.
@@ -530,27 +631,50 @@ dictionary CheckoutDetails {
     </section>
 
     <section>
-      <h2>ShippingOption interface</h2>
+      <h2>CheckoutOption interface</h2>
       <pre class="idl">
-        dictionary ShippingOption {
+        dictionary CheckoutOption {
           string id;
           string label;
+        };
+      </pre>
+
+      <p>
+        The <a>CheckoutOption</a> dictionary is a base class for other types
+        of options. When a web page requests information from a user, it may
+        provide a list of options for the user to select from.
+      </p>
+
+      <p>
+        The following fields MUST be included in a <code>CheckoutOption</code> for it to be valid:
+      </p>
+      <dl>
+        <dt><code>id</code></dt>
+        <dd>This is a string identifier used to reference this <code>CheckoutOption</code>. It MUST be
+        unique for a given <a><code>Checkout</code></a>.</dd>
+        <dt><code>label</code></dt>
+        <dd>This is a human-readable description of the option. The <a>user agent</a> SHOULD use this
+        string to display the option to the user.</dd>
+      </dl>
+    </section>
+
+    <section>
+      <h2>ShippingOption interface</h2>
+      <pre class="idl">
+        dictionary ShippingOption : CheckoutOption {
           CurrencyAmount amount;
         };
       </pre>
       <p>
         The <a>ShippingOption</a> dictionary has fields describing a shipping option. A web page can
-        provide the user with one or more shipping options by calling the <a>updateCheckout</a>
-        method in response to a change event.
+        provide the user with one or more shipping options by calling <a><code>request</code></a>
+        method.
       </p>
       <p>
-        The following fields MUST be included in a <code>PaymentItem</code> for it to be valid:
+        In addition to the required fields for a <a><code>CheckoutOption</code></a>, the
+        following fields MUST be included in a <code>ShippingOption</code> for it to be valid:
       </p>
       <dl>
-        <dt><code>id</code></dt>
-        <dd>This is a string identifier used to reference this <code>ShippingOption</code>. It MUST be
-        unique for a given <a><code>Checkout</code></a>.</dd>
-        <dt><code>label</code></dt>
         <dd>This is a human-readable description of the item. The <a>user agent</a> SHOULD use this
         string to display the shipping option to the user.</dd>
         <dt><code>amount</code></dt>
@@ -590,6 +714,8 @@ dictionary CheckoutDetails {
 
       <section>
         <h2>User agent delegates payment request algorithm</h2>
+
+        <p class="issue">This entire section is out of date and needs to be updated if the approach above is deemed useful by the WG.</p>
 
         <p>
           The <a><code>Checkout</code></a> interface allows a web page to call <code>abort</code>
@@ -639,6 +765,9 @@ dictionary CheckoutDetails {
 
       <section>
         <h2>User accepts the payment request algorithm</h2>
+
+        <p class="issue">This entire section is out of date and needs to be updated if the approach above is deemed useful by the WG.</p>
+
         <p>
           The <dfn data-lt="user accepts the payment request">user accepts the payment request
           algorithm</dfn> runs when the user accepts the payment request and confirms that they want
