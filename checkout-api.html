@@ -316,7 +316,7 @@ responds with a call to "continue" or a payment request message.
       <p>The following examples show various <a><code>Checkout</code></a> flows
       from simple to more complex:</p>
 
-      <pre id="init-checkout-example" class="example highlight" title="A simple checkout flow">
+      <pre id="simple-checkout-example" class="example highlight" title="A simple checkout flow">
 var checkout = new Checkout();
 checkout
   .set('paymentItem', paymentItems)  // send line item estimate to UA
@@ -334,7 +334,7 @@ function finishCheckout(checkoutDetails) {
 }
       </pre>
 
-      <pre id="init-checkout-example" class="example highlight" title="A checkout flow requesting shipping address">
+      <pre id="checkout-request-address-example" class="example highlight" title="A checkout flow requesting shipping address">
 var checkout = new Checkout();
 checkout
   .set('paymentItem', paymentItems)  // send line item estimate to UA
@@ -378,7 +378,7 @@ function finishCheckout(checkoutDetails) {
 }
       </pre>
 
-      <pre id="init-checkout-example" class="example highlight" title="A checkout flow requesting shipping address and shipping option">
+      <pre id="checkout-request-address-and-option-example" class="example highlight" title="A checkout flow requesting shipping address and shipping option">
 var checkout = new Checkout();
 checkout
   .set('paymentItem', paymentItems)            // send line item estimate to UA
@@ -423,7 +423,7 @@ function finishCheckout(checkoutDetails) {
 }
       </pre>
 
-      <pre id="init-checkout-example" class="example highlight" title="A checkout flow requesting shipping address and address-dependent shipping option">
+      <pre id="checkout-request-address-and-dependent-option-example" class="example highlight" title="A checkout flow requesting shipping address and address-dependent shipping option">
 var checkout = new Checkout();
 checkout
   .set('paymentItem', paymentItems)  // send line item estimate to UA
