@@ -319,9 +319,9 @@ responds with a call to "continue" or a payment request message.
       <pre id="simple-checkout-example" class="example highlight" title="A simple checkout flow">
 var checkout = new Checkout();
 checkout
-  .set('paymentItem', paymentItems)  // send line item estimate to UA
-  .start()                           // start the checkout UI
-  .then(finishCheckout);             // checkout UI has collected the info
+  .send('paymentItem', paymentItems)  // send line item estimate to UA
+  .start()                            // start the checkout UI
+  .then(finishCheckout);              // checkout UI has collected the info
 
 function finishCheckout(checkoutDetails) {
   // create a payment request from the checkout details
@@ -337,10 +337,10 @@ function finishCheckout(checkoutDetails) {
       <pre id="checkout-request-address-example" class="example highlight" title="A checkout flow requesting shipping address">
 var checkout = new Checkout();
 checkout
-  .set('paymentItem', paymentItems)  // send line item estimate to UA
-  .request('shippingAddress')        // request shippingAddress from UA
-  .start()                           // start the checkout UI
-  .then(finishCheckout);             // checkout UI has collected the info
+  .send('paymentItem', paymentItems)  // send line item estimate to UA
+  .request('shippingAddress')         // request shippingAddress from UA
+  .start()                            // start the checkout UI
+  .then(finishCheckout);              // checkout UI has collected the info
 
 function finishCheckout(checkoutDetails) {
   if(!isAddressAcceptable(checkoutDetails.shippingAddress)) {
@@ -381,11 +381,11 @@ function finishCheckout(checkoutDetails) {
       <pre id="checkout-request-address-and-option-example" class="example highlight" title="A checkout flow requesting shipping address and shipping option">
 var checkout = new Checkout();
 checkout
-  .set('paymentItem', paymentItems)            // send line item estimate to UA
-  .request('shippingAddress')                  // request shippingAddress from UA
-  .request('shippingOption', shippingOptions)  // request shippingOption from UA
-  .start()                                     // start the checkout UI
-  .then(finishCheckout);                       // checkout UI has collected the info
+  .send('paymentItem', paymentItems)            // send line item estimate to UA
+  .request('shippingAddress')                   // request shippingAddress from UA
+  .request('shippingOption', shippingOptions)   // request shippingOption from UA
+  .start()                                      // start the checkout UI
+  .then(finishCheckout);                        // checkout UI has collected the info
 
 function finishCheckout(checkoutDetails) {
   if(!isAddressAcceptable(checkoutDetails.shippingAddress)) {
@@ -426,10 +426,10 @@ function finishCheckout(checkoutDetails) {
       <pre id="checkout-request-address-and-dependent-option-example" class="example highlight" title="A checkout flow requesting shipping address and address-dependent shipping option">
 var checkout = new Checkout();
 checkout
-  .set('paymentItem', paymentItems)  // send line item estimate to UA
-  .request('shippingAddress')        // request shippingAddress from UA
-  .start()                           // start the checkout UI
-  .then(finishCheckout);             // checkout UI has collected the info
+  .send('paymentItem', paymentItems)  // send line item estimate to UA
+  .request('shippingAddress')         // request shippingAddress from UA
+  .start()                            // start the checkout UI
+  .then(finishCheckout);              // checkout UI has collected the info
 
 function finishCheckout(checkoutDetails) {
   if(!isAddressAcceptable(checkoutDetails.shippingAddress)) {
