@@ -284,6 +284,21 @@ eceive a payment acknowledgement via the resolved promise, otherwise, it will
 receive an error.
       </p>
 
+      <p>
+The checkout flow and how the API is designed around it can be summed up by
+considering the merchant's thought process:
+      </p>
+      <ol>
+        <li>
+          What do I need from the UA to generate a payment request? Ask for it
+          and wait for a response.
+        </li>
+        <li>
+          Do I have everything I need now? If not, ask for more and wait for
+          a response. If I do, generate a payment request and finish the flow.
+        </li>
+      </ol>
+
       <p class="issue">
 Note: If a "back" feature for the in-browser UI is desirable at this point,
 one option is to return a promise in the error that can be waited on, again, to
