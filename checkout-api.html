@@ -568,8 +568,8 @@ dictionary CheckoutDetails {
     <section>
       <h2>PaymentItem dictionary</h2>
       <pre class="idl">
-        dictionary PaymentItem : CheckoutOption {
-          CurrencyAmount amount;
+        dictionary PaymentItem : CheckoutItem {
+          FinancialAmount amount;
           boolean shipping;
         };
       </pre>
@@ -578,13 +578,13 @@ dictionary CheckoutDetails {
         dictionary to indicate the what the payment request is for and the value asked for.
       </p>
       <p>
-        In addition to the required fields for a <a><code>CheckoutOption</code></a>, the
+        In addition to the required fields for a <a><code>CheckoutItem</code></a>, the
         following fields MUST be included in a <code>PaymentItem</code> for it to be valid:
       </p>
       <dl>
         <dt><code>amount</code></dt>
         <dd>
-          A <a><code>CurrencyAmount</code></a> containing the monetary amount for the item.
+          A <a><code>FinancialAmount</code></a> containing the monetary amount for the item.
           <div class="issue" data-number="19" title="Clarity on Currency Conversion">
             There is an open issue about whether there needs to be consideration of differences between
             the currency specified by the merchant for the transaction amount and the currencies that
@@ -660,7 +660,7 @@ dictionary CheckoutDetails {
       <h2>ShippingOption interface</h2>
       <pre class="idl">
         dictionary ShippingOption : CheckoutOption {
-          CurrencyAmount amount;
+          FinancialAmount amount;
         };
       </pre>
       <p>
@@ -677,7 +677,7 @@ dictionary CheckoutDetails {
         string to display the shipping option to the user.</dd>
         <dt><code>amount</code></dt>
         <dd>
-          A <a><code>CurrencyAmount</code></a> containing the monetary amount for the item.
+          A <a><code>FinancialAmount</code></a> containing the monetary amount for the item.
         </dd>
       </dl>
     </section>
