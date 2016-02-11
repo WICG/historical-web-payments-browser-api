@@ -270,8 +270,10 @@ example, the merchant may need to request a shipping address before a set of
 shipping options can be provided for the user to select from. In this case,
 the merchant may request that the user select from a list of shipping options
 and then call "continue", which will return a Promise that the merchant site
-can wait for, just like when calling "start". Then, once the Promise resolves,
-the merchant can finally call "finish".
+can wait for, just like when calling "start". Once a Promise resolves with
+checkout details where the "finished" flag is set to true, the merchant can
+generate a payment request message and pass it to "finish" to complete the
+checkout process.
       </p>
 
       <p>
@@ -377,17 +379,14 @@ function finishCheckout(checkoutDetails) {
   }
   checkout.send('paymentItem', checkoutDetails.items);
 
+  if(!checkoutDetails.finished) {
+    return checkout.continue().then(finishCheckout);
+  }
+
   // create a payment request from the checkout details
   var paymentRequest = customCreatePaymentRequest(checkoutDetails);
 
-  checkout.finish(paymentRequest).catch(function(err) {
-    // user clicked "back" to change their shipping address
-    if(err.retryPromise) { // bikeshed name
-      // continue the flow as usual
-      return err.retryPromise.then(finishCheckout);
-    }
-    throw err;
-  }).then(function(acknowledgement) {
+  checkout.finish(paymentRequest).then(function(acknowledgement) {
     // handle acknowledgement from payment app
   });
 }
@@ -422,17 +421,14 @@ function finishCheckout(checkoutDetails) {
   }
   checkout.send('paymentItem', checkoutDetails.items);
 
+  if(!checkoutDetails.finished) {
+    return checkout.continue().then(finishCheckout);
+  }
+
   // create a payment request from the checkout details
   var paymentRequest = customCreatePaymentRequest(checkoutDetails);
 
-  checkout.finish(paymentRequest).catch(function(err) {
-    // user clicked "back" to change their shipping address or option
-    if(err.retryPromise) { // bikeshed name
-      // continue the flow as usual
-      return err.retryPromise.then(finishCheckout);
-    }
-    throw err;
-  }).then(function(acknowledgement) {
+  checkout.finish(paymentRequest).then(function(acknowledgement) {
     // handle acknowledgement from payment app
   });
 }
@@ -474,16 +470,13 @@ function finishCheckout(checkoutDetails) {
   }
   checkout.send('paymentItem', checkoutDetails.items);
 
+  if(!checkoutDetails.finished) {
+    return checkout.continue().then(finishCheckout);
+  }
+
   // asynchronously create a payment request from the checkout details
   customCreatePaymentRequest(checkoutDetails).then(function(paymentRequest) {
     return checkout.finish(paymentRequest);
-  }).catch(function(err) {
-    // user clicked "back" to change their shipping address or option
-    if(err.retryPromise) { // bikeshed name
-      // continue the flow as usual
-      return err.retryPromise.then(finishCheckout);
-    }
-    throw err;
   }).then(function(acknowledgement) {
     // handle acknowledgement from payment app
   });
@@ -609,6 +602,7 @@ dictionary CheckoutDetails {
   sequence&lt;PaymentItem&gt; items;
   ShippingAddress shippingAddress;
   ShippingOption shippingOption;
+  boolean finished = false;
 };
       </pre>
 
@@ -640,6 +634,14 @@ dictionary CheckoutDetails {
           The shipping option that the user selected. If the option is
           <code>null</code>, then this indicates that the user has not yet
           selected a shipping option.
+        </dd>
+        <dt><code>finished</code></dt>
+        <dd>
+          The finished flag is set to true once the user has clicked a button
+          to complete checkout (eg: a "Buy" button). This flag informs the
+          merchant website that it can now generate a payment request message
+          to finish the checkout process and take the user to the payment
+          app selection screen.
         </dd>
       </dl>
     </section>
