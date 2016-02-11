@@ -925,5 +925,38 @@ dictionary CheckoutDetails {
       </section>
     </section>
 
+<section>
+  <h2>Extensibility</h2>
+
+  <p>
+In general, the WebIDL descriptions provided in this specification outline
+the specific interfaces, properties, and values that an implementation MAY
+depend on. It is expected that other properties and values will be stored in
+objects that implement the various interfaces in this specification (e.g.
+<a>CheckoutDetails</a>, <a>ShippingAddress</a>,
+<a>CheckoutItem</a>, etc.). While this specification does not
+suggest a single extension mechanism, it does assert that
+extensibility MUST be possible. To that end,
+  </p>
+
+  <ul>
+    <li>
+Implementations MUST preserve unrecognized properties and their
+associated values.
+    </li>
+    <li>
+Another specification [LINK_TBD] explains how to extend the
+parameters used with this API using JSON-LD.
+    </li>
+  </ul>
+
+  <p class="issue">
+The Working Group seeks feedback from the Web community on that
+specification and how well it furthers interoperability needs in the
+payments ecosystem. To provide feedback, see the
+<a href="#h-sotd">status section</a> above.
+  </p>
+</section>
+
   </body>
 </html>
