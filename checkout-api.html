@@ -370,11 +370,11 @@ function finishCheckout(checkoutDetails) {
   for(let item of checkoutDetails.items) {
     // new shipping cost
     if(item.id === 'shipping') {
-      item.amount = newShippingAmount(checkoutDetails);
+      item.amount = calcShippingAmount(checkoutDetails);
     }
     // new tax amount
     if(item.id === 'tax') {
-      item.amount = newTaxAmount(checkoutDetails;
+      item.amount = calcTaxAmount(checkoutDetails);
     }
   }
   checkout.send('paymentItem', checkoutDetails.items);
@@ -412,11 +412,11 @@ function finishCheckout(checkoutDetails) {
   for(let item of checkoutDetails.items) {
     // new shipping cost
     if(item.id === 'shipping') {
-      item.amount = newShippingAmount(checkoutDetails);
+      item.amount = calcShippingAmount(checkoutDetails);
     }
     // new tax amount
     if(item.id === 'tax') {
-      item.amount = newTaxAmount(checkoutDetails;
+      item.amount = calcTaxAmount(checkoutDetails);
     }
   }
   checkout.send('paymentItem', checkoutDetails.items);
@@ -461,11 +461,11 @@ function finishCheckout(checkoutDetails) {
   for(let item of checkoutDetails.items) {
     // new shipping cost
     if(item.id === 'shipping') {
-      item.amount = newShippingAmount(checkoutDetails);
+      item.amount = calcShippingAmount(checkoutDetails);
     }
     // new tax amount
     if(item.id === 'tax') {
-      item.amount = newTaxAmount(checkoutDetails;
+      item.amount = calcTaxAmount(checkoutDetails;
     }
   }
   checkout.send('paymentItem', checkoutDetails.items);
