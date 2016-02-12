@@ -344,10 +344,10 @@ var app = {
 
 // register the <a>payment app</a> - at this point, the <a>payee interface</a>
 // asks the person for approval to register the new <a>payment app</a>
-var promise = navigator.payment.registerApp(app);
+var registration = navigator.payment.registerApp(app);
 
 // called when the registration completes
-promise.then(function(result) {
+registration.then(function(result) {
   // app has been registered, do something
 }).catch(function(err) {
   // app has not been registered, do something
@@ -397,10 +397,10 @@ var request = {
 
 // request payment and get a promise that will resolve to
 // a payment acknowledgement
-var promise = navigator.payment.request(request);
+var payment = navigator.payment.request(request);
 
 // called when the payment request has been processed
-promise.then(function(acknowledgement) {
+payment.then(function(acknowledgement) {
   // payment request was at least partially processed, do something with the
   // acknowledgement, such as check its approval code or forward an approval
   // token to actually execute the payment
@@ -990,10 +990,10 @@ var app = {
 
 // register the <a>payment app</a> - at this point, the <a>payee interface</a>
 // asks the person for approval to register the new <a>payment app</a>
-var promise = navigator.payment.registerApp(app);
+var registration = navigator.payment.registerApp(app);
 
 // called when the registration completes
-promise.then(function(result) {
+registration.then(function(result) {
   // app has been registered, do something
 }).catch(function(err) {
   // app has not been registered, do something
@@ -1030,10 +1030,10 @@ var request = {
 
 // request payment and get a promise that will resolve to
 // a payment acknowledgement
-var promise = navigator.payment.request(request);
+var payment = navigator.payment.request(request);
 
 // called when the payment request has been processed
-promise.then(function(acknowledgement) {
+payment.then(function(acknowledgement) {
   // payment request was at least partially processed, do something with the
   // acknowledgement, such as check its approval code or forward an approval
   // token to actually execute the payment
@@ -1055,19 +1055,39 @@ where the user agent stores credit card details and forwards them on
 to a merchant for processing.
   </p>
 
-  <script type='text/jumly+sequence'>
-@found "Payee server (merchant)", ->
-  @message "display offer", "Payer browser (customer)", ->
-    @message "click 'Pay'", "Payee server (merchant)", ->
-      @reply "payment request", "Payer browser (customer)"
-    @message "select payment app", "Payment App", ->
-      @message "select payment instrument (collect PAN, CVV2, address)", "Payment App"
-      @reply "payment acknowledgement", "Payer browser (customer)", ->
-    @reply "payment acknowledgement", "Payee server (merchant)"
-  @message "process payment", "Payee payment processor", ->
-    @reply "funds captured", "Payee server (merchant)"
-  @message "deliver good/service", "Payer browser (customer)"
-  </script>
+  <img width="100%" src="http://www.plantuml.com/plantuml/proxy?fmt=svg&src=https://raw.githubusercontent.com/w3c/webpayments/gh-pages/PaymentFlows/Card/MerchantHosted-CardPayment-Current.pml" />
+
+  <pre id="flows-traditional-card" class="example highlight" title="Implementation of legacy merchant hosted card payment using Web Payments Browser API">
+// Step #1 has already happened at this point
+// Step #2: Press Pay
+//   - generate the payment request
+var req = {
+  type: 'PaymentRequest',
+  description: 'Payment to ExampleMerch for widgets',
+  acceptablePayment: {
+    paymentMethod: 'VisaLegacy',
+    paymentAmount: {
+      amount: '4.35',
+      currency: 'USD'
+    }
+  }
+};
+var payment = navigator.payment.request(req);
+
+// once this is called, Steps #3-#12 are executed by the payment app
+payment.then(function(acknowledgement) {
+  // Step #12: Authorization Result
+  //   - check the payment acknowledgement
+  if(acknowledgement.approvalCode) {
+    // notify the payer that payment was successful
+  } else {
+    // the result wasn't as expected, notify the payer
+  }
+}).catch(function(err) {
+  // Step #12: an error occured
+});
+  </pre>
+
   </section>
 
   <section>
@@ -1077,45 +1097,85 @@ The diagram below outlines a tokenized credit card flow where the token is
 generated via a local mobile wallet application available to the payer.
   </p>
 
-  <script type='text/jumly+sequence'>
-@found "Payee server (merchant)", ->
-  @message "display offer", "Payer browser (customer)", ->
-    @message "click 'Pay'", "Payee server (merchant)", ->
-      @reply "payment request", "Payer browser (customer)"
-    @message "select payment app", "Payment App", ->
-      @message "select payment instrument", "Payment App"
-      @message "tokenization request", "Payer Mobile Wallet", ->
-        @reply "payment token", "Payment App"
-      @reply "payment acknowledgement w/token", "Payer browser (customer)", ->
-    @reply "payment acknowledgement w/token", "Payee server (merchant)"
-  @message "process payment + token", "Payee payment processor", ->
-    @reply "funds captured", "Payee server (merchant)"
-  @message "deliver good/service", "Payer browser (customer)"
-  </script>
+  <img width="100%" src="http://www.plantuml.com/plantuml/proxy?fmt=svg&src=https://raw.githubusercontent.com/w3c/webpayments/gh-pages/PaymentFlows/Card/MerchantHosted-CardPaymentwithTokenisation-Current.pml" />
+
+  <pre id="flows-tokenized-card" class="example highlight" title="Implementation of tokenized card flow using Browser Payments API">
+// Step #1 has already happened at this point
+// Step #2: Press Pay
+//   - generate the payment request
+var req = {
+  type: 'PaymentRequest',
+  description: 'Payment to ExampleMerch for widgets',
+  acceptablePayment: {
+    paymentMethod: 'VisaTokenized',
+    paymentAmount: {
+      amount: '4.35',
+      currency: 'USD'
+    }
+  }
+};
+var payment = navigator.payment.request(req);
+
+// once this is called, Steps #3-#12 are executed by the payment app
+payment.then(function(acknowledgement) {
+  // Step #13: Authorization Result
+  //   - if a token was requested, store it for future payments
+  if(acknowledgement.token) {
+    // store tokenized version of card
+  }
+
+  // process the acknowledgement
+  if(isValid(acknowledgement.approvalCode)) {
+    // the payment operation was successful
+  } else {
+    // deal with partial successes
+  }
+}).catch(function(err) {
+  // Step #13: an error occured
+});
+  </pre>
+
   </section>
 
   <section>
-    <h3>Push Payment</h3>
+    <h3>ISO20022/SEPA Credit Transfer</h3>
   <p>
-The diagram below outlines a traditional push-payment using digital signatures
-to independently verify payment.
+The diagram below show a SEPA Credit Transfer being executed.
   </p>
 
-  <script type='text/jumly+sequence'>
-@found "Payee server (merchant)", ->
-  @message "display offer", "Payer browser (customer)", ->
-    @message "click 'Pay'", "Payee server (merchant)", ->
-      @reply "payment request", "Payer browser (customer)"
-    @message "select payment app", "Payment App", ->
-      @message "select payment instrument", "Payment App"
-      @message "payment request + payment instrument", "Payment Service Provider", ->
-        @message "process request", ->
-          @reply "payment response", "Payment App", ->
-      @reply "payment acknowledgement", "Payer browser (customer)", ->
-    @reply "payment acknowledgement", "Payee server (merchant)"
-  @message "verification", ->
-  @message "deliver good/service", "Payer browser (customer)"
-  </script>
+  <img width="100%" src="http://www.plantuml.com/plantuml/proxy?fmt=svg&src=https://raw.githubusercontent.com/w3c/webpayments/gh-pages/PaymentFlows/CreditTransfer/WebInitiatedSEPACreditTransfer-Current.pml" />
+
+  <pre id="flows-sepa-credit-transfer" class="example highlight" title="Implementation of SEPA Credit Transfer using Browser Payments API">
+// Step #1 has already happened at this point
+// Step #2: Press Pay (on the PSP website)
+//   - generate the payment request
+var req = {
+  type: 'PaymentRequest',
+  description: 'Payment to ExampleMerch for widgets',
+  acceptablePayment: {
+    paymentMethod: 'SepaCreditTransfer',
+    paymentAmount: {
+      amount: '4.35',
+      currency: 'EUR'
+    }
+  }
+};
+var payment = navigator.payment.request(req);
+
+// once this is called, Steps #3-#12 are executed by the payment app
+payment.then(function(acknowledgement) {
+  // Step #13: Payment Notification (Cleared)
+  //   - if a token was requested, store it for future payments
+  if(acknowledgement.status === 'cleared') {
+    // the SEPA payment operation was successful
+  } else {
+    // deal with partial successes
+  }
+}).catch(function(err) {
+  // Step #13: an error occured
+});
+  </pre>
+
   </section>
 
   <section>
@@ -1126,21 +1186,40 @@ cryptocurrency application is available on the same system as the user
 agent.
   </p>
 
-  <script type='text/jumly+sequence'>
-@found "Payee server (merchant)", ->
-  @message "display offer", "Payer browser (customer)", ->
-    @message "click 'Pay'", "Payee server (merchant)", ->
-      @reply "payment request", "Payer browser (customer)"
-    @message "select payment app", "Payment App", ->
-      @message "select payment instrument", "Payment App"
-      @message "process request, cryptographic proof", ->
-      @reply "payment acknowledgement", "Payer browser (customer)", ->
-    @reply "payment acknowledgement", "Payee server (merchant)"
-  @message "cryptographic verification", ->
-  @message "deliver good/service", "Payer browser (customer)"
-  </script>
-  </section>
+  <img width="100%" src="http://www.plantuml.com/plantuml/proxy?fmt=svg&src=https://raw.githubusercontent.com/w3c/webpayments/gh-pages/PaymentFlows/Bitcoin/Basic-Bitcoin-Transfer.pml" />
 
+  <pre id="flows-basic-bitcoin" class="example highlight" title="Implementation of basic Bitcoin payment using Browser Payments API">
+// Step #1 has already happened at this point
+// Step #2: Bitcoin address and requested amount
+//   - generate the payment request
+var req = {
+  type: 'PaymentRequest',
+  description: 'Payment to ExampleMerch for widgets',
+  acceptablePayment: {
+    paymentMethod: 'Bitcoin',
+    paymentAddress: 'bitcoin:175tWpb8K1S7NmH4Zx6rewF9WQrcZv245W',
+    paymentAmount: {
+      amount: '0.00435',
+      currency: 'https://bitcoinfoundation.org/currencies#btc'
+    }
+  }
+};
+var payment = navigator.payment.request(req);
+
+// once this is called, Steps #3-#4 are executed by the payment app
+payment.then(function(acknowledgement) {
+  // Step #5: Notify Payee that transaction has been submitted
+  if(acknowledgement.txid) {
+    // wait for number of transactions to be verified
+  } else {
+    // deal with partial success
+  }
+}).catch(function(err) {
+  // Step #13: an error occured
+});
+  </pre>
+
+  </section>
 
 </section>
 
