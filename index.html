@@ -1164,10 +1164,9 @@ var payment = navigator.payment.request(req);
 
 // once this is called, Steps #3-#12 are executed by the payment app
 payment.then(function(acknowledgement) {
-  // Step #13: Payment Notification (Cleared)
-  //   - if a token was requested, store it for future payments
-  if(acknowledgement.status === 'cleared') {
-    // the SEPA payment operation was successful
+  // Step #13: Payment Notification (initiated)
+  if(acknowledgement.status === 'initiated') {
+    // the SEPA payment initiation operation was successful
   } else {
     // deal with partial successes
   }
