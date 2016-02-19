@@ -1,0 +1,1490 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" typeof="bibo:Document " prefix="bibo: http://purl.org/ontology/bibo/ w3p: http://www.w3.org/2001/02pd/rec54#">
+<head><meta lang="" property="dc:language" content="en">
+    <title>Checkout API</title>
+    <meta charset="utf-8">
+    
+    
+    <style>
+    dt { margin-top: 0.75em; }
+    table { margin-top: 0.75em; border-collapse:collapse; border-style:hidden hidden none hidden }
+    table thead { border-bottom:solid }
+    table tbody th:first-child { border-left:solid }
+    table td, table th { border-left:solid; border-right:solid; border-bottom:solid thin; vertical-align:top; padding:0.2em }
+    li { margin-top: 0.5em; margin-bottom: 0.5em;}
+    </style>
+  <style>/*****************************************************************
+ * ReSpec 3 CSS
+ * Robin Berjon - http://berjon.com/
+ *****************************************************************/
+
+/* --- INLINES --- */
+em.rfc2119 { 
+    text-transform:     lowercase;
+    font-variant:       small-caps;
+    font-style:         normal;
+    color:              #900;
+}
+
+h1 acronym, h2 acronym, h3 acronym, h4 acronym, h5 acronym, h6 acronym, a acronym,
+h1 abbr, h2 abbr, h3 abbr, h4 abbr, h5 abbr, h6 abbr, a abbr {
+    border: none;
+}
+
+dfn {
+    font-weight:    bold;
+}
+
+a.internalDFN {
+    color:  inherit;
+    border-bottom:  1px solid #99c;
+    text-decoration:    none;
+}
+
+a.externalDFN {
+    color:  inherit;
+    border-bottom:  1px dotted #ccc;
+    text-decoration:    none;
+}
+
+a.bibref {
+    text-decoration:    none;
+}
+
+cite .bibref {
+    font-style: normal;
+}
+
+code {
+    color:  #C83500;
+}
+
+/* --- TOC --- */
+.toc a, .tof a {
+    text-decoration:    none;
+}
+
+a .secno, a .figno {
+    color:  #000;
+}
+
+ul.tof, ol.tof {
+    list-style: none outside none;
+}
+
+.caption {
+    margin-top: 0.5em;
+    font-style:   italic;
+}
+
+/* --- TABLE --- */
+table.simple {
+    border-spacing: 0;
+    border-collapse:    collapse;
+    border-bottom:  3px solid #005a9c;
+}
+
+.simple th {
+    background: #005a9c;
+    color:  #fff;
+    padding:    3px 5px;
+    text-align: left;
+}
+
+.simple th[scope="row"] {
+    background: inherit;
+    color:  inherit;
+    border-top: 1px solid #ddd;
+}
+
+.simple td {
+    padding:    3px 10px;
+    border-top: 1px solid #ddd;
+}
+
+.simple tr:nth-child(even) {
+    background: #f0f6ff;
+}
+
+/* --- DL --- */
+.section dd > p:first-child {
+    margin-top: 0;
+}
+
+.section dd > p:last-child {
+    margin-bottom: 0;
+}
+
+.section dd {
+    margin-bottom:  1em;
+}
+
+.section dl.attrs dd, .section dl.eldef dd {
+    margin-bottom:  0;
+}
+
+@media print {
+    .removeOnSave {
+        display: none;
+    }
+}
+</style><style>/* --- EXAMPLES --- */
+div.example-title {
+    min-width: 7.5em;
+    color: #b9ab2d;
+}
+div.example-title span {
+    text-transform: uppercase;
+}
+aside.example, div.example, div.illegal-example {
+    padding: 0.5em;
+    margin: 1em 0;
+    position: relative;
+    clear: both;
+}
+div.illegal-example { color: red }
+div.illegal-example p { color: black }
+aside.example, div.example {
+    padding: .5em;
+    border-left-width: .5em;
+    border-left-style: solid;
+    border-color: #e0cb52;
+    background: #fcfaee;
+}
+
+aside.example div.example {
+    border-left-width: .1em;
+    border-color: #999;
+    background: #fff;
+}
+aside.example div.example div.example-title {
+    color: #999;
+}
+</style><style>/* --- ISSUES/NOTES --- */
+div.issue-title, div.note-title , div.ednote-title, div.warning-title {
+    padding-right:  1em;
+    min-width: 7.5em;
+    color: #b9ab2d;
+}
+div.issue-title { color: #e05252; }
+div.note-title, div.ednote-title { color: #2b2; }
+div.warning-title { color: #f22; }
+div.issue-title span, div.note-title span, div.ednote-title span, div.warning-title span {
+    text-transform: uppercase;
+}
+div.note, div.issue, div.ednote, div.warning {
+    margin-top: 1em;
+    margin-bottom: 1em;
+}
+.note > p:first-child, .ednote > p:first-child, .issue > p:first-child, .warning > p:first-child { margin-top: 0 }
+.issue, .note, .ednote, .warning {
+    padding: .5em;
+    border-left-width: .5em;
+    border-left-style: solid;
+}
+div.issue, div.note , div.ednote,  div.warning {
+    padding: 1em 1.2em 0.5em;
+    margin: 1em 0;
+    position: relative;
+    clear: both;
+}
+span.note, span.ednote, span.issue, span.warning { padding: .1em .5em .15em; }
+
+.issue {
+    border-color: #e05252;
+    background: #fbe9e9;
+}
+.note, .ednote {
+    border-color: #52e052;
+    background: #e9fbe9;
+}
+
+.warning {
+    border-color: #f11;
+    border-right-width: .2em;
+    border-top-width: .2em;
+    border-bottom-width: .2em;
+    border-style: solid;
+    background: #fbe9e9;
+}
+
+.warning-title:before{
+    content: "⚠"; /*U+26A0 WARNING SIGN*/
+    font-size: 3em;
+    float: left;
+    height: 100%;
+    padding-right: .3em;
+    vertical-align: top;
+    margin-top: -0.5em;
+}
+
+li.task-list-item {
+    list-style: none;
+}
+
+input.task-list-item-checkbox {
+    margin: 0 0.35em 0.25em -1.6em;
+    vertical-align: middle;
+}
+</style><style>/* HIGHLIGHTS */
+code.prettyprint {
+    color:  inherit;
+}
+
+/* this from google-code-prettify */
+.pln{color:#000}@media screen{.str{color:#080}.kwd{color:#008}.com{color:#800}.typ{color:#606}.lit{color:#066}.pun,.opn,.clo{color:#660}.tag{color:#008}.atn{color:#606}.atv{color:#080}.dec,.var{color:#606}.fun{color:red}}@media print,projection{.str{color:#060}.kwd{color:#006;font-weight:bold}.com{color:#600;font-style:italic}.typ{color:#404;font-weight:bold}.lit{color:#044}.pun,.opn,.clo{color:#440}.tag{color:#006;font-weight:bold}.atn{color:#404}.atv{color:#060}}ol.linenums{margin-top:0;margin-bottom:0}li.L0,li.L1,li.L2,li.L3,li.L5,li.L6,li.L7,li.L8{list-style-type:none}li.L1,li.L3,li.L5,li.L7,li.L9{background:#eee}
+</style><style>/* --- WEB IDL --- */
+pre.idl {
+    border-top: 1px solid #90b8de;
+    border-bottom: 1px solid #90b8de;
+    padding:    1em;
+    line-height:    120%;
+}
+
+@media print {
+  pre.idl {
+      white-space: pre-wrap;
+  }
+}
+
+pre.idl::before {
+    content:    "WebIDL";
+    display:    block;
+    width:      150px;
+    background: #90b8de;
+    color:  #fff;
+    font-family:    sans-serif;
+    padding:    3px;
+    font-weight:    bold;
+    margin: -1em 0 1em -1em;
+}
+
+.idlType {
+    color:  #ff4500;
+    font-weight:    bold;
+    text-decoration:    none;
+}
+
+/*.idlModule*/
+/*.idlModuleID*/
+/*.idlInterface*/
+.idlInterfaceID, .idlDictionaryID, .idlCallbackID, .idlEnumID {
+    font-weight:    bold;
+    color:  #005a9c;
+}
+a.idlEnumItem {
+    color:  #000;
+    border-bottom:  1px dotted #ccc;
+    text-decoration: none;
+}
+
+.idlSuperclass {
+    font-style: italic;
+    color:  #005a9c;
+}
+
+/*.idlAttribute*/
+.idlAttrType, .idlFieldType, .idlMemberType {
+    color:  #005a9c;
+}
+.idlAttrName, .idlFieldName, .idlMemberName {
+    color:  #ff4500;
+}
+.idlAttrName a, .idlFieldName a, .idlMemberName a {
+    color:  #ff4500;
+    border-bottom:  1px dotted #ff4500;
+    text-decoration: none;
+}
+
+/*.idlMethod*/
+.idlMethType, .idlCallbackType {
+    color:  #005a9c;
+}
+.idlMethName {
+    color:  #ff4500;
+}
+.idlMethName a {
+    color:  #ff4500;
+    border-bottom:  1px dotted #ff4500;
+    text-decoration: none;
+}
+
+/*.idlCtor*/
+.idlCtorName {
+    color:  #ff4500;
+}
+.idlCtorName a {
+    color:  #ff4500;
+    border-bottom:  1px dotted #ff4500;
+    text-decoration: none;
+}
+
+/*.idlParam*/
+.idlParamType {
+    color:  #005a9c;
+}
+.idlParamName, .idlDefaultValue {
+    font-style: italic;
+}
+
+.extAttr {
+    color:  #666;
+}
+
+/*.idlSectionComment*/
+.idlSectionComment {
+    color: gray;
+}
+
+/*.idlIterable*/
+.idlIterableKeyType, .idlIterableValueType {
+    color:  #005a9c;
+}
+
+/*.idlMaplike*/
+.idlMaplikeKeyType, .idlMaplikeValueType {
+    color:  #005a9c;
+}
+
+/*.idlConst*/
+.idlConstType {
+    color:  #005a9c;
+}
+.idlConstName {
+    color:  #ff4500;
+}
+.idlConstName a {
+    color:  #ff4500;
+    border-bottom:  1px dotted #ff4500;
+    text-decoration: none;
+}
+
+/*.idlException*/
+.idlExceptionID {
+    font-weight:    bold;
+    color:  #c00;
+}
+
+.idlTypedefID, .idlTypedefType {
+    color:  #005a9c;
+}
+
+.idlRaises, .idlRaises a.idlType, .idlRaises a.idlType code, .excName a, .excName a code {
+    color:  #c00;
+    font-weight:    normal;
+}
+
+.excName a {
+    font-family:    monospace;
+}
+
+.idlRaises a.idlType, .excName a.idlType {
+    border-bottom:  1px dotted #c00;
+}
+
+.excGetSetTrue, .excGetSetFalse, .prmNullTrue, .prmNullFalse, .prmOptTrue, .prmOptFalse {
+    width:  45px;
+    text-align: center;
+}
+.excGetSetTrue, .prmNullTrue, .prmOptTrue { color:  #0c0; }
+.excGetSetFalse, .prmNullFalse, .prmOptFalse { color:  #c00; }
+
+.idlImplements a {
+    font-weight:    bold;
+}
+
+dl.attributes, dl.methods, dl.constants, dl.constructors, dl.fields, dl.dictionary-members {
+    margin-left:    2em;
+}
+
+.attributes dt, .methods dt, .constants dt, .constructors dt, .fields dt, .dictionary-members dt {
+    font-weight:    normal;
+}
+
+.attributes dt code, .methods dt code, .constants dt code, .constructors dt code, .fields dt code, .dictionary-members dt code {
+    font-weight:    bold;
+    color:  #000;
+    font-family:    monospace;
+}
+
+.attributes dt code, .fields dt code, .dictionary-members dt code {
+    background:  #ffffd2;
+}
+
+.attributes dt .idlAttrType code, .fields dt .idlFieldType code, .dictionary-members dt .idlMemberType code {
+    color:  #005a9c;
+    background:  transparent;
+    font-family:    inherit;
+    font-weight:    normal;
+    font-style: italic;
+}
+
+.methods dt code {
+    background:  #d9e6f8;
+}
+
+.constants dt code {
+    background:  #ddffd2;
+}
+
+.constructors dt code {
+    background:  #cfc;
+}
+
+.attributes dd, .methods dd, .constants dd, .constructors dd, .fields dd, .dictionary-members dd {
+    margin-bottom:  1em;
+}
+
+table.parameters, table.exceptions {
+    border-spacing: 0;
+    border-collapse:    collapse;
+    margin: 0.5em 0;
+    width:  100%;
+}
+table.parameters { border-bottom:  1px solid #90b8de; }
+table.exceptions { border-bottom:  1px solid #deb890; }
+
+.parameters th, .exceptions th {
+    color:  #fff;
+    padding:    3px 5px;
+    text-align: left;
+    font-weight:    normal;
+    text-shadow:    #666 1px 1px 0;
+}
+.parameters th { background: #90b8de; }
+.exceptions th { background: #deb890; }
+
+.parameters td, .exceptions td {
+    padding:    3px 10px;
+    border-top: 1px solid #ddd;
+    vertical-align: top;
+}
+
+.parameters tr:first-child td, .exceptions tr:first-child td {
+    border-top: none;
+}
+
+.parameters td.prmName, .exceptions td.excName, .exceptions td.excCodeName {
+    width:  100px;
+}
+
+.parameters td.prmType {
+    width:  120px;
+}
+
+table.exceptions table {
+    border-spacing: 0;
+    border-collapse:    collapse;
+    width:  100%;
+}
+</style><link rel="stylesheet" href="https://www.w3.org/community/src/css/spec/cg-draft.css"><!--[if lt IE 9]><script src='https://www.w3.org/2008/site/js/html5shiv.js'></script><![endif]--><script id="initialUserConfig" type="application/json">{
+  "specStatus": "CG-DRAFT",
+  "shortName": "checkout-api",
+  "editors": [
+    {
+      "name": "TBD",
+      "company": "TBD"
+    }
+  ],
+  "authors": [
+    {
+      "name": "Adrian Bateman",
+      "company": "Microsoft Corporation"
+    },
+    {
+      "name": "Zach Koch",
+      "company": "Google"
+    },
+    {
+      "name": "Dave Longley",
+      "company": "Digital Bazaar"
+    }
+  ],
+  "wg": "Web Platform Incubator Community Group",
+  "wgURI": "https://www.w3.org/community/wicg/",
+  "issueBase": "https://github.com/WICG/web-payments-browser-api/issues/",
+  "localBiblio": {
+    "PAYMENTARCH": {
+      "title": "Payment Request Architecture",
+      "href": "architecture.html",
+      "authors": [
+        "Adrian Bateman"
+      ],
+      "status": "CG-DRAFT"
+    },
+    "METHODIDENTIFIERS": {
+      "title": "Payment Method Identifiers",
+      "href": "method-identifiers.html",
+      "authors": [
+        "Adrian Bateman"
+      ],
+      "status": "CG-DRAFT"
+    },
+    "PAYMENTAPI": {
+      "title": "Browser Payment API",
+      "href": "http://wicg.github.io/web-payments-browser-api/",
+      "authors": [
+        "Manu Sporny",
+        "David Longley"
+      ],
+      "status": "CG-DRAFT"
+    }
+  }
+}</script></head>
+  <body class="h-entry" role="document" id="respecDocument"><div class="head" role="contentinfo" id="respecHeader">
+  <p>
+    <a class="logo" href="http://www.w3.org/"><img width="72" height="48" src="https://www.w3.org/Icons/w3c_home" alt="W3C"></a>
+  </p>
+  <h1 class="title p-name" id="title" property="dc:title">Checkout API</h1>
+  
+  <h2 id="draft-community-group-report-11-february-2016">Draft Community Group Report <time property="dc:issued" class="dt-published" datetime="2016-02-11">11 February 2016</time></h2>
+  <dl>
+    
+    
+    
+    
+    
+    
+    
+    
+      
+    
+    <dt>Editor:</dt>
+    <dd class="p-author h-card vcard" property="bibo:editor" resource="_:editor0"><span property="rdf:first" typeof="foaf:Person"><span property="foaf:name" class="p-name fn">TBD</span>, TBD</span>
+<span property="rdf:rest" resource="rdf:nil"></span>
+</dd>
+
+    
+      <dt>Authors:</dt>
+      <dd class="p-author h-card vcard"><span property="dc:contributor" typeof="foaf:Person"><span property="foaf:name" class="p-name fn">Adrian Bateman</span>, Microsoft Corporation</span>
+</dd>
+<dd class="p-author h-card vcard"><span property="dc:contributor" typeof="foaf:Person"><span property="foaf:name" class="p-name fn">Zach Koch</span>, Google</span>
+</dd>
+<dd class="p-author h-card vcard"><span property="dc:contributor" typeof="foaf:Person"><span property="foaf:name" class="p-name fn">Dave Longley</span>, Digital Bazaar</span>
+</dd>
+
+    
+    
+  </dl>
+  
+  <p class="copyright">
+    <a href="http://www.w3.org/Consortium/Legal/ipr-notice#Copyright">Copyright</a> © 
+    2016
+    the Contributors to the Checkout API Specification, published by the
+    <a href="https://www.w3.org/community/wicg/">Web Platform Incubator Community Group</a> under the
+    
+      <a href="https://www.w3.org/community/about/agreements/cla/">W3C Community Contributor License Agreement (CLA)</a>.
+      A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/">summary</a> is available.
+    
+  </p>
+  <hr title="Separator for header">
+</div>
+    <section id="abstract" class="introductory" property="dc:abstract"><h2 id="h-abstract" resource="#h-abstract"><span property="xhv:role" resource="xhv:heading">Abstract</span></h2>
+      <p>
+        This specification describes a high-level electronic commerce checkout API to enable merchants (i.e. web sites selling
+        physical or digital goods) to provide a simple checkout flow for their customers.
+        Merchants that do not want the browser to handle the checkout flow
+        may use the more low-level <a href="wicg.github.io/web-payments-browser-api/">browser payment API</a>
+        to request payment. User agents (e.g. browsers) will facilitate the checkout flow between
+        merchant and user.
+      </p>
+    </section><section id="sotd" class="introductory"><h2 id="h-sotd" resource="#h-sotd"><span property="xhv:role" resource="xhv:heading">Status of This Document</span></h2>
+  <p>
+    This specification was published by the <a href="https://www.w3.org/community/wicg/">Web Platform Incubator Community Group</a>.
+    It is not a W3C Standard nor is it on the W3C Standards Track.
+    
+      Please note that under the 
+      <a href="https://www.w3.org/community/about/agreements/cla/">W3C Community Contributor License Agreement (CLA)</a>
+      there is a limited opt-out and other conditions apply.
+    
+    Learn more about 
+    <a href="http://www.w3.org/community/">W3C Community and Business Groups</a>.
+  </p>
+  
+  
+      <p>
+        The Web Platform Incubator Community Group is incubating this specification to gather
+        feedback to refine the API. The specification is intended to align with the chartered scope
+        of the <a href="http://www.w3.org/Payments/WG/">Web Payments Working Group</a> and it is
+        possible that work on the API may be transferred to that group in future.
+      </p>
+      <p>
+        If you wish to make comments regarding this document, please contribute to the
+        <a href="https://github.com/WICG/Checkout/issues">issues list</a> in the
+        <a href="https://github.com/WICG/Checkout">GitHub repo</a>. Pull requests with
+        proposed text changes are welcome, but please note that you will be asked to join the Web
+        Platform Incubator Community Group and agree to the CLA for any substantive proposals.
+      </p>
+    
+  
+    
+  
+</section><section id="toc"><h2 class="introductory" id="h-toc" resource="#h-toc"><span property="xhv:role" resource="xhv:heading">Table of Contents</span></h2><ul class="toc" role="directory"><li class="tocline"><a href="#introduction" class="tocxref"><span class="secno">1. </span>Introduction</a><ul class="toc"><li class="tocline"><a href="#goals" class="tocxref"><span class="secno">1.1 </span>Goals</a></li><li class="tocline"><a href="#non-goals" class="tocxref"><span class="secno">1.2 </span>Non-goals</a></li></ul></li><li class="tocline"><a href="#conformance" class="tocxref"><span class="secno">2. </span>Conformance</a></li><li class="tocline"><a href="#dependencies" class="tocxref"><span class="secno">3. </span>Dependencies</a></li><li class="tocline"><a href="#the-checkout-interface" class="tocxref"><span class="secno">4. </span>The <span data-dfn-for="" data-dfn-type="dfn" data-idl=""><code>Checkout</code></span> Interface</a><ul class="toc"><li class="tocline"><a href="#send" class="tocxref"><span class="secno">4.1 </span>send()</a></li><li class="tocline"><a href="#request" class="tocxref"><span class="secno">4.2 </span>request()</a></li><li class="tocline"><a href="#start" class="tocxref"><span class="secno">4.3 </span>start()</a></li><li class="tocline"><a href="#continue" class="tocxref"><span class="secno">4.4 </span>continue()</a></li><li class="tocline"><a href="#cancel" class="tocxref"><span class="secno">4.5 </span>cancel()</a></li><li class="tocline"><a href="#finish" class="tocxref"><span class="secno">4.6 </span>finish()</a></li></ul></li><li class="tocline"><a href="#checkoutdetails-dictionary" class="tocxref"><span class="secno">5. </span>CheckoutDetails dictionary</a></li><li class="tocline"><a href="#checkoutitem-interface" class="tocxref"><span class="secno">6. </span>CheckoutItem interface</a></li><li class="tocline"><a href="#paymentitem-dictionary" class="tocxref"><span class="secno">7. </span>PaymentItem dictionary</a></li><li class="tocline"><a href="#shippingaddress-interface" class="tocxref"><span class="secno">8. </span>ShippingAddress interface</a></li><li class="tocline"><a href="#checkoutoption-interface" class="tocxref"><span class="secno">9. </span>CheckoutOption interface</a></li><li class="tocline"><a href="#shippingoption-interface" class="tocxref"><span class="secno">10. </span>ShippingOption interface</a></li><li class="tocline"><a href="#algorithms" class="tocxref"><span class="secno">11. </span>Algorithms</a><ul class="toc"><li class="tocline"><a href="#shipping-address-changed-algorithm" class="tocxref"><span class="secno">11.1 </span>Shipping address changed algorithm</a></li><li class="tocline"><a href="#user-agent-delegates-payment-request-algorithm" class="tocxref"><span class="secno">11.2 </span>User agent delegates payment request algorithm</a></li><li class="tocline"><a href="#user-accepts-the-payment-request-algorithm" class="tocxref"><span class="secno">11.3 </span>User accepts the payment request algorithm</a></li></ul></li><li class="tocline"><a href="#extensibility" class="tocxref"><span class="secno">12. </span>Extensibility</a></li><li class="tocline"><a href="#references" class="tocxref"><span class="secno">A. </span>References</a><ul class="toc"><li class="tocline"><a href="#normative-references" class="tocxref"><span class="secno">A.1 </span>Normative references</a></li><li class="tocline"><a href="#informative-references" class="tocxref"><span class="secno">A.2 </span>Informative references</a></li></ul></li></ul></section>
+
+    
+
+    <section class="informative" id="introduction" typeof="bibo:Chapter" resource="#introduction" property="bibo:hasPart">
+      <!--OddPage--><h2 id="h-introduction" resource="#h-introduction"><span property="xhv:role" resource="xhv:heading"><span class="secno">1. </span>Introduction</span></h2><p><em>This section is non-normative.</em></p>
+        <p>Buying things on the
+        web, particularly on mobile, is a frustrating experience for users. Every web site has its own flow
+        and its own validation rules, and most require users to manually type in the same set of information
+        over and over again. Likewise, it is difficult and time consuming for developers to create good
+        checkout flows that support various payment schemes.</p>
+
+        <p>This specification describes a high-level API that allows <a href="#dfn-user-agent" class="internalDFN" data-link-type="dfn">user agents</a> (e.g. browsers) to
+        aid in the ecommerce checkout flow between the three key parties in every transaction: the merchant (e.g. an
+        online web store), the buyer (e.g. the user buying from the online web store), and the
+        <a href="#dfn-payment-method" class="internalDFN" data-link-type="dfn">Payment Method</a> (e.g. credit card). Information necessary to process and confirm a
+        transaction is passed between the <a href="#dfn-payment-method" class="internalDFN" data-link-type="dfn">Payment Method</a> and the merchant via the <a href="#dfn-user-agent" class="internalDFN" data-link-type="dfn">user agent</a>
+        with the buyer confirming and authorizing as necessary across the
+        checkout flow.</p>
+
+        <p>In addition to better, more consistent checkout experience, this also enables web sites to take
+        advantage of more secure payment schemes (e.g. tokenization and system-level authentication)
+        that are not possible with standard JavaScript libraries. This has the potential to reduce
+        liability for the merchant and helps protect sensitive user information.</p>
+
+        <p>While many merchants are not interested in designing the entire checkout flow, some
+        may have special requirements that this API may not support. In those cases, merchants that do not want the browser to handle the checkout flow
+        may use the more low-level <a href="wicg.github.io/web-payments-browser-api/">browser payment API</a>
+        to request payment.</p>
+
+        <p>The API described in this document forms part of the Payment Request system described in
+        the Payment Request Architecture [<cite><a class="bibref" href="#bib-PAYMENTARCH">PAYMENTARCH</a></cite>] document.</p>
+
+      <section id="goals" typeof="bibo:Chapter" resource="#goals" property="bibo:hasPart">
+        <h3 id="h-goals" resource="#h-goals"><span property="xhv:role" resource="xhv:heading"><span class="secno">1.1 </span>Goals</span></h3>
+        <ul>
+          <li>Allow the user-agent to act as intermediary between merchants, users, and <a href="#dfn-payment-method" class="internalDFN" data-link-type="dfn">payment
+          methods</a> in an electronic commerce checkout flow</li>
+          <li>Standardize (to the extent that it makes sense) the communication flow between a
+          merchant, user-agent, and <a href="#dfn-payment-method" class="internalDFN" data-link-type="dfn">payment method</a> when checking out online</li>
+          <li>Allow <a href="#dfn-payment-method" class="internalDFN" data-link-type="dfn">payment methods</a> to bring more secure payment transactions to the web</li>
+        </ul>
+      </section>
+
+      <section id="non-goals" typeof="bibo:Chapter" resource="#non-goals" property="bibo:hasPart">
+        <h3 id="h-non-goals" resource="#h-non-goals"><span property="xhv:role" resource="xhv:heading"><span class="secno">1.2 </span>Non-goals</span></h3>
+          <ul>
+            <li>Not trying to create a new <a href="#dfn-payment-method" class="internalDFN" data-link-type="dfn">payment method</a></li>
+            <li>Not trying to integrate directly with payment processors</li>
+          </ul>
+      </section>
+
+    </section>
+
+    <section id="conformance" typeof="bibo:Chapter" resource="#conformance" property="bibo:hasPart"><!--OddPage--><h2 id="h-conformance" resource="#h-conformance"><span property="xhv:role" resource="xhv:heading"><span class="secno">2. </span>Conformance</span></h2>
+<p>
+  As well as sections marked as non-normative, all authoring guidelines, diagrams, examples,
+  and notes in this specification are non-normative. Everything else in this specification is
+  normative.
+</p>
+<p id="respecRFC2119">The key words <em class="rfc2119" title="MAY">MAY</em>, <em class="rfc2119" title="MUST">MUST</em>, and <em class="rfc2119" title="SHOULD">SHOULD</em> are 
+  to be interpreted as described in [<cite><a class="bibref" href="#bib-RFC2119">RFC2119</a></cite>].
+</p>
+
+      <p>
+        As well as sections marked as non-normative, all authoring guidelines, diagrams, examples,
+        and notes in this specification are non-normative. Everything else in this specification is
+        normative.
+      </p>
+      <p>
+        This specification defines one class of products:
+      </p>
+      <dl>
+      <dt><dfn data-dfn-type="dfn" id="dfn-conforming-user-agent">Conforming user agent</dfn></dt>
+      <dd>
+        <p>
+        A <dfn data-dfn-type="dfn" id="dfn-user-agent">user agent</dfn> <em class="rfc2119" title="MUST">MUST</em> behave as described in this specification
+        in order to be considered conformant.
+        </p>
+        <p>
+        User agents <em class="rfc2119" title="MAY">MAY</em> implement algorithms given in this
+        specification in any way desired, so long as the end result is
+        indistinguishable from the result that would be obtained by the
+        specification's algorithms.
+        </p>
+        <p>
+        A conforming Payment Request API user agent <em class="rfc2119" title="MUST">MUST</em> also be a
+        <em>conforming implementation</em> of the IDL fragments
+        of this specification, as described in the
+        “Web IDL” specification. [<cite><a class="bibref" href="#bib-WEBIDL">WEBIDL</a></cite>]
+        </p>
+
+        <div class="note"><div class="note-title" aria-level="3" role="heading" id="h-note1"><span>Note</span></div><aside class="">
+        This specification uses both the terms "conforming user agent(s)"
+        and "user agent(s)" to refer to this product class.
+        </aside></div>
+      </dd>
+    </dl></section>
+
+    <section id="dependencies" typeof="bibo:Chapter" resource="#dependencies" property="bibo:hasPart">
+      <!--OddPage--><h2 id="h-dependencies" resource="#h-dependencies"><span property="xhv:role" resource="xhv:heading"><span class="secno">3. </span>Dependencies</span></h2>
+      <p>
+      This specification relies on several other underlying specifications.
+      </p>
+      <dl>
+        <dt>Payment Request Document Architecture</dt>
+        <dd>The terms <dfn data-dfn-type="dfn" id="dfn-payment-method">Payment Method</dfn> and
+        <dfn data-dfn-type="dfn" id="dfn-payment-app">Payment App</dfn> are defined by the Payment Request
+        Architecture document [<cite><a class="bibref" href="#bib-PAYMENTARCH">PAYMENTARCH</a></cite>].</dd>
+        <dt>Payment Method Identifiers</dt>
+        <dd>The term <dfn data-dfn-type="dfn" id="dfn-payment-method-identifier">Payment
+        Method Identifier</dfn> is defined by the Payment Method Identifiers specification
+        [<cite><a class="bibref" href="#bib-METHODIDENTIFIERS">METHODIDENTIFIERS</a></cite>].</dd>
+        <dt>Browser Payment API</dt>
+        <dd>The low-level API that supports the initiation of payment can be found in [<cite><a class="bibref" href="#bib-PAYMENTAPI">PAYMENTAPI</a></cite>].
+        This specification depends on <dfn data-dfn-type="dfn" id="dfn-paymentrequest">PaymentRequest</dfn> and <dfn data-dfn-type="dfn" id="dfn-navigatorpayment">NavigatorPayment</dfn> as defined in [<cite><a class="bibref" href="#bib-PAYMENTAPI">PAYMENTAPI</a></cite>].
+        </dd>
+        <dt>HTML5</dt>
+        <dd>The terms <dfn data-dfn-type="dfn" id="dfn-global-object">global object</dfn>,
+        <dfn data-dfn-type="dfn" id="dfn-queue-a-task">queue a task</dfn>, <dfn data-dfn-type="dfn" id="dfn-browsing-context">browsing context</dfn>, and
+        <dfn data-dfn-type="dfn" id="dfn-top-level-browsing-context">top-level browsing context</dfn> are defined by [<cite><a class="bibref" href="#bib-HTML5">HTML5</a></cite>].</dd>
+        <dt>ECMA-262 6th Edition, The ECMAScript 2015 Language Specification</dt>
+        <dd>
+          The terms <dfn data-dfn-type="dfn" id="dfn-promise">Promise</dfn>, <dfn data-dfn-type="dfn" id="dfn-json.stringify">JSON.stringify</dfn>, and <dfn data-dfn-type="dfn" id="dfn-json.parse">JSON.parse</dfn> are
+          defined by [<cite><a class="bibref" href="#bib-ECMA-262-2015">ECMA-262-2015</a></cite>].
+          <p>The term <dfn data-dfn-type="dfn" id="dfn-json-object">JSON object</dfn> used in this specification means an object that can
+          be serialized to a string using <a href="#dfn-json.stringify" class="internalDFN" data-link-type="dfn">JSON.stringify</a> and later deserialized back to an object
+          using <a href="#dfn-json.parse" class="internalDFN" data-link-type="dfn">JSON.parse</a> with no loss of data.</p>
+        </dd>
+        <dt>DOM4</dt>
+        <dd>
+        The <code><dfn data-dfn-type="dfn" id="dfn-event">Event</dfn></code> type and the term <dfn data-dfn-type="dfn" id="dfn-fire-an-event">fire an event</dfn> are defined by [<cite><a class="bibref" href="#bib-DOM4">DOM4</a></cite>].
+        <p><dfn data-dfn-type="dfn" id="dfn-domexception">DOMException</dfn> and the following DOMException types from [<cite><a class="bibref" href="#bib-DOM4">DOM4</a></cite>] are used:</p>
+        <table>
+        <tbody><tr><th>Type</th><th>Message (optional)</th></tr>
+        <tr><td><code><dfn data-dfn-type="dfn" id="dfn-invalidaccesserror">InvalidAccessError</dfn></code></td><td>The object does not support the operation or argument</td></tr>
+        <tr><td><code><dfn data-dfn-type="dfn" id="dfn-invalidstateerror">InvalidStateError</dfn></code></td><td>The object is in an invalid state</td></tr>
+        <tr><td><code><dfn data-dfn-type="dfn" id="dfn-notsupportederror">NotSupportedError</dfn></code></td><td>The payment method was not supported</td></tr>
+        <tr><td><code><dfn data-dfn-type="dfn" id="dfn-securityerror">SecurityError</dfn></code></td><td>The operation is only supported in a secure context</td></tr>
+        <tr><td><code><dfn data-dfn-type="dfn" id="dfn-syntaxerror">SyntaxError</dfn></code></td><td>A required parameter was missing or out-of-range</td></tr>
+        </tbody></table>
+        </dd>
+        <dt>WebIDL</dt>
+        <dd>When this specification says to <dfn data-dfn-type="dfn" id="dfn-throw">throw</dfn> an error, the <a href="#dfn-user-agent" class="internalDFN" data-link-type="dfn">user agent</a> must throw an
+        error as described in [<cite><a class="bibref" href="#bib-WEBIDL">WEBIDL</a></cite>]. When this occurs in a sub-algorithm, this results in
+        termination of execution of the sub-algorithm and all ancestor algorithms until one is
+        reached that explicitly describes procedures for catching exceptions.</dd>
+        <dt>Secure Contexts</dt>
+        <dd>The term <dfn data-dfn-type="dfn" id="dfn-secure-context">secure context</dfn> is defined by the Secure Contexts specification
+        [<cite><a class="bibref" href="#bib-POWERFUL-FEATURES">POWERFUL-FEATURES</a></cite>].</dd>
+      </dl>
+    </section>
+
+    <section id="the-checkout-interface" typeof="bibo:Chapter" resource="#the-checkout-interface" property="bibo:hasPart">
+      <!--OddPage--><h2 id="h-the-checkout-interface" resource="#h-the-checkout-interface"><span property="xhv:role" resource="xhv:heading"><span class="secno">4. </span>The <dfn data-dfn-for="" data-dfn-type="dfn" id="dom-checkout" data-idl=""><code>Checkout</code></dfn> Interface</span></h2>
+      <pre class="idl"><span class="idlInterface" id="idl-def-checkout" data-idl="" data-title="Checkout">[<span class="idlCtor"><span class="extAttrName">Constructor</span></span>]
+interface <span class="idlInterfaceID"><a data-lt="Checkout" href="#dom-checkout" class="internalDFN" data-link-type="dfn" data-for=""><code>Checkout</code></a></span> {
+<span class="idlMethod" id="idl-def-checkout-send(domstring,optional-sequence<checkoutitem>)" data-idl="" data-title="send" data-dfn-for="checkout">    <span class="idlMethType"><a href="#dom-checkout" class="internalDFN" data-link-type="dfn"><code>Checkout</code></a></span>                 <span class="idlMethName">send</span>(<span class="idlParam"><span class="idlParamType">DOMString</span> <span class="idlParamName">itemType</span></span>,
+                                  <span class="idlParam">optional <span class="idlParamType">sequence&lt;<a href="#idl-def-checkoutitem" class="internalDFN" data-link-type="dfn"><code>CheckoutItem</code></a>&gt;</span> <span class="idlParamName">items</span></span>);</span>
+<span class="idlMethod" id="idl-def-checkout-request(domstring,optional-sequence<checkoutoption>)" data-idl="" data-title="request" data-dfn-for="checkout">    <span class="idlMethType"><a href="#dom-checkout" class="internalDFN" data-link-type="dfn"><code>Checkout</code></a></span>                 <span class="idlMethName">request</span>(<span class="idlParam"><span class="idlParamType">DOMString</span> <span class="idlParamName">optionType</span></span>,
+                                     <span class="idlParam">optional <span class="idlParamType">sequence&lt;<a href="#idl-def-checkoutoption" class="internalDFN" data-link-type="dfn"><code>CheckoutOption</code></a>&gt;</span> <span class="idlParamName">options</span></span>);</span>
+<span class="idlMethod" id="idl-def-checkout-start()" data-idl="" data-title="start" data-dfn-for="checkout">    <span class="idlMethType">Promise&lt;<a href="#dom-checkoutdetails" class="internalDFN" data-link-type="dfn"><code>CheckoutDetails</code></a>&gt;</span> <span class="idlMethName">start</span>();</span>
+<span class="idlMethod" id="idl-def-checkout-continue()" data-idl="" data-title="continue" data-dfn-for="checkout">    <span class="idlMethType">Promise&lt;<a href="#dom-checkoutdetails" class="internalDFN" data-link-type="dfn"><code>CheckoutDetails</code></a>&gt;</span> <span class="idlMethName">continue</span>();</span>
+<span class="idlMethod" id="idl-def-checkout-cancel(domstring)" data-idl="" data-title="cancel" data-dfn-for="checkout">    <span class="idlMethType"><a href="#dfn-promise" class="internalDFN" data-link-type="dfn">Promise</a></span>                  <span class="idlMethName">cancel</span>(<span class="idlParam"><span class="idlParamType">DOMString</span> <span class="idlParamName">reason</span></span>);</span>
+<span class="idlMethod" id="idl-def-checkout-finish(paymentrequest)" data-idl="" data-title="finish" data-dfn-for="checkout">    <span class="idlMethType"><a href="#dfn-promise" class="internalDFN" data-link-type="dfn">Promise</a></span>                  <span class="idlMethName">finish</span>(<span class="idlParam"><span class="idlParamType"><a href="#dfn-paymentrequest" class="internalDFN" data-link-type="dfn">PaymentRequest</a></span> <span class="idlParamName">request</span></span>);</span>
+};</span></pre>
+
+      <p>
+This API allows merchants to collect the information they need to create a
+payment request message but keeps the users in the same seamless, in-browser
+checkout process. It will let a merchant site specify a line item estimate
+(if necessary) and request a number of pieces of information, such as a shipping
+address, that it needs before it can prepare the payment request message. Once
+the merchant site has specified the information it needs, it tells the browser
+to start the checkout process and waits for a promise to resolve.
+      </p>
+
+      <p>
+The browser then opens a UI to take the user through the checkout process. Once
+the user has made all of their selections, the user (for example) clicks a
+button to see their total. Upon clicking, the promise the merchant was waiting
+on resolves with the requested information and the in-browser UI will wait for
+the merchant site to call "finish" with the payment request message (which can
+be generated asynchronously if desired). The merchant can also call "cancel"
+instead. Sometimes the merchant may need to request information piecemeal; for
+example, the merchant may need to request a shipping address before a set of
+shipping options can be provided for the user to select from. In this case,
+the merchant may request that the user select from a list of shipping options
+and then call "continue", which will return a Promise that the merchant site
+can wait for, just like when calling "start". Once a Promise resolves with
+checkout details where the "finished" flag is set to true, the merchant can
+generate a payment request message and pass it to "finish" to complete the
+checkout process.
+      </p>
+
+      <p>
+Once finish is called, it internally calls navigator.payment.request(paymentRequest)
+and returns a promise, which will resolve to an error or a payment
+acknowledgement. This causes the in-browser UI to show the price and payment
+app selection screen, just like it would have if called independently. If the
+user selects a payment app and completes their payment, the merchant site will
+eceive a payment acknowledgement via the resolved promise, otherwise, it will
+receive an error.
+      </p>
+
+      <p>
+The checkout flow and how the API is designed around it can be summed up by
+considering the merchant's thought process:
+      </p>
+      <ol>
+        <li>
+          What do I need from the UA to generate a payment request? Ask for it
+          and wait for a response.
+        </li>
+        <li>
+          Do I have everything I need now? If not, ask for more and wait for
+          a response. If I do, generate a payment request and finish the flow.
+        </li>
+      </ol>
+
+      <div class="issue"><div class="issue-title" aria-level="3" role="heading" id="h-issue1"><span>Issue</span></div><p class="">
+Note: If a "back" feature for the in-browser UI is desirable at this point,
+one option is to return a promise in the error that can be waited on, again, to
+resolve once the user is ready for the merchant site to generate the payment
+request message based on their changes.
+      </p></div>
+
+      <div class="issue"><div class="issue-title" aria-level="3" role="heading" id="h-issue2"><span>Issue</span></div><p class="">
+This API can be used to give merchant sites a full, in-browser, checkout
+experience, but builds on top of the navigator.payment.request API. It could
+also be modified (internally) to build on top of other future APIs that expose
+simple, low-level mechanisms for independently requesting things like shipping
+address or other "identity credentials/verifiable claims" (this is aimed at
+supporting The Extensible Web Manifesto approach). These APIs are not yet
+exposed as low-level APIs, but this approach is an attempt to do some future
+proofing should they be standardized at some point.
+      </p></div>
+
+      <div class="issue"><div class="issue-title" aria-level="3" role="heading" id="h-issue3"><span>Issue</span></div><p class="">
+This API is also designed so that the flow occurs in a straightforward,
+deterministic, singular way. It intentionally avoids events and exposing state
+management to the merchant site. The merchant site does not have to deal with
+multiple events coming from the in-browser UI and the subsequent management of
+any asynchronous work it generates. Rather, once the user has made their
+selections and chosen all of the necessary information, it will be informed.
+The in-browser UI will not allow further action until the merchant site
+responds with a call to "continue" or a payment request message.
+      </p></div>
+
+      <p>The following examples show various <a href="#dom-checkout" class="internalDFN" data-link-type="dfn"><code><code>Checkout</code></code></a> flows
+      from simple to more complex:</p>
+
+      <div class="example"><div class="example-title"><span>Example 1</span><span style="text-transform: none">: A simple checkout flow</span></div><pre id="simple-checkout-example" class="example highlight prettyprint prettyprinted"><span class="kwd">var</span><span class="pln"> checkout </span><span class="pun">=</span><span class="pln"> </span><span class="kwd">new</span><span class="pln"> </span><span class="typ">Checkout</span><span class="pun">();</span><span class="pln">
+checkout
+  </span><span class="pun">.</span><span class="pln">send</span><span class="pun">(</span><span class="str">'paymentItem'</span><span class="pun">,</span><span class="pln"> paymentItems</span><span class="pun">)</span><span class="pln">  </span><span class="com">// send line item estimate to UA</span><span class="pln">
+  </span><span class="pun">.</span><span class="pln">start</span><span class="pun">()</span><span class="pln">                            </span><span class="com">// start the checkout UI</span><span class="pln">
+  </span><span class="pun">.</span><span class="kwd">then</span><span class="pun">(</span><span class="pln">finishCheckout</span><span class="pun">);</span><span class="pln">              </span><span class="com">// checkout UI has collected the info</span><span class="pln">
+
+</span><span class="kwd">function</span><span class="pln"> finishCheckout</span><span class="pun">(</span><span class="pln">checkoutDetails</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+  </span><span class="com">// create a payment request from the checkout details</span><span class="pln">
+  </span><span class="kwd">var</span><span class="pln"> paymentRequest </span><span class="pun">=</span><span class="pln"> customCreatePaymentRequest</span><span class="pun">(</span><span class="pln">checkoutDetails</span><span class="pun">);</span><span class="pln">
+
+  </span><span class="com">// finish checkout will call `navigator.payment.request` internally</span><span class="pln">
+  checkout</span><span class="pun">.</span><span class="pln">finish</span><span class="pun">(</span><span class="pln">paymentRequest</span><span class="pun">).</span><span class="kwd">then</span><span class="pun">(</span><span class="kwd">function</span><span class="pun">(</span><span class="pln">acknowledgement</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+    </span><span class="com">// handle acknowledgement from payment app</span><span class="pln">
+  </span><span class="pun">});</span><span class="pln">
+</span><span class="pun">}</span></pre></div>
+
+      <div class="example"><div class="example-title"><span>Example 2</span><span style="text-transform: none">: A checkout flow requesting shipping address</span></div><pre id="checkout-request-address-example" class="example highlight prettyprint prettyprinted"><span class="kwd">var</span><span class="pln"> checkout </span><span class="pun">=</span><span class="pln"> </span><span class="kwd">new</span><span class="pln"> </span><span class="typ">Checkout</span><span class="pun">();</span><span class="pln">
+checkout
+  </span><span class="pun">.</span><span class="pln">send</span><span class="pun">(</span><span class="str">'paymentItem'</span><span class="pun">,</span><span class="pln"> paymentItems</span><span class="pun">)</span><span class="pln">  </span><span class="com">// send line item estimate to UA</span><span class="pln">
+  </span><span class="pun">.</span><span class="pln">request</span><span class="pun">(</span><span class="str">'shippingAddress'</span><span class="pun">)</span><span class="pln">         </span><span class="com">// request shippingAddress from UA</span><span class="pln">
+  </span><span class="pun">.</span><span class="pln">start</span><span class="pun">()</span><span class="pln">                            </span><span class="com">// start the checkout UI</span><span class="pln">
+  </span><span class="pun">.</span><span class="kwd">then</span><span class="pun">(</span><span class="pln">finishCheckout</span><span class="pun">);</span><span class="pln">              </span><span class="com">// checkout UI has collected the info</span><span class="pln">
+
+</span><span class="kwd">function</span><span class="pln"> finishCheckout</span><span class="pun">(</span><span class="pln">checkoutDetails</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+  </span><span class="kwd">if</span><span class="pun">(!</span><span class="pln">isAddressAcceptable</span><span class="pun">(</span><span class="pln">checkoutDetails</span><span class="pun">.</span><span class="pln">shippingAddress</span><span class="pun">))</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+    </span><span class="kwd">return</span><span class="pln"> checkout</span><span class="pun">.</span><span class="pln">cancel</span><span class="pun">(</span><span class="str">'We cannot ship to your address.'</span><span class="pun">);</span><span class="pln">
+  </span><span class="pun">}</span><span class="pln">
+
+  </span><span class="com">// recalculate line item details based on `checkoutDetails.shippingAddress`</span><span class="pln">
+  </span><span class="com">// and call `send()` so the browser can show the updated info</span><span class="pln">
+  </span><span class="com">// note this could also be done asynchronously</span><span class="pln">
+  </span><span class="kwd">for</span><span class="pun">(</span><span class="kwd">let</span><span class="pln"> item of checkoutDetails</span><span class="pun">.</span><span class="pln">items</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+    </span><span class="com">// new shipping cost</span><span class="pln">
+    </span><span class="kwd">if</span><span class="pun">(</span><span class="pln">item</span><span class="pun">.</span><span class="pln">id </span><span class="pun">===</span><span class="pln"> </span><span class="str">'shipping'</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+      item</span><span class="pun">.</span><span class="pln">amount </span><span class="pun">=</span><span class="pln"> calcShippingAmount</span><span class="pun">(</span><span class="pln">checkoutDetails</span><span class="pun">);</span><span class="pln">
+    </span><span class="pun">}</span><span class="pln">
+    </span><span class="com">// new tax amount</span><span class="pln">
+    </span><span class="kwd">if</span><span class="pun">(</span><span class="pln">item</span><span class="pun">.</span><span class="pln">id </span><span class="pun">===</span><span class="pln"> </span><span class="str">'tax'</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+      item</span><span class="pun">.</span><span class="pln">amount </span><span class="pun">=</span><span class="pln"> calcTaxAmount</span><span class="pun">(</span><span class="pln">checkoutDetails</span><span class="pun">);</span><span class="pln">
+    </span><span class="pun">}</span><span class="pln">
+  </span><span class="pun">}</span><span class="pln">
+  checkout</span><span class="pun">.</span><span class="pln">send</span><span class="pun">(</span><span class="str">'paymentItem'</span><span class="pun">,</span><span class="pln"> checkoutDetails</span><span class="pun">.</span><span class="pln">items</span><span class="pun">);</span><span class="pln">
+
+  </span><span class="kwd">if</span><span class="pun">(!</span><span class="pln">checkoutDetails</span><span class="pun">.</span><span class="pln">finished</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+    </span><span class="kwd">return</span><span class="pln"> checkout</span><span class="pun">.</span><span class="kwd">continue</span><span class="pun">().</span><span class="kwd">then</span><span class="pun">(</span><span class="pln">finishCheckout</span><span class="pun">);</span><span class="pln">
+  </span><span class="pun">}</span><span class="pln">
+
+  </span><span class="com">// create a payment request from the checkout details</span><span class="pln">
+  </span><span class="kwd">var</span><span class="pln"> paymentRequest </span><span class="pun">=</span><span class="pln"> customCreatePaymentRequest</span><span class="pun">(</span><span class="pln">checkoutDetails</span><span class="pun">);</span><span class="pln">
+
+  checkout</span><span class="pun">.</span><span class="pln">finish</span><span class="pun">(</span><span class="pln">paymentRequest</span><span class="pun">).</span><span class="kwd">then</span><span class="pun">(</span><span class="kwd">function</span><span class="pun">(</span><span class="pln">acknowledgement</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+    </span><span class="com">// handle acknowledgement from payment app</span><span class="pln">
+  </span><span class="pun">});</span><span class="pln">
+</span><span class="pun">}</span></pre></div>
+
+      <div class="example"><div class="example-title"><span>Example 3</span><span style="text-transform: none">: A checkout flow requesting shipping address and shipping option</span></div><pre id="checkout-request-address-and-option-example" class="example highlight prettyprint prettyprinted"><span class="kwd">var</span><span class="pln"> checkout </span><span class="pun">=</span><span class="pln"> </span><span class="kwd">new</span><span class="pln"> </span><span class="typ">Checkout</span><span class="pun">();</span><span class="pln">
+checkout
+  </span><span class="pun">.</span><span class="pln">send</span><span class="pun">(</span><span class="str">'paymentItem'</span><span class="pun">,</span><span class="pln"> paymentItems</span><span class="pun">)</span><span class="pln">            </span><span class="com">// send line item estimate to UA</span><span class="pln">
+  </span><span class="pun">.</span><span class="pln">request</span><span class="pun">(</span><span class="str">'shippingAddress'</span><span class="pun">)</span><span class="pln">                   </span><span class="com">// request shippingAddress from UA</span><span class="pln">
+  </span><span class="pun">.</span><span class="pln">request</span><span class="pun">(</span><span class="str">'shippingOption'</span><span class="pun">,</span><span class="pln"> shippingOptions</span><span class="pun">)</span><span class="pln">   </span><span class="com">// request shippingOption from UA</span><span class="pln">
+  </span><span class="pun">.</span><span class="pln">start</span><span class="pun">()</span><span class="pln">                                      </span><span class="com">// start the checkout UI</span><span class="pln">
+  </span><span class="pun">.</span><span class="kwd">then</span><span class="pun">(</span><span class="pln">finishCheckout</span><span class="pun">);</span><span class="pln">                        </span><span class="com">// checkout UI has collected the info</span><span class="pln">
+
+</span><span class="kwd">function</span><span class="pln"> finishCheckout</span><span class="pun">(</span><span class="pln">checkoutDetails</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+  </span><span class="kwd">if</span><span class="pun">(!</span><span class="pln">isAddressAcceptable</span><span class="pun">(</span><span class="pln">checkoutDetails</span><span class="pun">.</span><span class="pln">shippingAddress</span><span class="pun">))</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+    </span><span class="kwd">return</span><span class="pln"> checkout</span><span class="pun">.</span><span class="pln">cancel</span><span class="pun">(</span><span class="str">'We cannot ship to your address.'</span><span class="pun">);</span><span class="pln">
+  </span><span class="pun">}</span><span class="pln">
+
+  </span><span class="com">// recalculate line item details based on `checkoutDetails.shippingAddress`</span><span class="pln">
+  </span><span class="com">// and `checkoutDetails.shippingOption` call `send()` so the browser can</span><span class="pln">
+  </span><span class="com">// show the updated info</span><span class="pln">
+  </span><span class="kwd">for</span><span class="pun">(</span><span class="kwd">let</span><span class="pln"> item of checkoutDetails</span><span class="pun">.</span><span class="pln">items</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+    </span><span class="com">// new shipping cost</span><span class="pln">
+    </span><span class="kwd">if</span><span class="pun">(</span><span class="pln">item</span><span class="pun">.</span><span class="pln">id </span><span class="pun">===</span><span class="pln"> </span><span class="str">'shipping'</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+      item</span><span class="pun">.</span><span class="pln">amount </span><span class="pun">=</span><span class="pln"> calcShippingAmount</span><span class="pun">(</span><span class="pln">checkoutDetails</span><span class="pun">);</span><span class="pln">
+    </span><span class="pun">}</span><span class="pln">
+    </span><span class="com">// new tax amount</span><span class="pln">
+    </span><span class="kwd">if</span><span class="pun">(</span><span class="pln">item</span><span class="pun">.</span><span class="pln">id </span><span class="pun">===</span><span class="pln"> </span><span class="str">'tax'</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+      item</span><span class="pun">.</span><span class="pln">amount </span><span class="pun">=</span><span class="pln"> calcTaxAmount</span><span class="pun">(</span><span class="pln">checkoutDetails</span><span class="pun">);</span><span class="pln">
+    </span><span class="pun">}</span><span class="pln">
+  </span><span class="pun">}</span><span class="pln">
+  checkout</span><span class="pun">.</span><span class="pln">send</span><span class="pun">(</span><span class="str">'paymentItem'</span><span class="pun">,</span><span class="pln"> checkoutDetails</span><span class="pun">.</span><span class="pln">items</span><span class="pun">);</span><span class="pln">
+
+  </span><span class="kwd">if</span><span class="pun">(!</span><span class="pln">checkoutDetails</span><span class="pun">.</span><span class="pln">finished</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+    </span><span class="kwd">return</span><span class="pln"> checkout</span><span class="pun">.</span><span class="kwd">continue</span><span class="pun">().</span><span class="kwd">then</span><span class="pun">(</span><span class="pln">finishCheckout</span><span class="pun">);</span><span class="pln">
+  </span><span class="pun">}</span><span class="pln">
+
+  </span><span class="com">// create a payment request from the checkout details</span><span class="pln">
+  </span><span class="kwd">var</span><span class="pln"> paymentRequest </span><span class="pun">=</span><span class="pln"> customCreatePaymentRequest</span><span class="pun">(</span><span class="pln">checkoutDetails</span><span class="pun">);</span><span class="pln">
+
+  checkout</span><span class="pun">.</span><span class="pln">finish</span><span class="pun">(</span><span class="pln">paymentRequest</span><span class="pun">).</span><span class="kwd">then</span><span class="pun">(</span><span class="kwd">function</span><span class="pun">(</span><span class="pln">acknowledgement</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+    </span><span class="com">// handle acknowledgement from payment app</span><span class="pln">
+  </span><span class="pun">});</span><span class="pln">
+</span><span class="pun">}</span></pre></div>
+
+      <div class="example"><div class="example-title"><span>Example 4</span><span style="text-transform: none">: A checkout flow requesting shipping address and address-dependent shipping option</span></div><pre id="checkout-request-address-and-dependent-option-example" class="example highlight prettyprint prettyprinted"><span class="kwd">var</span><span class="pln"> checkout </span><span class="pun">=</span><span class="pln"> </span><span class="kwd">new</span><span class="pln"> </span><span class="typ">Checkout</span><span class="pun">();</span><span class="pln">
+checkout
+  </span><span class="pun">.</span><span class="pln">send</span><span class="pun">(</span><span class="str">'paymentItem'</span><span class="pun">,</span><span class="pln"> paymentItems</span><span class="pun">)</span><span class="pln">  </span><span class="com">// send line item estimate to UA</span><span class="pln">
+  </span><span class="pun">.</span><span class="pln">request</span><span class="pun">(</span><span class="str">'shippingAddress'</span><span class="pun">)</span><span class="pln">         </span><span class="com">// request shippingAddress from UA</span><span class="pln">
+  </span><span class="pun">.</span><span class="pln">start</span><span class="pun">()</span><span class="pln">                            </span><span class="com">// start the checkout UI</span><span class="pln">
+  </span><span class="pun">.</span><span class="kwd">then</span><span class="pun">(</span><span class="pln">finishCheckout</span><span class="pun">);</span><span class="pln">              </span><span class="com">// checkout UI has collected the info</span><span class="pln">
+
+</span><span class="kwd">function</span><span class="pln"> finishCheckout</span><span class="pun">(</span><span class="pln">checkoutDetails</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+  </span><span class="kwd">if</span><span class="pun">(!</span><span class="pln">isAddressAcceptable</span><span class="pun">(</span><span class="pln">checkoutDetails</span><span class="pun">.</span><span class="pln">shippingAddress</span><span class="pun">))</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+    </span><span class="kwd">return</span><span class="pln"> checkout</span><span class="pun">.</span><span class="pln">cancel</span><span class="pun">(</span><span class="str">'We cannot ship to your address.'</span><span class="pun">);</span><span class="pln">
+  </span><span class="pun">}</span><span class="pln">
+
+  </span><span class="com">// no shipping option has been picked yet, request that the user pick a</span><span class="pln">
+  </span><span class="com">// certain shipping option based on their address and continue</span><span class="pln">
+  </span><span class="kwd">if</span><span class="pun">(!</span><span class="pln">checkoutDetails</span><span class="pun">.</span><span class="pln">shippingOption</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+    </span><span class="kwd">return</span><span class="pln"> checkout
+      </span><span class="pun">.</span><span class="pln">request</span><span class="pun">(</span><span class="str">'shippingOption'</span><span class="pun">,</span><span class="pln"> createShippingOptions</span><span class="pun">(</span><span class="pln">checkoutDetails</span><span class="pun">))</span><span class="pln">
+      </span><span class="pun">.</span><span class="kwd">continue</span><span class="pun">().</span><span class="kwd">then</span><span class="pun">(</span><span class="pln">finishCheckout</span><span class="pun">);</span><span class="pln">
+  </span><span class="pun">}</span><span class="pln">
+
+  </span><span class="com">// recalculate line item details based on `checkoutDetails.shippingAddress`</span><span class="pln">
+  </span><span class="com">// and `checkoutDetails.shippingOption` call `send()` so the browser can</span><span class="pln">
+  </span><span class="com">// show the updated info</span><span class="pln">
+  </span><span class="kwd">for</span><span class="pun">(</span><span class="kwd">let</span><span class="pln"> item of checkoutDetails</span><span class="pun">.</span><span class="pln">items</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+    </span><span class="com">// new shipping cost</span><span class="pln">
+    </span><span class="kwd">if</span><span class="pun">(</span><span class="pln">item</span><span class="pun">.</span><span class="pln">id </span><span class="pun">===</span><span class="pln"> </span><span class="str">'shipping'</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+      item</span><span class="pun">.</span><span class="pln">amount </span><span class="pun">=</span><span class="pln"> calcShippingAmount</span><span class="pun">(</span><span class="pln">checkoutDetails</span><span class="pun">);</span><span class="pln">
+    </span><span class="pun">}</span><span class="pln">
+    </span><span class="com">// new tax amount</span><span class="pln">
+    </span><span class="kwd">if</span><span class="pun">(</span><span class="pln">item</span><span class="pun">.</span><span class="pln">id </span><span class="pun">===</span><span class="pln"> </span><span class="str">'tax'</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+      item</span><span class="pun">.</span><span class="pln">amount </span><span class="pun">=</span><span class="pln"> calcTaxAmount</span><span class="pun">(</span><span class="pln">checkoutDetails</span><span class="pun">;</span><span class="pln">
+    </span><span class="pun">}</span><span class="pln">
+  </span><span class="pun">}</span><span class="pln">
+  checkout</span><span class="pun">.</span><span class="pln">send</span><span class="pun">(</span><span class="str">'paymentItem'</span><span class="pun">,</span><span class="pln"> checkoutDetails</span><span class="pun">.</span><span class="pln">items</span><span class="pun">);</span><span class="pln">
+
+  </span><span class="kwd">if</span><span class="pun">(!</span><span class="pln">checkoutDetails</span><span class="pun">.</span><span class="pln">finished</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+    </span><span class="kwd">return</span><span class="pln"> checkout</span><span class="pun">.</span><span class="kwd">continue</span><span class="pun">().</span><span class="kwd">then</span><span class="pun">(</span><span class="pln">finishCheckout</span><span class="pun">);</span><span class="pln">
+  </span><span class="pun">}</span><span class="pln">
+
+  </span><span class="com">// asynchronously create a payment request from the checkout details</span><span class="pln">
+  customCreatePaymentRequest</span><span class="pun">(</span><span class="pln">checkoutDetails</span><span class="pun">).</span><span class="kwd">then</span><span class="pun">(</span><span class="kwd">function</span><span class="pun">(</span><span class="pln">paymentRequest</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+    </span><span class="kwd">return</span><span class="pln"> checkout</span><span class="pun">.</span><span class="pln">finish</span><span class="pun">(</span><span class="pln">paymentRequest</span><span class="pun">);</span><span class="pln">
+  </span><span class="pun">}).</span><span class="kwd">then</span><span class="pun">(</span><span class="kwd">function</span><span class="pun">(</span><span class="pln">acknowledgement</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+    </span><span class="com">// handle acknowledgement from payment app</span><span class="pln">
+  </span><span class="pun">});</span><span class="pln">
+</span><span class="pun">}</span></pre></div>
+
+      <section id="send" typeof="bibo:Chapter" resource="#send" property="bibo:hasPart">
+        <h3 id="h-send" resource="#h-send"><span property="xhv:role" resource="xhv:heading"><span class="secno">4.1 </span>send()</span></h3>
+        <p>
+          The <code><dfn data-dfn-type="dfn" id="dfn-send">send</dfn></code> method queues checkout items to
+          send to the user agent, typically for display.
+        </p>
+
+        <p>
+          The <a href="#dfn-send" class="internalDFN" data-link-type="dfn"><code><code>send</code></code></a> method <em class="rfc2119" title="MUST">MUST</em> act as follows:
+        </p>
+        <ol>
+          <li>
+            ...
+          </li>
+        </ol>
+      </section>
+
+      <section id="request" typeof="bibo:Chapter" resource="#request" property="bibo:hasPart">
+        <h3 id="h-request" resource="#h-request"><span property="xhv:role" resource="xhv:heading"><span class="secno">4.2 </span>request()</span></h3>
+        <p>
+          The <code><dfn data-dfn-type="dfn" id="dfn-request">request</dfn></code> method requests information
+          from the user agent that is required to create the payment request.
+        </p>
+
+        <p>
+          The <a href="#dfn-request" class="internalDFN" data-link-type="dfn"><code><code>request</code></code></a> method <em class="rfc2119" title="MUST">MUST</em> act as follows:
+        </p>
+        <ol>
+          <li>
+            ...
+          </li>
+        </ol>
+      </section>
+
+      <section id="start" typeof="bibo:Chapter" resource="#start" property="bibo:hasPart">
+        <h3 id="h-start" resource="#h-start"><span property="xhv:role" resource="xhv:heading"><span class="secno">4.3 </span>start()</span></h3>
+        <p>
+          The <code><dfn data-dfn-type="dfn" id="dfn-start">start</dfn></code> method must ...
+        </p>
+
+        <p>The <a href="#dfn-start" class="internalDFN" data-link-type="dfn"><code><code>start</code></code></a> call returns a Promise that
+        resolves to a <a href="#dom-checkoutdetails" class="internalDFN" data-link-type="dfn"><code><code>CheckoutDetails</code></code></a> dictionary. If enough
+        information is present in the details to perform a payment request, a
+        web site creates the payment request and calls <a href="#dfn-finish" class="internalDFN" data-link-type="dfn"><code><code>finish</code></code></a>.
+        Otherwise, the web site may request more information by calling
+        <a href="#dfn-request" class="internalDFN" data-link-type="dfn"><code><code>request</code></code></a> followed by <a href="#dfn-continue" class="internalDFN" data-link-type="dfn"><code><code>continue</code></code></a>.
+        </p>
+
+        <p>The <a href="#dfn-start" class="internalDFN" data-link-type="dfn"><code><code>start</code></code></a> method <em class="rfc2119" title="MUST">MUST</em> act as follows:</p>
+        <ol>
+          <li>
+            ...
+          </li>
+        </ol>
+      </section>
+
+      <section id="continue" typeof="bibo:Chapter" resource="#continue" property="bibo:hasPart">
+        <h3 id="h-continue" resource="#h-continue"><span property="xhv:role" resource="xhv:heading"><span class="secno">4.4 </span>continue()</span></h3>
+        <p>
+          The <code><dfn data-dfn-type="dfn" id="dfn-continue">continue</dfn></code> method must ...
+        </p>
+
+        <p>The <a href="#dfn-continue" class="internalDFN" data-link-type="dfn"><code><code>continue</code></code></a> call returns a Promise that
+        resolves to a <a href="#dom-checkoutdetails" class="internalDFN" data-link-type="dfn"><code><code>CheckoutDetails</code></code></a> dictionary. If enough
+        information is present in the details to perform a payment request, a
+        web site creates the payment request and calls <a href="#dfn-finish" class="internalDFN" data-link-type="dfn"><code><code>finish</code></code></a>.
+        Otherwise, the web site may request more information by calling
+        <a href="#dfn-request" class="internalDFN" data-link-type="dfn"><code><code>request</code></code></a> followed by <a href="#dfn-continue" class="internalDFN" data-link-type="dfn"><code><code>continue</code></code></a>.
+        </p>
+
+        <p>The <a href="#dfn-continue" class="internalDFN" data-link-type="dfn"><code><code>continue</code></code></a> method <em class="rfc2119" title="MUST">MUST</em> act as follows:</p>
+        <ol>
+          <li>
+            ...
+          </li>
+        </ol>
+      </section>
+
+      <section id="cancel" typeof="bibo:Chapter" resource="#cancel" property="bibo:hasPart">
+        <h3 id="h-cancel" resource="#h-cancel"><span property="xhv:role" resource="xhv:heading"><span class="secno">4.5 </span>cancel()</span></h3>
+        <p>
+          The <code><dfn data-dfn-type="dfn" id="dfn-cancel">cancel</dfn></code> method must ...
+        </p>
+
+        <p>The <a href="#dfn-cancel" class="internalDFN" data-link-type="dfn"><code><code>cancel</code></code></a> method <em class="rfc2119" title="MUST">MUST</em> act as follows:</p>
+        <ol>
+          <li>
+            ...
+          </li>
+        </ol>
+      </section>
+
+      <section id="finish" typeof="bibo:Chapter" resource="#finish" property="bibo:hasPart">
+        <h3 id="h-finish" resource="#h-finish"><span property="xhv:role" resource="xhv:heading"><span class="secno">4.6 </span>finish()</span></h3>
+        <p>
+          The <code><dfn data-dfn-type="dfn" id="dfn-finish">finish</dfn></code> method must ...
+        </p>
+
+        <p>The <a href="#dfn-finish" class="internalDFN" data-link-type="dfn"><code><code>finish</code></code></a> method <em class="rfc2119" title="MUST">MUST</em> act as follows:</p>
+        <ol>
+          <li>
+            ...
+          </li>
+        </ol>
+      </section>
+
+      <div class="issue" id="issue-32"><div class="issue-title" aria-level="3" role="heading" id="h-issue4"><a href="https://github.com/WICG/web-payments-browser-api/issues/32"><span>Issue 32</span></a><span style="text-transform: none">: Should the web page be able to provide status information before calling complete()</span></div><div class="">
+      There is an open issue about whether there should be a way for a merchant to keep the user
+      informed about the progress of a transaction after the user approves the payment request.
+      </div></div>
+    </section>
+
+    <section id="checkoutdetails-dictionary" typeof="bibo:Chapter" resource="#checkoutdetails-dictionary" property="bibo:hasPart">
+      <!--OddPage--><h2 id="h-checkoutdetails-dictionary" resource="#h-checkoutdetails-dictionary"><span property="xhv:role" resource="xhv:heading"><span class="secno">5. </span>CheckoutDetails dictionary</span></h2>
+      <pre class="idl"><span class="idlDictionary" id="idl-def-checkoutdetails" data-idl="" data-title="CheckoutDetails">dictionary <span class="idlDictionaryID"><a data-lt="CheckoutDetails" href="#dom-checkoutdetails" class="internalDFN" data-link-type="dfn" data-for=""><code>CheckoutDetails</code></a></span> {
+<span class="idlMember" id="idl-def-checkoutdetails-items" data-idl="" data-title="items" data-dfn-for="checkoutdetails">    <span class="idlMemberType">sequence&lt;<a href="#idl-def-paymentitem" class="internalDFN" data-link-type="dfn"><code>PaymentItem</code></a>&gt;</span> <span class="idlMemberName">items</span>;</span>
+<span class="idlMember" id="dom-shippingaddress" data-idl="" data-title="shippingAddress" data-dfn-for=""><code>    <span class="idlMemberType"><a href="#idl-def-shippingaddress" class="internalDFN" data-link-type="dfn"><code>ShippingAddress</code></a></span>       <span class="idlMemberName">shippingAddress</span>;</code></span>
+<span class="idlMember" id="dom-shippingoption" data-idl="" data-title="shippingOption" data-dfn-for=""><code>    <span class="idlMemberType"><a href="#idl-def-shippingoption" class="internalDFN" data-link-type="dfn"><code>ShippingOption</code></a></span>        <span class="idlMemberName">shippingOption</span>;</code></span>
+<span class="idlMember" id="idl-def-checkoutdetails-finished" data-idl="" data-title="finished" data-dfn-for="checkoutdetails">    <span class="idlMemberType">boolean</span>               <span class="idlMemberName">finished</span> = <span class="idlMemberValue">false</span>;</span>
+};</span></pre>
+
+      <p>
+        Promises returned by <a href="#dfn-start" class="internalDFN" data-link-type="dfn"><code><code>start</code></code></a> and <a href="#dfn-continue" class="internalDFN" data-link-type="dfn"><code><code>continue</code></code></a>
+        resolve to a <code><dfn data-dfn-for="" data-dfn-type="dfn" id="dom-checkoutdetails" data-idl="">CheckoutDetails</dfn></code> dictionary. It
+        provides the information requested from the user agent.
+      </p>
+      <p>
+        The following fields are part of the <code>CheckoutDetails</code> dictionary:
+      </p>
+      <dl>
+        <dt><code>items</code></dt>
+        <dd>
+          This sequence of <a href="#idl-def-paymentitem" class="internalDFN" data-link-type="dfn"><code><code>PaymentItem</code></code></a> dictionaries indicates details about
+          what the checkout is for. The sequence must contain at least one <code>PaymentItem</code>. The last
+          <code>PaymentItem</code> in the sequence represents the total payment requested. It is the
+          responsibility of the calling code to ensure that the total amount is the sum of the
+          preceding items. The <a href="#dfn-user-agent" class="internalDFN" data-link-type="dfn">user agent</a> <em class="rfc2119" title="MAY">MAY</em> not validate that this is true.
+        </dd>
+        <dt><code>shippingAddress</code></dt>
+        <dd>
+          The shipping address that the user selected. If the shipping address
+          is <code>null</code>, then this indicates that the user has not yet
+          selected a shipping address.
+        </dd>
+        <dt><code>shippingOption</code></dt>
+        <dd>
+          The shipping option that the user selected. If the option is
+          <code>null</code>, then this indicates that the user has not yet
+          selected a shipping option.
+        </dd>
+        <dt><code>finished</code></dt>
+        <dd>
+          The finished flag is set to true once the user has clicked a button
+          to complete checkout (eg: a "Buy" button). This flag informs the
+          merchant website that it can now generate a payment request message
+          to finish the checkout process and take the user to the payment
+          app selection screen.
+        </dd>
+      </dl>
+    </section>
+
+    <section id="checkoutitem-interface" typeof="bibo:Chapter" resource="#checkoutitem-interface" property="bibo:hasPart">
+      <!--OddPage--><h2 id="h-checkoutitem-interface" resource="#h-checkoutitem-interface"><span property="xhv:role" resource="xhv:heading"><span class="secno">6. </span>CheckoutItem interface</span></h2>
+      <pre class="idl"><span class="idlDictionary" id="idl-def-checkoutitem" data-idl="" data-title="CheckoutItem">dictionary <span class="idlDictionaryID">CheckoutItem</span> {
+<span class="idlMember" id="idl-def-checkoutitem-id" data-idl="" data-title="id" data-dfn-for="checkoutitem">    <span class="idlMemberType">string</span> <span class="idlMemberName">id</span>;</span>
+<span class="idlMember" id="idl-def-checkoutitem-label" data-idl="" data-title="label" data-dfn-for="checkoutitem">    <span class="idlMemberType">string</span> <span class="idlMemberName">label</span>;</span>
+};</span></pre>
+
+      <p>
+        The <a href="#idl-def-checkoutitem" class="internalDFN" data-link-type="dfn"><code>CheckoutItem</code></a> dictionary is a base class for other types
+        of items. A web page may supply different types of information to a
+        user agent, typically for display to a user.
+      </p>
+
+      <p>
+        The following fields <em class="rfc2119" title="MUST">MUST</em> be included in a <code>CheckoutItem</code> for it to be valid:
+      </p>
+      <dl>
+        <dt><code>id</code></dt>
+        <dd>This is a string identifier used to reference this <code>CheckoutItem</code>. It <em class="rfc2119" title="MUST">MUST</em> be
+        unique for a given <a href="#dom-checkout" class="internalDFN" data-link-type="dfn"><code><code>Checkout</code></code></a>.</dd>
+        <dt><code>label</code></dt>
+        <dd>This is a human-readable description of the item. The <a href="#dfn-user-agent" class="internalDFN" data-link-type="dfn">user agent</a> <em class="rfc2119" title="SHOULD">SHOULD</em> use this
+        string to display the item to the user.</dd>
+      </dl>
+    </section>
+
+    <section id="paymentitem-dictionary" typeof="bibo:Chapter" resource="#paymentitem-dictionary" property="bibo:hasPart">
+      <!--OddPage--><h2 id="h-paymentitem-dictionary" resource="#h-paymentitem-dictionary"><span property="xhv:role" resource="xhv:heading"><span class="secno">7. </span>PaymentItem dictionary</span></h2>
+      <pre class="idl"><span class="idlDictionary" id="idl-def-paymentitem" data-idl="" data-title="PaymentItem">dictionary <span class="idlDictionaryID">PaymentItem</span> : <span class="idlSuperclass"><a href="#idl-def-checkoutitem" class="internalDFN" data-link-type="dfn"><code>CheckoutItem</code></a></span> {
+<span class="idlMember" id="idl-def-paymentitem-amount" data-idl="" data-title="amount" data-dfn-for="paymentitem">    <span class="idlMemberType">FinancialAmount</span> <span class="idlMemberName">amount</span>;</span>
+<span class="idlMember" id="idl-def-paymentitem-shipping" data-idl="" data-title="shipping" data-dfn-for="paymentitem">    <span class="idlMemberType">boolean</span>         <span class="idlMemberName">shipping</span>;</span>
+};</span></pre>
+      <p>
+        A sequence of one or more <code>PaymentItem</code> dictionaries is included in the <a href="#dom-checkoutdetails" class="internalDFN" data-link-type="dfn"><code><code>CheckoutDetails</code></code></a>
+        dictionary to indicate the what the payment request is for and the value asked for.
+      </p>
+      <p>
+        In addition to the required fields for a <a href="#idl-def-checkoutitem" class="internalDFN" data-link-type="dfn"><code><code>CheckoutItem</code></code></a>, the
+        following fields <em class="rfc2119" title="MUST">MUST</em> be included in a <code>PaymentItem</code> for it to be valid:
+      </p>
+      <dl>
+        <dt><code>amount</code></dt>
+        <dd>
+          A <code>FinancialAmount</code> containing the monetary amount for the item.
+          <div class="issue" id="issue-19"><div class="issue-title" aria-level="3" role="heading" id="h-issue5"><a href="https://github.com/WICG/web-payments-browser-api/issues/19"><span>Issue 19</span></a><span style="text-transform: none">: Clarity on Currency Conversion</span></div><div class="">
+            There is an open issue about whether there needs to be consideration of differences between
+            the currency specified by the merchant for the transaction amount and the currencies that
+            the <a href="#dfn-payment-method" class="internalDFN" data-link-type="dfn">payment method</a> might support.
+          </div></div>
+        </dd>
+      </dl>
+      <p>
+        The following fields are optional and <em class="rfc2119" title="MAY">MAY</em> be included in a <code>PaymentItem</code>:
+      </p>
+      <dl>
+        <dt><code>shipping</code></dt>
+        <dd>If the <code>shipping</code> field is included, then it indicates whether this
+        item represents the shipping cost when set to <code>true</code>. The <a href="#dfn-user-agent" class="internalDFN" data-link-type="dfn">user agent</a>
+        <em class="rfc2119" title="MAY">MAY</em> use this value to display the item differently in the user interface, perhaps
+        relating it to the available shipping options.</dd>
+      </dl>
+    </section>
+
+    <section id="shippingaddress-interface" typeof="bibo:Chapter" resource="#shippingaddress-interface" property="bibo:hasPart">
+      <!--OddPage--><h2 id="h-shippingaddress-interface" resource="#h-shippingaddress-interface"><span property="xhv:role" resource="xhv:heading"><span class="secno">8. </span>ShippingAddress interface</span></h2>
+      <pre class="idl"><span class="idlInterface" id="idl-def-shippingaddress" data-idl="" data-title="ShippingAddress">interface <span class="idlInterfaceID"><a data-lt="ShippingAddress" href="#idl-def-shippingaddress" class="internalDFN" data-link-type="dfn" data-for=""><code>ShippingAddress</code></a></span> {
+<span class="idlSectionComment">    // [...] fields TBC </span>
+};</span></pre>
+      <p>
+        If the requestShipping flag was set to <code>true</code> in the <a href="#dom-checkoutdetails" class="internalDFN" data-link-type="dfn"><code>CheckoutDetails</code></a>
+        passed to the <a href="#dom-checkout" class="internalDFN" data-link-type="dfn"><code>Checkout</code></a> constructor, then the <a href="#dfn-user-agent" class="internalDFN" data-link-type="dfn">user agent</a> will populate the
+        <code>shippingAddress</code> field of the <a href="#dom-checkout" class="internalDFN" data-link-type="dfn"><code><code>Checkout</code></code></a> object with
+        the user's selected shipping address.
+      </p>
+      <div class="issue" id="issue-28"><div class="issue-title" aria-level="3" role="heading" id="h-issue6"><a href="https://github.com/WICG/web-payments-browser-api/issues/28"><span>Issue 28</span></a><span style="text-transform: none">: Write-up proposal for shipping address fields</span></div><div class="">
+        The fields of the <a href="#idl-def-shippingaddress" class="internalDFN" data-link-type="dfn"><code><code>ShippingAddress</code></code></a> interface are
+        yet to be defined.
+      </div></div>
+      <div class="issue" id="issue-16"><div class="issue-title" aria-level="3" role="heading" id="h-issue7"><a href="https://github.com/WICG/web-payments-browser-api/issues/16"><span>Issue 16</span></a><span style="text-transform: none">: Merchant requesting arbitrary data from the UA</span></div><div class="">
+        There is an open question about what data beyond shipping address the merchant might be able
+        to request from the <a href="#dfn-user-agent" class="internalDFN" data-link-type="dfn">user agent</a>. For example, billing address, contact phone number, e-mail
+        address, or proof of age.
+      </div></div>
+    </section>
+
+    <section id="checkoutoption-interface" typeof="bibo:Chapter" resource="#checkoutoption-interface" property="bibo:hasPart">
+      <!--OddPage--><h2 id="h-checkoutoption-interface" resource="#h-checkoutoption-interface"><span property="xhv:role" resource="xhv:heading"><span class="secno">9. </span>CheckoutOption interface</span></h2>
+      <pre class="idl"><span class="idlDictionary" id="idl-def-checkoutoption" data-idl="" data-title="CheckoutOption">dictionary <span class="idlDictionaryID">CheckoutOption</span> {
+<span class="idlMember" id="idl-def-checkoutoption-id" data-idl="" data-title="id" data-dfn-for="checkoutoption">    <span class="idlMemberType">string</span> <span class="idlMemberName">id</span>;</span>
+<span class="idlMember" id="idl-def-checkoutoption-label" data-idl="" data-title="label" data-dfn-for="checkoutoption">    <span class="idlMemberType">string</span> <span class="idlMemberName">label</span>;</span>
+};</span></pre>
+
+      <p>
+        The <a href="#idl-def-checkoutoption" class="internalDFN" data-link-type="dfn"><code>CheckoutOption</code></a> dictionary is a base class for other types
+        of options. When a web page requests information from a user, it may
+        provide a list of options for the user to select from.
+      </p>
+
+      <p>
+        The following fields <em class="rfc2119" title="MUST">MUST</em> be included in a <code>CheckoutOption</code> for it to be valid:
+      </p>
+      <dl>
+        <dt><code>id</code></dt>
+        <dd>This is a string identifier used to reference this <code>CheckoutOption</code>. It <em class="rfc2119" title="MUST">MUST</em> be
+        unique for a given <a href="#dom-checkout" class="internalDFN" data-link-type="dfn"><code><code>Checkout</code></code></a>.</dd>
+        <dt><code>label</code></dt>
+        <dd>This is a human-readable description of the option. The <a href="#dfn-user-agent" class="internalDFN" data-link-type="dfn">user agent</a> <em class="rfc2119" title="SHOULD">SHOULD</em> use this
+        string to display the option to the user.</dd>
+      </dl>
+    </section>
+
+    <section id="shippingoption-interface" typeof="bibo:Chapter" resource="#shippingoption-interface" property="bibo:hasPart">
+      <!--OddPage--><h2 id="h-shippingoption-interface" resource="#h-shippingoption-interface"><span property="xhv:role" resource="xhv:heading"><span class="secno">10. </span>ShippingOption interface</span></h2>
+      <pre class="idl"><span class="idlDictionary" id="idl-def-shippingoption" data-idl="" data-title="ShippingOption">dictionary <span class="idlDictionaryID"><a data-lt="ShippingOption" href="#idl-def-shippingoption" class="internalDFN" data-link-type="dfn" data-for=""><code>ShippingOption</code></a></span> : <span class="idlSuperclass"><a href="#idl-def-checkoutoption" class="internalDFN" data-link-type="dfn"><code>CheckoutOption</code></a></span> {
+<span class="idlMember" id="idl-def-shippingoption-amount" data-idl="" data-title="amount" data-dfn-for="shippingoption">    <span class="idlMemberType">FinancialAmount</span> <span class="idlMemberName">amount</span>;</span>
+};</span></pre>
+      <p>
+        The <a href="#idl-def-shippingoption" class="internalDFN" data-link-type="dfn"><code>ShippingOption</code></a> dictionary has fields describing a shipping option. A web page can
+        provide the user with one or more shipping options by calling <a href="#dfn-request" class="internalDFN" data-link-type="dfn"><code><code>request</code></code></a>
+        method.
+      </p>
+      <p>
+        In addition to the required fields for a <a href="#idl-def-checkoutoption" class="internalDFN" data-link-type="dfn"><code><code>CheckoutOption</code></code></a>, the
+        following fields <em class="rfc2119" title="MUST">MUST</em> be included in a <code>ShippingOption</code> for it to be valid:
+      </p>
+      <dl>
+        <dd>This is a human-readable description of the item. The <a href="#dfn-user-agent" class="internalDFN" data-link-type="dfn">user agent</a> <em class="rfc2119" title="SHOULD">SHOULD</em> use this
+        string to display the shipping option to the user.</dd>
+        <dt><code>amount</code></dt>
+        <dd>
+          A <code>FinancialAmount</code> containing the monetary amount for the item.
+        </dd>
+      </dl>
+    </section>
+
+    <section id="algorithms" typeof="bibo:Chapter" resource="#algorithms" property="bibo:hasPart">
+      <!--OddPage--><h2 id="h-algorithms" resource="#h-algorithms"><span property="xhv:role" resource="xhv:heading"><span class="secno">11. </span>Algorithms</span></h2>
+
+      <div class="issue"><div class="issue-title" aria-level="3" role="heading" id="h-issue8"><span>Issue</span></div><p class="">This entire section is out of date and needs to be updated if the approach above is deemed useful by the WG.</p></div>
+
+      <p>When the <a href="#dom-checkout" class="internalDFN" data-link-type="dfn"><code><code>Checkout</code></code></a> object is in the <code>interactive</code> state,
+      the <a href="#dfn-user-agent" class="internalDFN" data-link-type="dfn">user agent</a> will trigger the following algorithms based on user interaction.</p>
+
+      <section id="shipping-address-changed-algorithm" typeof="bibo:Chapter" resource="#shipping-address-changed-algorithm" property="bibo:hasPart">
+        <h3 id="h-shipping-address-changed-algorithm" resource="#h-shipping-address-changed-algorithm"><span property="xhv:role" resource="xhv:heading"><span class="secno">11.1 </span>Shipping address changed algorithm</span></h3>
+        <p>
+          The <dfn data-dfn-type="dfn" id="dfn-shipping-address-changed-algorithm">shipping address changed algorithm</dfn> runs when the user provides a new shipping
+          address. It <em class="rfc2119" title="MUST">MUST</em> run the following steps:
+        </p>
+        <ol>
+          <li>Let <em>request</em> be the <a href="#dom-checkout" class="internalDFN" data-link-type="dfn"><code><code>Checkout</code></code></a> object that the user is
+          interacting with.</li>
+          <li>Let <em>name</em> be <code><dfn data-dfn-type="dfn" id="dfn-shippingaddresschange">shippingaddresschange</dfn></code>.</li>
+          <li>
+            Set the <a href="#idl-def-shippingaddress" class="internalDFN" data-link-type="dfn"><code><code>shippingAddress</code></code></a> attribute on <em>request</em> to the
+            shipping address provided by the user.
+          </li>
+          <li>
+            Run the Checkout updated algorithm with <em>request</em> and <em>name</em>.
+          </li>
+        </ol>
+      </section>
+
+      <section id="user-agent-delegates-payment-request-algorithm" typeof="bibo:Chapter" resource="#user-agent-delegates-payment-request-algorithm" property="bibo:hasPart">
+        <h3 id="h-user-agent-delegates-payment-request-algorithm" resource="#h-user-agent-delegates-payment-request-algorithm"><span property="xhv:role" resource="xhv:heading"><span class="secno">11.2 </span>User agent delegates payment request algorithm</span></h3>
+
+        <div class="issue"><div class="issue-title" aria-level="4" role="heading" id="h-issue9"><span>Issue</span></div><p class="">This entire section is out of date and needs to be updated if the approach above is deemed useful by the WG.</p></div>
+
+        <p>
+          The <a href="#dom-checkout" class="internalDFN" data-link-type="dfn"><code><code>Checkout</code></code></a> interface allows a web page to call <code>abort</code>
+          to tell the <a href="#dfn-user-agent" class="internalDFN" data-link-type="dfn">user agent</a> to abort the payment request and to tear down any user interface that
+          might be shown. For example, a web page may choose to do this the goods they are selling are
+          only available for a limited amount of time. If the user does not accept the payment request
+          within the allowed time period, then the request will be aborted.
+        </p>
+        <p>
+          A <a href="#dfn-user-agent" class="internalDFN" data-link-type="dfn">user agent</a> may not always be able to abort a request. For example, if the <a href="#dfn-user-agent" class="internalDFN" data-link-type="dfn">user agent</a>
+          has delegated responsibility for the request to another app. To support this situation,
+          the <a href="#dfn-user-agent" class="internalDFN" data-link-type="dfn">user agent</a> must run the <dfn data-dfn-type="dfn" id="dfn-user-agent-delegates-payment-request-algorithm">User agent delegates payment request algorithm</dfn>.
+          The algorithm <em class="rfc2119" title="MUST">MUST</em> run the following steps:
+        </p>
+
+        <ol>
+          <li>
+            Let <em>request</em> be the <a href="#dom-checkout" class="internalDFN" data-link-type="dfn"><code><code>Checkout</code></code></a> object that the user is
+            interacting with.
+          </li>
+          <li>
+            If the <em>updating</em> flag on <em>request</em> is <em>true</em>, then terminate this
+            algorithm and take no further action. The <a href="#dfn-user-agent" class="internalDFN" data-link-type="dfn">user agent</a> user interface should ensure
+            that this never occurs.
+          </li>
+          <li>
+            If the <code>state</code> of <em>request</em> is not <code>interactive</code>,
+            then terminate this algorithm and take no further action. The <a href="#dfn-user-agent" class="internalDFN" data-link-type="dfn">user agent</a> user
+            interface should ensure that this never occurs.
+          </li>
+          <li>
+            Set the <code>state</code> of <em>request</em> to <code>delegated</code>.
+          </li>
+        </ol>
+
+        <div class="issue" id="issue-33"><div class="issue-title" aria-level="4" role="heading" id="h-issue10"><a href="https://github.com/WICG/web-payments-browser-api/issues/33"><span>Issue 33</span></a><span style="text-transform: none">: Should we support a delegated state for Checkout?</span></div><div class="">
+          <p>We believe there are <a href="#dfn-user-agent" class="internalDFN" data-link-type="dfn">user agent</a> configurations that can cause the UI to get into a state
+          where cancellation by the web page during user interaction is difficult. Users should still
+          be able to cancel the payment but script will not be able to. We need to investigate in more
+          detail the consequences of this and whether it is really needed.</p>
+          <p>If we specify <code>delegated</code> then it isn't necessary for all <a href="#dfn-user-agent" class="internalDFN" data-link-type="dfn">user agents</a> to be
+          able to move to this state but it would be necessary for all payment flows that wish to call
+          <code>abort</code> to account for the situation where this may fail in the <code>delegated</code>
+          state.</p>
+        </div></div>
+      </section>
+
+      <section id="user-accepts-the-payment-request-algorithm" typeof="bibo:Chapter" resource="#user-accepts-the-payment-request-algorithm" property="bibo:hasPart">
+        <h3 id="h-user-accepts-the-payment-request-algorithm" resource="#h-user-accepts-the-payment-request-algorithm"><span property="xhv:role" resource="xhv:heading"><span class="secno">11.3 </span>User accepts the payment request algorithm</span></h3>
+
+        <div class="issue"><div class="issue-title" aria-level="4" role="heading" id="h-issue11"><span>Issue</span></div><p class="">This entire section is out of date and needs to be updated if the approach above is deemed useful by the WG.</p></div>
+
+        <p>
+          The <dfn data-dfn-type="dfn" id="dfn-user-accepts-the-payment-request-algorithm">user accepts the payment request
+          algorithm</dfn> runs when the user accepts the payment request and confirms that they want
+          to pay. It <em class="rfc2119" title="MUST">MUST</em> run the following steps:
+        </p>
+        <ol>
+          <li>
+            Let <em>request</em> be the <a href="#dom-checkout" class="internalDFN" data-link-type="dfn"><code><code>Checkout</code></code></a> object that the user is
+            interacting with.
+          </li>
+          <li>
+            If the <em>updating</em> flag on <em>request</em> is <em>true</em>, then terminate this
+            algorithm and take no further action. The <a href="#dfn-user-agent" class="internalDFN" data-link-type="dfn">user agent</a> user interface should ensure
+            that this never occurs.
+          </li>
+          <li>
+            If the <code>state</code> of <em>request</em> is not <code>interactive</code> and
+            the not <code>delegated</code>, then terminate this algorithm and take no further action.
+            The <a href="#dfn-user-agent" class="internalDFN" data-link-type="dfn">user agent</a> user interface should ensure that this never occurs.
+          </li>
+          <li>
+            If the <code>requestShipping</code> value of <em>options</em> stored in <em>request</em>
+            is <code>true</code>, then if the <code>shippingAddress</code> attribute of <em>request</em>
+            is <code>null</code> or if the <code>shippingOption</code> attribute of <em>request</em>
+            is <code>null</code>, then terminate this algorithm and take no further action. This should
+            never occur.
+          </li>
+          <li>
+            Let <em>response</em> be a new <code>PaymentResponse</code>.
+          </li>
+          <li>
+            Set the <code>methodName</code> attribute value of <em>response</em> to the <a href="#dfn-payment-method-identifier" class="internalDFN" data-link-type="dfn">payment method identifier</a>
+            for the <a href="#dfn-payment-method" class="internalDFN" data-link-type="dfn">payment method</a> that the user selected to accept the payment.
+          </li>
+          <li>
+            Set the <code>details</code> attribute value of <em>response</em> to a <a href="#dfn-json-object" class="internalDFN" data-link-type="dfn">JSON object</a>
+            containing the <a href="#dfn-payment-method" class="internalDFN" data-link-type="dfn">payment method</a> specific message used by the merchant to process
+            the transaction.
+          </li>
+          <li>
+            Set the <code>state</code> of <em>request</em> to <code>accepted</code>.
+          </li>
+          <li>
+            Resolve the pending <em>acceptPromise</em> for the <em>request</em> that was returned
+            by the <a href="#dfn-send" class="internalDFN" data-link-type="dfn"><code><code>send</code></code></a> method call that started the payment request.
+          </li>
+        </ol>
+      </section>
+    </section>
+
+<section id="extensibility" typeof="bibo:Chapter" resource="#extensibility" property="bibo:hasPart">
+  <!--OddPage--><h2 id="h-extensibility" resource="#h-extensibility"><span property="xhv:role" resource="xhv:heading"><span class="secno">12. </span>Extensibility</span></h2>
+
+  <p>
+In general, the WebIDL descriptions provided in this specification outline
+the specific interfaces, properties, and values that an implementation <em class="rfc2119" title="MAY">MAY</em>
+depend on. It is expected that other properties and values will be stored in
+objects that implement the various interfaces in this specification (e.g.
+<a href="#dom-checkoutdetails" class="internalDFN" data-link-type="dfn"><code>CheckoutDetails</code></a>, <a href="#idl-def-shippingaddress" class="internalDFN" data-link-type="dfn"><code>ShippingAddress</code></a>,
+<a href="#idl-def-checkoutitem" class="internalDFN" data-link-type="dfn"><code>CheckoutItem</code></a>, etc.). While this specification does not suggest a
+single extension mechanism, it does anticipate extensibility.
+To that end,
+  </p>
+
+  <ul>
+    <li>
+Implementations <em class="rfc2119" title="MUST">MUST</em> preserve unrecognized properties and their
+associated values.
+    </li>
+    <li>
+Another specification [LINK_TBD] explains how to extend the
+parameters used with this API using JSON-LD.
+    </li>
+  </ul>
+
+  <div class="issue"><div class="issue-title" aria-level="3" role="heading" id="h-issue12"><span>Issue</span></div><p class="">
+The Working Group seeks feedback from the Web community on that
+specification and how well it furthers interoperability needs in the
+payments ecosystem. To provide feedback, see the
+<a href="#h-sotd">status section</a> above.
+  </p></div>
+</section>
+
+  
+
+<section id="references" class="appendix" typeof="bibo:Chapter" resource="#references" property="bibo:hasPart"><!--OddPage--><h2 id="h-references" resource="#h-references"><span property="xhv:role" resource="xhv:heading"><span class="secno">A. </span>References</span></h2><section id="normative-references" typeof="bibo:Chapter" resource="#normative-references" property="bibo:hasPart"><h3 id="h-normative-references" resource="#h-normative-references"><span property="xhv:role" resource="xhv:heading"><span class="secno">A.1 </span>Normative references</span></h3><dl class="bibliography" resource=""><dt id="bib-DOM4">[DOM4]</dt><dd>Anne van Kesteren; Aryeh Gregor; Ms2ger; Alex Russell; Robin Berjon. <a href="http://www.w3.org/TR/dom/" property="dc:requires"><cite>W3C DOM4</cite></a>. 19 November 2015. W3C Recommendation. URL: <a href="http://www.w3.org/TR/dom/" property="dc:requires">http://www.w3.org/TR/dom/</a>
+</dd><dt id="bib-ECMA-262-2015">[ECMA-262-2015]</dt><dd>Allen Wirfs-Brock. <a href="http://www.ecma-international.org/ecma-262/6.0/index.html" property="dc:requires"><cite>ECMA-262 6th Edition, The ECMAScript 2015 Language Specification</cite></a>. June 2015. Standard. URL: <a href="http://www.ecma-international.org/ecma-262/6.0/index.html" property="dc:requires">http://www.ecma-international.org/ecma-262/6.0/index.html</a>
+</dd><dt id="bib-HTML5">[HTML5]</dt><dd>Ian Hickson; Robin Berjon; Steve Faulkner; Travis Leithead; Erika Doyle Navara; Edward O'Connor; Silvia Pfeiffer. <a href="http://www.w3.org/TR/html5/" property="dc:requires"><cite>HTML5</cite></a>. 28 October 2014. W3C Recommendation. URL: <a href="http://www.w3.org/TR/html5/" property="dc:requires">http://www.w3.org/TR/html5/</a>
+</dd><dt id="bib-METHODIDENTIFIERS">[METHODIDENTIFIERS]</dt><dd>Adrian Bateman. <a href="method-identifiers.html" property="dc:requires"><cite>Payment Method Identifiers</cite></a>. CG-DRAFT. URL: <a href="method-identifiers.html" property="dc:requires">method-identifiers.html</a>
+</dd><dt id="bib-PAYMENTAPI">[PAYMENTAPI]</dt><dd>Manu Sporny; David Longley. <a href="http://wicg.github.io/web-payments-browser-api/" property="dc:requires"><cite>Browser Payment API</cite></a>. CG-DRAFT. URL: <a href="http://wicg.github.io/web-payments-browser-api/" property="dc:requires">http://wicg.github.io/web-payments-browser-api/</a>
+</dd><dt id="bib-POWERFUL-FEATURES">[POWERFUL-FEATURES]</dt><dd>Mike West; Yan Zhu. <a href="http://www.w3.org/TR/powerful-features/" property="dc:requires"><cite>Privileged Contexts</cite></a>. 24 April 2015. W3C Working Draft. URL: <a href="http://www.w3.org/TR/powerful-features/" property="dc:requires">http://www.w3.org/TR/powerful-features/</a>
+</dd><dt id="bib-RFC2119">[RFC2119]</dt><dd>S. Bradner. <a href="https://tools.ietf.org/html/rfc2119" property="dc:requires"><cite>Key words for use in RFCs to Indicate Requirement Levels</cite></a>. March 1997. Best Current Practice. URL: <a href="https://tools.ietf.org/html/rfc2119" property="dc:requires">https://tools.ietf.org/html/rfc2119</a>
+</dd><dt id="bib-WEBIDL">[WEBIDL]</dt><dd>Cameron McCormack; Boris Zbarsky. <a href="http://www.w3.org/TR/WebIDL-1/" property="dc:requires"><cite>WebIDL Level 1</cite></a>. 4 August 2015. W3C Working Draft. URL: <a href="http://www.w3.org/TR/WebIDL-1/" property="dc:requires">http://www.w3.org/TR/WebIDL-1/</a>
+</dd></dl></section><section id="informative-references" typeof="bibo:Chapter" resource="#informative-references" property="bibo:hasPart"><h3 id="h-informative-references" resource="#h-informative-references"><span property="xhv:role" resource="xhv:heading"><span class="secno">A.2 </span>Informative references</span></h3><dl class="bibliography" resource=""><dt id="bib-PAYMENTARCH">[PAYMENTARCH]</dt><dd>Adrian Bateman. <a href="architecture.html" property="dc:references"><cite>Payment Request Architecture</cite></a>. CG-DRAFT. URL: <a href="architecture.html" property="dc:references">architecture.html</a>
+</dd></dl></section></section></body></html>
