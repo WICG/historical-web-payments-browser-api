@@ -238,11 +238,12 @@
       <h2>The <dfn>Checkout</dfn> Interface</h2>
       <pre class="idl">
 [Constructor]
-interface Checkout {
+interface Checkout : EventTarget {
   Checkout send(DOMString itemType, optional sequence &lt;CheckoutItem&gt; items);
   Checkout request(DOMString optionType, optional sequence &lt;CheckoutOption&gt; options);
+  attribute EventHandler onshippingAddressChange;
+  attribute EventHandler onshippingOptionChange;
   Promise&lt;CheckoutDetails&gt; start();
-  Promise&lt;CheckoutDetails&gt; continue();
   Promise cancel(DOMString reason);
   Promise finish(PaymentRequest request);
 };
@@ -259,31 +260,34 @@ to start the checkout process and waits for a promise to resolve.
       </p>
 
       <p>
-The browser then opens a UI to take the user through the checkout process. Once
-the user has made all of their selections, the user (for example) clicks a
-button to see their total. Upon clicking, the promise the merchant was waiting
-on resolves with the requested information and the in-browser UI will wait for
-the merchant site to call "finish" with the payment request message (which can
-be generated asynchronously if desired). The merchant can also call "cancel"
-instead. Sometimes the merchant may need to request information piecemeal; for
-example, the merchant may need to request a shipping address before a set of
-shipping options can be provided for the user to select from. In this case,
-the merchant may request that the user select from a list of shipping options
-and then call "continue", which will return a Promise that the merchant site
-can wait for, just like when calling "start". Once a Promise resolves with
-checkout details where the "finished" flag is set to true, the merchant can
-generate a payment request message and pass it to "finish" to complete the
-checkout process.
+The browser then opens a UI to take the user through the checkout process. The
+button to finish the checkout button will be disabled until the user provides
+all of the information that the merchant has requested. Sometimes some of the
+information the merchant needs may depend on collecting other types of
+information first. For example, the merchant may need to obtain the user's
+shipping address before offering the appropriate shipping options for their
+area. In this case, the merchant site may listen for an address change event
+and, when it occurs, may request that the user additionally select a shipping
+option from a list provided by the merchant site. The merchant may also
+optionally call "cancel" if they can't ship to the user's address.
+      </p>
+
+      <p>
+Only once all of the requested information has been provided, will the
+user be able to click a button to proceed. Upon clicking it, the Promise
+resolves with all the checkout details the merchant needs to generate a
+payment request message. They do so and pass it to "finish" to complete the
+checkout process and allow the user to pay with their choice of payment app.
       </p>
 
       <p>
 Once finish is called, it internally calls navigator.payment.request(paymentRequest)
-and returns a promise, which will resolve to an error or a payment
-acknowledgement. This causes the in-browser UI to show the price and payment
-app selection screen, just like it would have if called independently. If the
-user selects a payment app and completes their payment, the merchant site will
-eceive a payment acknowledgement via the resolved promise, otherwise, it will
-receive an error.
+which returns a Promise that will eventually resolve to a payment
+acknowledgement from the payment app selected by the user. This call causes the
+in-browser UI to show the price and payment app selection screen, just like it
+would have if called independently. If the user selects a payment app and
+completes their payment, the merchant site will receive a payment
+acknowledgement via the resolved promise, otherwise, it will receive an error.
       </p>
 
       <p>
@@ -292,21 +296,16 @@ considering the merchant's thought process:
       </p>
       <ol>
         <li>
-          What do I need from the UA to generate a payment request? Ask for it
-          and wait for a response.
+          What do I need from the UA to generate a payment request? Ask for it.
+          If I anticipate needing more information, listen for events where
+          I can react to the information given so far and ask for more
+          information as needed.
         </li>
         <li>
-          Do I have everything I need now? If not, ask for more and wait for
-          a response. If I do, generate a payment request and finish the flow.
+          Now I have everything I need, so generate a payment request and
+          finish the flow.
         </li>
       </ol>
-
-      <p class="issue">
-Note: If a "back" feature for the in-browser UI is desirable at this point,
-one option is to return a promise in the error that can be waited on, again, to
-resolve once the user is ready for the merchant site to generate the payment
-request message based on their changes.
-      </p>
 
       <p class="issue">
 This API can be used to give merchant sites a full, in-browser, checkout
@@ -317,17 +316,6 @@ address or other "identity credentials/verifiable claims" (this is aimed at
 supporting The Extensible Web Manifesto approach). These APIs are not yet
 exposed as low-level APIs, but this approach is an attempt to do some future
 proofing should they be standardized at some point.
-      </p>
-
-      <p class="issue">
-This API is also designed so that the flow occurs in a straightforward,
-deterministic, singular way. It intentionally avoids events and exposing state
-management to the merchant site. The merchant site does not have to deal with
-multiple events coming from the in-browser UI and the subsequent management of
-any asynchronous work it generates. Rather, once the user has made their
-selections and chosen all of the necessary information, it will be informed.
-The in-browser UI will not allow further action until the merchant site
-responds with a call to "continue" or a payment request message.
       </p>
 
       <p>The following examples show various <a><code>Checkout</code></a> flows
@@ -347,6 +335,8 @@ function finishCheckout(checkoutDetails) {
   // finish checkout will call `navigator.payment.request` internally
   checkout.finish(paymentRequest).then(function(acknowledgement) {
     // handle acknowledgement from payment app
+  }).catch(function(err) {
+    // handle error
   });
 }
       </pre>
@@ -356,38 +346,40 @@ var checkout = new Checkout();
 checkout
   .send('paymentItem', paymentItems)  // send line item estimate to UA
   .request('shippingAddress')         // request shippingAddress from UA
+  .addEventListener('shippingAddressChange', shippingAddressChanged)
   .start()                            // start the checkout UI
   .then(finishCheckout);              // checkout UI has collected the info
 
-function finishCheckout(checkoutDetails) {
-  if(!isAddressAcceptable(checkoutDetails.shippingAddress)) {
+function shippingAddressChanged(event) {
+  var checkoutDetails = event.checkoutDetails;
+
+  if(!isAddressAcceptable(checkoutDetails.address)) {
     return checkout.cancel('We cannot ship to your address.');
   }
 
-  // recalculate line item details based on `checkoutDetails.shippingAddress`
-  // and call `send()` so the browser can show the updated info
-  // note this could also be done asynchronously
-  for(let item of checkoutDetails.items) {
-    // new shipping cost
-    if(item.id === 'shipping') {
-      item.amount = calcShippingAmount(checkoutDetails);
-    }
-    // new tax amount
-    if(item.id === 'tax') {
-      item.amount = calcTaxAmount(checkoutDetails);
-    }
-  }
-  checkout.send('paymentItem', checkoutDetails.items);
+  // send updated payment items; note `send` can accept a Promise
+  checkout.send('paymentItem', getPaymentItems(checkoutDetails));
+}
 
-  if(!checkoutDetails.finished) {
-    return checkout.continue().then(finishCheckout);
-  }
+function getPaymentItems(checkoutDetails) {
+  // post checkout details to shipping calculation endpoint and return
+  // updated payment items in a Promise
+  return fetch('/calc-shipping', {
+    method: 'POST',
+    body: JSON.stringify(checkoutDetails)
+  }).then(function(res) {
+    return res.json();
+  });
+}
 
-  // create a payment request from the checkout details
-  var paymentRequest = customCreatePaymentRequest(checkoutDetails);
-
-  checkout.finish(paymentRequest).then(function(acknowledgement) {
+function finishCheckout(checkoutDetails) {
+  // asynchronously create a payment request from the checkout details
+  customCreatePaymentRequest(checkoutDetails).then(function(paymentRequest) {
+    return checkout.finish(paymentRequest);
+  }).then(function(acknowledgement) {
     // handle acknowledgement from payment app
+  }).catch(function(err) {
+    // handle error
   });
 }
       </pre>
@@ -398,38 +390,45 @@ checkout
   .send('paymentItem', paymentItems)            // send line item estimate to UA
   .request('shippingAddress')                   // request shippingAddress from UA
   .request('shippingOption', shippingOptions)   // request shippingOption from UA
+  .addEventListener('shippingAddressChange', shippingAddressChanged)
+  .addEventListener('shippingOptionChange', shippingOptionChanged)
   .start()                                      // start the checkout UI
   .then(finishCheckout);                        // checkout UI has collected the info
 
-function finishCheckout(checkoutDetails) {
-  if(!isAddressAcceptable(checkoutDetails.shippingAddress)) {
+function shippingAddressChanged(event) {
+  var checkoutDetails = event.checkoutDetails;
+
+  if(!isAddressAcceptable(checkoutDetails.address)) {
     return checkout.cancel('We cannot ship to your address.');
   }
 
-  // recalculate line item details based on `checkoutDetails.shippingAddress`
-  // and `checkoutDetails.shippingOption` call `send()` so the browser can
-  // show the updated info
-  for(let item of checkoutDetails.items) {
-    // new shipping cost
-    if(item.id === 'shipping') {
-      item.amount = calcShippingAmount(checkoutDetails);
-    }
-    // new tax amount
-    if(item.id === 'tax') {
-      item.amount = calcTaxAmount(checkoutDetails);
-    }
-  }
-  checkout.send('paymentItem', checkoutDetails.items);
+  // send updated payment items; note `send` can accept a Promise
+  checkout.send('paymentItem', getPaymentItems(checkoutDetails));
+}
 
-  if(!checkoutDetails.finished) {
-    return checkout.continue().then(finishCheckout);
-  }
+function shippingOptionChanged(event) {
+  event.send('paymentItem', getPaymentItems(event.checkoutDetails));
+}
 
-  // create a payment request from the checkout details
-  var paymentRequest = customCreatePaymentRequest(checkoutDetails);
+function getPaymentItems(checkoutDetails) {
+  // post checkout details to shipping calculation endpoint and return
+  // updated payment items in a Promise
+  return fetch('/calc-shipping', {
+    method: 'POST',
+    body: JSON.stringify(checkoutDetails)
+  }).then(function(res) {
+    return res.json();
+  });
+}
 
-  checkout.finish(paymentRequest).then(function(acknowledgement) {
+function finishCheckout(checkoutDetails) {
+  // asynchronously create a payment request from the checkout details
+  customCreatePaymentRequest(checkoutDetails).then(function(paymentRequest) {
+    return checkout.finish(paymentRequest);
+  }).then(function(acknowledgement) {
     // handle acknowledgement from payment app
+  }).catch(function(err) {
+    // handle error
   });
 }
       </pre>
@@ -439,46 +438,56 @@ var checkout = new Checkout();
 checkout
   .send('paymentItem', paymentItems)  // send line item estimate to UA
   .request('shippingAddress')         // request shippingAddress from UA
+  .addEventListener('shippingAddressChange', shippingAddressChanged)
+  .addEventListener('shippingOptionChange', shippingOptionChanged)
   .start()                            // start the checkout UI
   .then(finishCheckout);              // checkout UI has collected the info
 
-function finishCheckout(checkoutDetails) {
-  if(!isAddressAcceptable(checkoutDetails.shippingAddress)) {
+function shippingAddressChanged(event) {
+  var checkoutDetails = event.checkoutDetails;
+
+  if(!isAddressAcceptable(checkoutDetails.address)) {
     return checkout.cancel('We cannot ship to your address.');
   }
 
-  // no shipping option has been picked yet, request that the user pick a
-  // certain shipping option based on their address and continue
-  if(!checkoutDetails.shippingOption) {
-    return checkout
-      .request('shippingOption', createShippingOptions(checkoutDetails))
-      .continue().then(finishCheckout);
-  }
+  // send updated payment items and additionally request shipping option
+  // selection; note `send` and `request` can each accept a Promise
+  checkout
+    .send('paymentItem', getPaymentItems(checkoutDetails))
+    .request('shippingOption', getShippingOptions(checkoutDetails.address));
+}
 
-  // recalculate line item details based on `checkoutDetails.shippingAddress`
-  // and `checkoutDetails.shippingOption` call `send()` so the browser can
-  // show the updated info
-  for(let item of checkoutDetails.items) {
-    // new shipping cost
-    if(item.id === 'shipping') {
-      item.amount = calcShippingAmount(checkoutDetails);
-    }
-    // new tax amount
-    if(item.id === 'tax') {
-      item.amount = calcTaxAmount(checkoutDetails;
-    }
-  }
-  checkout.send('paymentItem', checkoutDetails.items);
+function shippingOptionChanged(event) {
+  event.send('paymentItem', getPaymentItems(event.checkoutDetails));
+}
 
-  if(!checkoutDetails.finished) {
-    return checkout.continue().then(finishCheckout);
-  }
+function getPaymentItems(checkoutDetails) {
+  // post checkout details to shipping calculation endpoint and return
+  // updated payment items in a Promise
+  return fetch('/calc-shipping', {
+    method: 'POST',
+    body: JSON.stringify(checkoutDetails)
+  }).then(function(res) {
+    return res.json();
+  });
+}
 
+function getShippingOptions(checkoutDetails) {
+  // determine shipping options from checkoutDetails.shippingAddress
+  // by, for example, restricting them based on country
+  // ...
+
+  return Promise.resolve(shippingOptions);
+}
+
+function finishCheckout(checkoutDetails) {
   // asynchronously create a payment request from the checkout details
   customCreatePaymentRequest(checkoutDetails).then(function(paymentRequest) {
     return checkout.finish(paymentRequest);
   }).then(function(acknowledgement) {
     // handle acknowledgement from payment app
+  }).catch(function(err) {
+    // handle error
   });
 }
       </pre>
@@ -518,20 +527,15 @@ function finishCheckout(checkoutDetails) {
       </section>
 
       <section>
-        <h2>start()</h2>
+        <h2>addEventListener()</h2>
         <p>
-          The <code><dfn>start</dfn></code> method must ...
+          The <code><dfn>addEventListener</dfn></code> method registers an
+          event listener for a particular type of event.
         </p>
 
-        <p>The <a><code>start</code></a> call returns a Promise that
-        resolves to a <a><code>CheckoutDetails</code></a> dictionary. If enough
-        information is present in the details to perform a payment request, a
-        web site creates the payment request and calls <a><code>finish</code></a>.
-        Otherwise, the web site may request more information by calling
-        <a><code>request</code></a> followed by <a><code>continue</code></a>.
+        <p>
+          The <a><code>addEventListener</code></a> method MUST act as follows:
         </p>
-
-        <p>The <a><code>start</code></a> method MUST act as follows:</p>
         <ol>
           <li>
             ...
@@ -540,20 +544,22 @@ function finishCheckout(checkoutDetails) {
       </section>
 
       <section>
-        <h2>continue()</h2>
+        <h2>start()</h2>
         <p>
-          The <code><dfn>continue</dfn></code> method must ...
+          The <code><dfn>start</dfn></code> method must ...
         </p>
 
-        <p>The <a><code>continue</code></a> call returns a Promise that
-        resolves to a <a><code>CheckoutDetails</code></a> dictionary. If enough
-        information is present in the details to perform a payment request, a
-        web site creates the payment request and calls <a><code>finish</code></a>.
-        Otherwise, the web site may request more information by calling
-        <a><code>request</code></a> followed by <a><code>continue</code></a>.
+        <p>The <a><code>start</code></a> call returns a Promise that
+        resolves to a <a><code>CheckoutDetails</code></a> dictionary once
+        the requested information has been provided by the user agent. A
+        website may add event listeners to capture events as the user provides
+        information in order to request more information as needed. Only once
+        all of the requested information has been provided will the Promise
+        resolve. At this point, the website can then create a payment request
+        payment request and call <a><code>finish</code></a> with it.
         </p>
 
-        <p>The <a><code>continue</code></a> method MUST act as follows:</p>
+        <p>The <a><code>start</code></a> method MUST act as follows:</p>
         <ol>
           <li>
             ...
@@ -602,13 +608,12 @@ dictionary CheckoutDetails {
   sequence&lt;PaymentItem&gt; items;
   ShippingAddress shippingAddress;
   ShippingOption shippingOption;
-  boolean finished = false;
 };
       </pre>
 
       <p>
-        Promises returned by <a><code>start</code></a> and <a><code>continue</code></a>
-        resolve to a <code><dfn>CheckoutDetails</dfn></code> dictionary. It
+        The Promise returned by <a><code>start</code></a> resolves to a
+        <code><dfn>CheckoutDetails</dfn></code> dictionary. It
         provides the information requested from the user agent.
       </p>
       <p>
@@ -634,14 +639,6 @@ dictionary CheckoutDetails {
           The shipping option that the user selected. If the option is
           <code>null</code>, then this indicates that the user has not yet
           selected a shipping option.
-        </dd>
-        <dt><code>finished</code></dt>
-        <dd>
-          The finished flag is set to true once the user has clicked a button
-          to complete checkout (eg: a "Buy" button). This flag informs the
-          merchant website that it can now generate a payment request message
-          to finish the checkout process and take the user to the payment
-          app selection screen.
         </dd>
       </dl>
     </section>
