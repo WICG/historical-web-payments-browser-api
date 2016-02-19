@@ -1,0 +1,2450 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" typeof="bibo:Document " prefix="bibo: http://purl.org/ontology/bibo/ w3p: http://www.w3.org/2001/02pd/rec54#">
+<head><meta lang="" property="dc:language" content="en">
+    <title>Web Payments Browser API 1.0</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+    <!--
+      === NOTA BENE ===
+      For the three scripts below, if your spec resides on dev.w3 you can check them
+      out in the same tree and use relative links so that they'll work offline,
+     -->
+    <style>/* --- EXAMPLES --- */
+div.example-title {
+    min-width: 7.5em;
+    color: #b9ab2d;
+}
+div.example-title span {
+    text-transform: uppercase;
+}
+aside.example, div.example, div.illegal-example {
+    padding: 0.5em;
+    margin: 1em 0;
+    position: relative;
+    clear: both;
+}
+div.illegal-example { color: red }
+div.illegal-example p { color: black }
+aside.example, div.example {
+    padding: .5em;
+    border-left-width: .5em;
+    border-left-style: solid;
+    border-color: #e0cb52;
+    background: #fcfaee;
+}
+
+aside.example div.example {
+    border-left-width: .1em;
+    border-color: #999;
+    background: #fff;
+}
+aside.example div.example div.example-title {
+    color: #999;
+}
+</style><style>/* --- ISSUES/NOTES --- */
+div.issue-title, div.note-title , div.ednote-title, div.warning-title {
+    padding-right:  1em;
+    min-width: 7.5em;
+    color: #b9ab2d;
+}
+div.issue-title { color: #e05252; }
+div.note-title, div.ednote-title { color: #2b2; }
+div.warning-title { color: #f22; }
+div.issue-title span, div.note-title span, div.ednote-title span, div.warning-title span {
+    text-transform: uppercase;
+}
+div.note, div.issue, div.ednote, div.warning {
+    margin-top: 1em;
+    margin-bottom: 1em;
+}
+.note > p:first-child, .ednote > p:first-child, .issue > p:first-child, .warning > p:first-child { margin-top: 0 }
+.issue, .note, .ednote, .warning {
+    padding: .5em;
+    border-left-width: .5em;
+    border-left-style: solid;
+}
+div.issue, div.note , div.ednote,  div.warning {
+    padding: 1em 1.2em 0.5em;
+    margin: 1em 0;
+    position: relative;
+    clear: both;
+}
+span.note, span.ednote, span.issue, span.warning { padding: .1em .5em .15em; }
+
+.issue {
+    border-color: #e05252;
+    background: #fbe9e9;
+}
+.note, .ednote {
+    border-color: #52e052;
+    background: #e9fbe9;
+}
+
+.warning {
+    border-color: #f11;
+    border-right-width: .2em;
+    border-top-width: .2em;
+    border-bottom-width: .2em;
+    border-style: solid;
+    background: #fbe9e9;
+}
+
+.warning-title:before{
+    content: "⚠"; /*U+26A0 WARNING SIGN*/
+    font-size: 3em;
+    float: left;
+    height: 100%;
+    padding-right: .3em;
+    vertical-align: top;
+    margin-top: -0.5em;
+}
+
+li.task-list-item {
+    list-style: none;
+}
+
+input.task-list-item-checkbox {
+    margin: 0 0.35em 0.25em -1.6em;
+    vertical-align: middle;
+}
+</style><style>/* HIGHLIGHTS */
+code.prettyprint {
+    color:  inherit;
+}
+
+/* this from google-code-prettify */
+.pln{color:#000}@media screen{.str{color:#080}.kwd{color:#008}.com{color:#800}.typ{color:#606}.lit{color:#066}.pun,.opn,.clo{color:#660}.tag{color:#008}.atn{color:#606}.atv{color:#080}.dec,.var{color:#606}.fun{color:red}}@media print,projection{.str{color:#060}.kwd{color:#006;font-weight:bold}.com{color:#600;font-style:italic}.typ{color:#404;font-weight:bold}.lit{color:#044}.pun,.opn,.clo{color:#440}.tag{color:#006;font-weight:bold}.atn{color:#404}.atv{color:#060}}ol.linenums{margin-top:0;margin-bottom:0}li.L0,li.L1,li.L2,li.L3,li.L5,li.L6,li.L7,li.L8{list-style-type:none}li.L1,li.L3,li.L5,li.L7,li.L9{background:#eee}
+</style><style>/* --- WEB IDL --- */
+pre.idl {
+    border-top: 1px solid #90b8de;
+    border-bottom: 1px solid #90b8de;
+    padding:    1em;
+    line-height:    120%;
+}
+
+@media print {
+  pre.idl {
+      white-space: pre-wrap;
+  }
+}
+
+pre.idl::before {
+    content:    "WebIDL";
+    display:    block;
+    width:      150px;
+    background: #90b8de;
+    color:  #fff;
+    font-family:    sans-serif;
+    padding:    3px;
+    font-weight:    bold;
+    margin: -1em 0 1em -1em;
+}
+
+.idlType {
+    color:  #ff4500;
+    font-weight:    bold;
+    text-decoration:    none;
+}
+
+/*.idlModule*/
+/*.idlModuleID*/
+/*.idlInterface*/
+.idlInterfaceID, .idlDictionaryID, .idlCallbackID, .idlEnumID {
+    font-weight:    bold;
+    color:  #005a9c;
+}
+a.idlEnumItem {
+    color:  #000;
+    border-bottom:  1px dotted #ccc;
+    text-decoration: none;
+}
+
+.idlSuperclass {
+    font-style: italic;
+    color:  #005a9c;
+}
+
+/*.idlAttribute*/
+.idlAttrType, .idlFieldType, .idlMemberType {
+    color:  #005a9c;
+}
+.idlAttrName, .idlFieldName, .idlMemberName {
+    color:  #ff4500;
+}
+.idlAttrName a, .idlFieldName a, .idlMemberName a {
+    color:  #ff4500;
+    border-bottom:  1px dotted #ff4500;
+    text-decoration: none;
+}
+
+/*.idlMethod*/
+.idlMethType, .idlCallbackType {
+    color:  #005a9c;
+}
+.idlMethName {
+    color:  #ff4500;
+}
+.idlMethName a {
+    color:  #ff4500;
+    border-bottom:  1px dotted #ff4500;
+    text-decoration: none;
+}
+
+/*.idlCtor*/
+.idlCtorName {
+    color:  #ff4500;
+}
+.idlCtorName a {
+    color:  #ff4500;
+    border-bottom:  1px dotted #ff4500;
+    text-decoration: none;
+}
+
+/*.idlParam*/
+.idlParamType {
+    color:  #005a9c;
+}
+.idlParamName, .idlDefaultValue {
+    font-style: italic;
+}
+
+.extAttr {
+    color:  #666;
+}
+
+/*.idlSectionComment*/
+.idlSectionComment {
+    color: gray;
+}
+
+/*.idlIterable*/
+.idlIterableKeyType, .idlIterableValueType {
+    color:  #005a9c;
+}
+
+/*.idlMaplike*/
+.idlMaplikeKeyType, .idlMaplikeValueType {
+    color:  #005a9c;
+}
+
+/*.idlConst*/
+.idlConstType {
+    color:  #005a9c;
+}
+.idlConstName {
+    color:  #ff4500;
+}
+.idlConstName a {
+    color:  #ff4500;
+    border-bottom:  1px dotted #ff4500;
+    text-decoration: none;
+}
+
+/*.idlException*/
+.idlExceptionID {
+    font-weight:    bold;
+    color:  #c00;
+}
+
+.idlTypedefID, .idlTypedefType {
+    color:  #005a9c;
+}
+
+.idlRaises, .idlRaises a.idlType, .idlRaises a.idlType code, .excName a, .excName a code {
+    color:  #c00;
+    font-weight:    normal;
+}
+
+.excName a {
+    font-family:    monospace;
+}
+
+.idlRaises a.idlType, .excName a.idlType {
+    border-bottom:  1px dotted #c00;
+}
+
+.excGetSetTrue, .excGetSetFalse, .prmNullTrue, .prmNullFalse, .prmOptTrue, .prmOptFalse {
+    width:  45px;
+    text-align: center;
+}
+.excGetSetTrue, .prmNullTrue, .prmOptTrue { color:  #0c0; }
+.excGetSetFalse, .prmNullFalse, .prmOptFalse { color:  #c00; }
+
+.idlImplements a {
+    font-weight:    bold;
+}
+
+dl.attributes, dl.methods, dl.constants, dl.constructors, dl.fields, dl.dictionary-members {
+    margin-left:    2em;
+}
+
+.attributes dt, .methods dt, .constants dt, .constructors dt, .fields dt, .dictionary-members dt {
+    font-weight:    normal;
+}
+
+.attributes dt code, .methods dt code, .constants dt code, .constructors dt code, .fields dt code, .dictionary-members dt code {
+    font-weight:    bold;
+    color:  #000;
+    font-family:    monospace;
+}
+
+.attributes dt code, .fields dt code, .dictionary-members dt code {
+    background:  #ffffd2;
+}
+
+.attributes dt .idlAttrType code, .fields dt .idlFieldType code, .dictionary-members dt .idlMemberType code {
+    color:  #005a9c;
+    background:  transparent;
+    font-family:    inherit;
+    font-weight:    normal;
+    font-style: italic;
+}
+
+.methods dt code {
+    background:  #d9e6f8;
+}
+
+.constants dt code {
+    background:  #ddffd2;
+}
+
+.constructors dt code {
+    background:  #cfc;
+}
+
+.attributes dd, .methods dd, .constants dd, .constructors dd, .fields dd, .dictionary-members dd {
+    margin-bottom:  1em;
+}
+
+table.parameters, table.exceptions {
+    border-spacing: 0;
+    border-collapse:    collapse;
+    margin: 0.5em 0;
+    width:  100%;
+}
+table.parameters { border-bottom:  1px solid #90b8de; }
+table.exceptions { border-bottom:  1px solid #deb890; }
+
+.parameters th, .exceptions th {
+    color:  #fff;
+    padding:    3px 5px;
+    text-align: left;
+    font-weight:    normal;
+    text-shadow:    #666 1px 1px 0;
+}
+.parameters th { background: #90b8de; }
+.exceptions th { background: #deb890; }
+
+.parameters td, .exceptions td {
+    padding:    3px 10px;
+    border-top: 1px solid #ddd;
+    vertical-align: top;
+}
+
+.parameters tr:first-child td, .exceptions tr:first-child td {
+    border-top: none;
+}
+
+.parameters td.prmName, .exceptions td.excName, .exceptions td.excCodeName {
+    width:  100px;
+}
+
+.parameters td.prmType {
+    width:  120px;
+}
+
+table.exceptions table {
+    border-spacing: 0;
+    border-collapse:    collapse;
+    width:  100%;
+}
+</style><link rel="stylesheet" href="spec.css">
+    
+    
+    
+    <style>
+.sequence-diagram {
+  margin: auto;
+}
+    </style>
+<style type="text/css">.centering {
+  margin-left: auto;
+  margin-right: auto;
+}
+.unimportant {
+  z-index: 0;
+}
+.primary_border {
+  border: 2px solid #808080;
+}
+</style><style type="text/css">.centering {
+  margin-left: auto;
+  margin-right: auto;
+}
+.unimportant {
+  z-index: 0;
+}
+.primary_border {
+  border: 2px solid #808080;
+}
+.class-diagram .class .icon {
+  border: 2px solid #808080;
+  -webkit-box-shadow: 10px 5px 5px rgba(0,0,0,0.33);
+  -moz-box-shadow: 10px 5px 5px rgba(0,0,0,0.33);
+  -o-box-shadow: 10px 5px 5px rgba(0,0,0,0.33);
+  box-shadow: 10px 5px 5px rgba(0,0,0,0.33);
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  -o-border-radius: 3px;
+  border-radius: 3px;
+  float: left;
+  min-width: 120px;
+  background-color: #fff;
+  margin-left: 2px;
+  margin-bottom: 2px;
+}
+.class-diagram .class .icon .stereotype,
+.class-diagram .class .icon .name {
+  display: block;
+  text-align: center;
+}
+.class-diagram .class .icon .stereotype:before {
+  content: '<<';
+}
+.class-diagram .class .icon .stereotype:after {
+  content: '>>';
+}
+.class-diagram .class .icon .name {
+  margin: 0.2em 0.5em 0.2em 0.5em;
+  font-weight: 700;
+}
+.class-diagram .class .icon .attrs,
+.class-diagram .class .icon .methods {
+  border-top: solid 2px #808080;
+  min-height: 8px;
+}
+.class-diagram .class .icon .attrs>*,
+.class-diagram .class .icon .methods>* {
+  display: block;
+  margin: 0;
+  padding: 0;
+}
+.class-diagram .class .icon ul {
+  -webkit-margin-before: 0;
+  -webkit-margin-after: 0;
+  -webkit-margin-start: 0;
+  -webkit-margin-end: 0;
+  -webkit-padding-start: 0;
+  padding-left: 1em;
+  padding-right: 1em;
+}
+.diagram .relationship {
+  position: absolute;
+}
+.diagram .relationship svg line {
+  stroke: #808080;
+  stroke-width: 1.5;
+  stroke-dasharray: 4, 4;
+}
+.usecase-diagram.layout-a .usecase:nth-child(odd)>.icon {
+  margin-left: auto;
+}
+.usecase-diagram.layout-a .usecase:nth-child(even)>.icon {
+  margin-right: auto;
+}
+.usecase-diagram.layout-a .actor {
+  position: relative;
+}
+.usecase-diagram.layout-a .actor:nth-child(odd) {
+  float: left;
+}
+.usecase-diagram.layout-a .actor:nth-child(even) {
+  float: right;
+}
+.usecase-diagram.layout-a .extend .name:before,
+.usecase-diagram.layout-a .include .name:before,
+.usecase-diagram.layout-a .use .name:before {
+  left: 45%;
+  top: 45%;
+  position: absolute;
+}
+.usecase-diagram.layout-a .system-boundary {
+  width: 55%;
+  margin-left: auto;
+  margin-right: auto;
+}
+.usecase-diagram.layout-a .system-boundary>.name {
+  font-weight: 700;
+}
+.usecase-diagram.layout-a .system-boundary .usecase:nth-child(4n+2) .icon {
+  margin-left: 4px;
+}
+.usecase-diagram.layout-a .system-boundary .usecase:nth-child(3) .icon {
+  margin-right: 4px;
+}
+.usecase-diagram.layout-a .system-boundary .system-boundary {
+  margin-top: 4px;
+  width: 95%;
+}
+.usecase-diagram.layout-a .system-boundary.out-of-bounds {
+  border-width: 0;
+  border-color: transparent;
+  box-shadow: none;
+  width: 0;
+  height: 0;
+  padding: 0;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+.box_shadow {
+  -webkit-box-shadow: 10px 5px 5px rgba(0,0,0,0.33);
+  -moz-box-shadow: 10px 5px 5px rgba(0,0,0,0.33);
+  -o-box-shadow: 10px 5px 5px rgba(0,0,0,0.33);
+  box-shadow: 10px 5px 5px rgba(0,0,0,0.33);
+}
+.box_shadow2 {
+  -webkit-box-shadow: 5px 2.5px 2.5px rgba(0,0,0,0.33);
+  -moz-box-shadow: 5px 2.5px 2.5px rgba(0,0,0,0.33);
+  -o-box-shadow: 5px 2.5px 2.5px rgba(0,0,0,0.33);
+  box-shadow: 5px 2.5px 2.5px rgba(0,0,0,0.33);
+}
+.text_shadow {
+  -text-shadow: 4px 3px 0 #fff, 9px 8px 0 rgba(0,0,0,0.15);
+}
+.centering {
+  margin-left: auto;
+  margin-right: auto;
+}
+.unimportant {
+  z-index: 0;
+}
+.primary_border {
+  border: 2px solid #808080;
+}
+.usecase-diagram .usecase .icon {
+  min-width: 132px;
+  min-height: 51px;
+  border: 2px solid #808080;
+  -moz-border-radius: "132px / 51px";
+  -webkit-border-radius: "132px / 51px";
+  -o-border-radius: "132px / 51px";
+  border-radius: "132px / 51px";
+  -webkit-box-shadow: 10px 5px 5px rgba(0,0,0,0.33);
+  -moz-box-shadow: 10px 5px 5px rgba(0,0,0,0.33);
+  -o-box-shadow: 10px 5px 5px rgba(0,0,0,0.33);
+  box-shadow: 10px 5px 5px rgba(0,0,0,0.33);
+  background-color: #fff;
+}
+.usecase-diagram .usecase .icon .name {
+  text-align: left;
+  vertical-align: middle;
+}
+.usecase-diagram .use .name:before {
+  content: '<<use>>';
+}
+.usecase-diagram .extend .name:before {
+  content: '<<extend>>';
+}
+.usecase-diagram .include .name:before {
+  content: '<<include>>';
+}
+.usecase-diagram .system-boundary {
+  border: 2px solid #808080;
+  -webkit-box-shadow: 10px 5px 5px rgba(0,0,0,0.33);
+  -moz-box-shadow: 10px 5px 5px rgba(0,0,0,0.33);
+  -o-box-shadow: 10px 5px 5px rgba(0,0,0,0.33);
+  box-shadow: 10px 5px 5px rgba(0,0,0,0.33);
+  padding: 4px;
+  background-color: #fff;
+}
+.usecase-diagram .system-boundary .system-boundary {
+  min-width: 198px;
+}
+.usecase-diagram.layout-a .usecase:nth-child(odd)>.icon {
+  margin-left: auto;
+}
+.usecase-diagram.layout-a .usecase:nth-child(even)>.icon {
+  margin-right: auto;
+}
+.usecase-diagram.layout-a .actor {
+  position: relative;
+}
+.usecase-diagram.layout-a .actor:nth-child(odd) {
+  float: left;
+}
+.usecase-diagram.layout-a .actor:nth-child(even) {
+  float: right;
+}
+.usecase-diagram.layout-a .extend .name:before,
+.usecase-diagram.layout-a .include .name:before,
+.usecase-diagram.layout-a .use .name:before {
+  left: 45%;
+  top: 45%;
+  position: absolute;
+}
+.usecase-diagram.layout-a .system-boundary {
+  width: 55%;
+  margin-left: auto;
+  margin-right: auto;
+}
+.usecase-diagram.layout-a .system-boundary>.name {
+  font-weight: 700;
+}
+.usecase-diagram.layout-a .system-boundary .usecase:nth-child(4n+2) .icon {
+  margin-left: 4px;
+}
+.usecase-diagram.layout-a .system-boundary .usecase:nth-child(3) .icon {
+  margin-right: 4px;
+}
+.usecase-diagram.layout-a .system-boundary .system-boundary {
+  margin-top: 4px;
+  width: 95%;
+}
+.usecase-diagram.layout-a .system-boundary.out-of-bounds {
+  border-width: 0;
+  border-color: transparent;
+  box-shadow: none;
+  width: 0;
+  height: 0;
+  padding: 0;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+</style><style type="text/css">.centering {
+  margin-left: auto;
+  margin-right: auto;
+}
+.unimportant {
+  z-index: 0;
+}
+.primary_border {
+  border: 2px solid #808080;
+}
+.icon-squaresize {
+  width: 24px;
+  height: 24px;
+}
+.icon .square {
+  width: 24px;
+  height: 24px;
+  margin-left: 6px;
+  position: relative;
+  background-color: #808080;
+  -moz-border-radius: 2px;
+  -webkit-border-radius: 2px;
+  -o-border-radius: 2px;
+  border-radius: 2px;
+}
+.icon .square.cross {
+  width: 4px;
+  margin-left: 4px;
+}
+.icon .square::before {
+  content: "";
+  display: block;
+  width: 100%;
+  height: 100%;
+  -moz-transform: rotate(90deg);
+  -webkit-transform: rotate(90deg);
+  -o-transform: rotate(90deg);
+  transform: rotate(90deg);
+  background-color: #808080;
+}
+.icon .stop {
+  width: 24px;
+  height: 24px;
+}
+.icon .stop .square.cross {
+  -moz-transform: rotate(45deg);
+  -webkit-transform: rotate(45deg);
+  -o-transform: rotate(45deg);
+  transform: rotate(45deg);
+}
+</style><style type="text/css">.centering {
+  margin-left: auto;
+  margin-right: auto;
+}
+.unimportant {
+  z-index: 0;
+}
+.primary_border {
+  border: 2px solid #808080;
+}
+.diagram {
+  position: relative;
+  font-size: 10pt;
+}
+.diagram .participant.iconified {
+  text-align: center;
+}
+.diagram .participant.iconified .name {
+  height: auto;
+  padding-top: 0.4em;
+  padding-bottom: 0.4em;
+}
+.diagram .participant.iconified .icon-container {
+  position: relative;
+  margin-bottom: 5px;
+}
+.diagram .participant.iconified canvas.icon {
+  border: 0;
+  padding-top: 2px;
+  padding-bottom: 2px;
+}
+</style><style type="text/css">.sequence-diagram {
+  font-family: Tahoma, Verdana;
+}
+.sequence-diagram .participant {
+  display: inline-block;
+  background-color: #fff;
+  border: 2px solid #808080;
+  min-height: 31px;
+}
+.sequence-diagram .participant .name {
+  display: inline-block;
+  margin: 8px 0;
+  padding: 0px 4px;
+  min-width: 88px;
+  max-width: 176px;
+  text-align: center;
+  word-break: normal;
+}
+.sequence-diagram .lifeline,
+.sequence-diagram .lifeline .line,
+.sequence-diagram .occurrence,
+.sequence-diagram .interaction,
+.sequence-diagram .ref,
+.sequence-diagram .stop {
+  position: relative;
+}
+.sequence-diagram .message,
+.sequence-diagram .message svg {
+  position: absolute;
+}
+.sequence-diagram .message svg.arrow line {
+  stroke: #808080;
+  stroke-width: 1.5;
+}
+.sequence-diagram .message svg.arrow polyline {
+  stroke: #808080;
+  fill: #808080;
+  stroke-width: 1.5;
+  stroke-linejoin: round;
+}
+.sequence-diagram .message.create svg.arrow polyline,
+.sequence-diagram .message.asynchronous svg.arrow polyline,
+.sequence-diagram .message.return svg.arrow polyline {
+  fill: none;
+}
+.sequence-diagram .message.create svg.arrow polyline.closed,
+.sequence-diagram .message.asynchronous svg.arrow polyline.closed,
+.sequence-diagram .message.return svg.arrow polyline.closed {
+  stroke: none;
+}
+.sequence-diagram .message.self svg.arrow polyline {
+  fill: none;
+}
+.sequence-diagram .message.self svg.arrow polyline.head {
+  fill: #808080;
+}
+.sequence-diagram .message.create svg.arrow line,
+.sequence-diagram .message.return svg.arrow line {
+  stroke-dasharray: 8, 8;
+}
+.sequence-diagram .lifeline .line {
+  margin-left: 50%;
+  left: 1px;
+  height: 100%;
+  border-left: dashed 1px #808080;
+}
+.sequence-diagram .occurrence {
+  width: 12px;
+  padding: 1em 0 1em 0;
+  margin-top: 4px;
+  border: 2px solid #808080;
+  background-color: #d3d3d3;
+  z-index: 1;
+}
+.sequence-diagram .creating {
+  margin-bottom: 40px;
+}
+.sequence-diagram .interaction.lost .occurrence.icon {
+  height: 20px;
+  width: 20px;
+  -moz-border-radius: 20px;
+  -webkit-border-radius: 20px;
+  -o-border-radius: 20px;
+  border-radius: 20px;
+  padding: 0;
+  margin: 0;
+  border-color: #999;
+  background-color: #aaa;
+}
+.sequence-diagram .interaction.activated {
+  margin-top: 0px;
+}
+.sequence-diagram .interaction.lost .occurrence.icon::before {
+  content: '';
+}
+.sequence-diagram .interaction:not(:last-child).reply {
+  margin-bottom: 2.5em;
+}
+.sequence-diagram .interaction.reply > .occurrence {
+  padding-bottom: 2.0736em;
+}
+.sequence-diagram .interaction:not(.activated) .occurrence .note:nth-child(1) {
+  margin-top: 3px;
+}
+.sequence-diagram .message {
+  height: 20px;
+}
+.sequence-diagram .message .name {
+  margin-top: -0.85em;
+  text-align: center;
+}
+.sequence-diagram .message.create + .occurrence {
+  padding: 7px 0 7px 0;
+}
+.sequence-diagram .message.lost .icon {
+  background-color: #808080;
+  border: 1px solid #444;
+}
+.sequence-diagram .message.name::before {
+  content: '«create»';
+}
+.sequence-diagram .message.return {
+  margin-top: -0.85em;
+}
+.sequence-diagram .message.return .name {
+  margin-top: -0.6em;
+}
+.sequence-diagram .message.return .name:empty {
+  position: relative;
+  top: -8px;
+}
+.sequence-diagram .message.return .name::before {
+  display: block;
+}
+.sequence-diagram .message.destroy .name::before {
+  content: '«destroy»';
+}
+.sequence-diagram .creating .message.return {
+  margin-top: 15px;
+}
+.sequence-diagram .fragment {
+  margin: 4px 4px 8px 4px;
+  padding: 4px;
+  border: solid 1px #aaa;
+  -moz-border-radius: 2px;
+  -webkit-border-radius: 2px;
+  -o-border-radius: 2px;
+  border-radius: 2px;
+}
+.sequence-diagram .fragment > .reply {
+  margin-bottom: 0.5em;
+}
+.sequence-diagram .fragment .header .name {
+  color: #000;
+  font-weight: 700;
+}
+.sequence-diagram .fragment .header .condition {
+  color: #000;
+  font-weight: 400;
+}
+.sequence-diagram .fragment.alt>.condition {
+  color: #000;
+  font-weight: 400;
+  margin-bottom: -0.5em;
+}
+.sequence-diagram .fragment.alt div.divider {
+  border-bottom: 1px dashed #555;
+  margin: 4px -4px 4px -4px;
+}
+.sequence-diagram .fragment.alt .condition + .interaction .message {
+  margin-top: 10px;
+}
+.sequence-diagram .fragment .header + .note {
+  margin-top: 2px;
+}
+.sequence-diagram .ref {
+  min-width: 128px;
+  margin: 4px;
+  padding: 4px;
+  padding-bottom: 1em;
+  background-color: #fff;
+  border: solid 1px #000;
+}
+.sequence-diagram .ref .tag {
+  color: #000;
+  font-weight: 700;
+}
+.sequence-diagram .ref .name {
+  text-align: center;
+}
+.sequence-diagram .self .message + .occurrence > .ref,
+.sequence-diagram .self .message + .occurrence .interaction {
+  margin-top: 10px;
+  padding-top: 6px;
+  padding-bottom: 6px;
+}
+.sequence-diagram .self > .message {
+  line-height: 12px;
+}
+.sequence-diagram .self > .message .name {
+  min-width: 88px;
+  max-width: 132px;
+  text-align: left;
+}
+.sequence-diagram .participant,
+.sequence-diagram .occurrence,
+.sequence-diagram .ref {
+  -webkit-box-shadow: 8px 5px 10px rgba(0,0,0,0.22);
+  -moz-box-shadow: 8px 5px 10px rgba(0,0,0,0.22);
+  -o-box-shadow: 8px 5px 10px rgba(0,0,0,0.22);
+  box-shadow: 8px 5px 10px rgba(0,0,0,0.22);
+}
+.sequence-diagram .note {
+  margin-top: 2px;
+  margin-bottom: 1em;
+  margin-left: 16px;
+  min-width: 128px;
+}
+.sequence-diagram .note .name {
+  border: 2px solid #808080;
+  background-color: #fff;
+  padding: 4px;
+}
+.sequence-diagram .note:first-child {
+  margin-top: -1em;
+}
+</style><style type="text/css">.robustness-diagram {
+  position: relative;
+}
+svg circle,
+svg path {
+  stroke: #808080;
+  stroke-width: 1.5;
+}
+svg path {
+  fill: none;
+}
+svg circle {
+  fill: #fff;
+}
+</style><style type="text/css">.sequence-diagram .participant:not(:first-child) {
+  margin-left: 38px;
+}
+.sequence-diagram .participant:first-child {
+  margin-left: 0;
+}
+</style><style>/*****************************************************************
+ * ReSpec 3 CSS
+ * Robin Berjon - http://berjon.com/
+ *****************************************************************/
+
+/* --- INLINES --- */
+em.rfc2119 { 
+    text-transform:     lowercase;
+    font-variant:       small-caps;
+    font-style:         normal;
+    color:              #900;
+}
+
+h1 acronym, h2 acronym, h3 acronym, h4 acronym, h5 acronym, h6 acronym, a acronym,
+h1 abbr, h2 abbr, h3 abbr, h4 abbr, h5 abbr, h6 abbr, a abbr {
+    border: none;
+}
+
+dfn {
+    font-weight:    bold;
+}
+
+a.internalDFN {
+    color:  inherit;
+    border-bottom:  1px solid #99c;
+    text-decoration:    none;
+}
+
+a.externalDFN {
+    color:  inherit;
+    border-bottom:  1px dotted #ccc;
+    text-decoration:    none;
+}
+
+a.bibref {
+    text-decoration:    none;
+}
+
+cite .bibref {
+    font-style: normal;
+}
+
+code {
+    color:  #C83500;
+}
+
+/* --- TOC --- */
+.toc a, .tof a {
+    text-decoration:    none;
+}
+
+a .secno, a .figno {
+    color:  #000;
+}
+
+ul.tof, ol.tof {
+    list-style: none outside none;
+}
+
+.caption {
+    margin-top: 0.5em;
+    font-style:   italic;
+}
+
+/* --- TABLE --- */
+table.simple {
+    border-spacing: 0;
+    border-collapse:    collapse;
+    border-bottom:  3px solid #005a9c;
+}
+
+.simple th {
+    background: #005a9c;
+    color:  #fff;
+    padding:    3px 5px;
+    text-align: left;
+}
+
+.simple th[scope="row"] {
+    background: inherit;
+    color:  inherit;
+    border-top: 1px solid #ddd;
+}
+
+.simple td {
+    padding:    3px 10px;
+    border-top: 1px solid #ddd;
+}
+
+.simple tr:nth-child(even) {
+    background: #f0f6ff;
+}
+
+/* --- DL --- */
+.section dd > p:first-child {
+    margin-top: 0;
+}
+
+.section dd > p:last-child {
+    margin-bottom: 0;
+}
+
+.section dd {
+    margin-bottom:  1em;
+}
+
+.section dl.attrs dd, .section dl.eldef dd {
+    margin-bottom:  0;
+}
+
+@media print {
+    .removeOnSave {
+        display: none;
+    }
+}
+</style><link rel="stylesheet" href="https://www.w3.org/community/src/css/spec/cg-draft.css"><!--[if lt IE 9]><script src='https://www.w3.org/2008/site/js/html5shiv.js'></script><![endif]--><script id="initialUserConfig" type="application/json">{
+  "specStatus": "CG-DRAFT",
+  "shortName": "web-payments-browser-api",
+  "edDraftURI": "https://wicg.github.io/web-payments-browser-api/",
+  "editors": [
+    {
+      "name": "Manu Sporny",
+      "url": "https://manu.sporny.org/",
+      "company": "Digital Bazaar, Inc.",
+      "companyURL": "http://digitalbazaar.com/"
+    },
+    {
+      "name": "Dave Longley",
+      "url": "https://github.com/dlongley",
+      "company": "Digital Bazaar, Inc.",
+      "companyURL": "http://digitalbazaar.com/"
+    }
+  ],
+  "authors": [
+    {
+      "name": "Manu Sporny",
+      "url": "https://manu.sporny.org/",
+      "company": "Digital Bazaar, Inc.",
+      "companyURL": "http://digitalbazaar.com/"
+    },
+    {
+      "name": "Dave Longley",
+      "url": "https://github.com/dlongley",
+      "company": "Digital Bazaar, Inc.",
+      "companyURL": "http://digitalbazaar.com/"
+    }
+  ],
+  "wg": "W3C Web Payments Community Group",
+  "wgURI": "http://www.w3.org/community/webpayments/",
+  "wgPublicList": "public-webpayments",
+  "wgPatentURI": "",
+  "maxTocLevel": 4,
+  "preProcess": []
+}</script></head>
+
+<body class="h-entry" role="document" id="respecDocument"><div class="head" role="contentinfo" id="respecHeader">
+  <p>
+    <a class="logo" href="http://www.w3.org/"><img width="72" height="48" src="https://www.w3.org/Icons/w3c_home" alt="W3C"></a>
+  </p>
+  <h1 class="title p-name" id="title" property="dc:title">Web Payments Browser API 1.0</h1>
+  
+  <h2 id="draft-community-group-report-19-february-2016">Draft Community Group Report <time property="dc:issued" class="dt-published" datetime="2016-02-19">19 February 2016</time></h2>
+  <dl>
+    
+    
+    
+      <dt>Latest editor's draft:</dt>
+      <dd><a href="https://wicg.github.io/web-payments-browser-api/">https://wicg.github.io/web-payments-browser-api/</a></dd>
+    
+    
+    
+    
+    
+    
+      
+    
+    <dt>Editors:</dt>
+    <dd class="p-author h-card vcard" property="bibo:editor" resource="_:editor0"><span property="rdf:first" typeof="foaf:Person"><meta property="foaf:name" content="Manu Sporny"><a class="u-url url p-name fn" property="foaf:homepage" href="https://manu.sporny.org/">Manu Sporny</a>, <a property="foaf:workplaceHomepage" class="p-org org h-org h-card" href="http://digitalbazaar.com/">Digital Bazaar, Inc.</a></span>
+<span property="rdf:rest" resource="_:editor1"></span>
+</dd>
+<dd class="p-author h-card vcard" resource="_:editor1"><span property="rdf:first" typeof="foaf:Person"><meta property="foaf:name" content="Dave Longley"><a class="u-url url p-name fn" property="foaf:homepage" href="https://github.com/dlongley">Dave Longley</a>, <a property="foaf:workplaceHomepage" class="p-org org h-org h-card" href="http://digitalbazaar.com/">Digital Bazaar, Inc.</a></span>
+<span property="rdf:rest" resource="rdf:nil"></span>
+</dd>
+
+    
+      <dt>Authors:</dt>
+      <dd class="p-author h-card vcard"><span property="dc:contributor" typeof="foaf:Person"><meta property="foaf:name" content="Manu Sporny"><a class="u-url url p-name fn" property="foaf:homepage" href="https://manu.sporny.org/">Manu Sporny</a>, <a property="foaf:workplaceHomepage" class="p-org org h-org h-card" href="http://digitalbazaar.com/">Digital Bazaar, Inc.</a></span>
+</dd>
+<dd class="p-author h-card vcard"><span property="dc:contributor" typeof="foaf:Person"><meta property="foaf:name" content="Dave Longley"><a class="u-url url p-name fn" property="foaf:homepage" href="https://github.com/dlongley">Dave Longley</a>, <a property="foaf:workplaceHomepage" class="p-org org h-org h-card" href="http://digitalbazaar.com/">Digital Bazaar, Inc.</a></span>
+</dd>
+
+    
+    
+  </dl>
+  
+  <p class="copyright">
+    <a href="http://www.w3.org/Consortium/Legal/ipr-notice#Copyright">Copyright</a> © 
+    2016
+    the Contributors to the Web Payments Browser API 1.0 Specification, published by the
+    <a href="http://www.w3.org/community/webpayments/">W3C Web Payments Community Group</a> under the
+    
+      <a href="https://www.w3.org/community/about/agreements/cla/">W3C Community Contributor License Agreement (CLA)</a>.
+      A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/">summary</a> is available.
+    
+  </p>
+  <hr title="Separator for header">
+</div>
+<section id="abstract" class="introductory" property="dc:abstract"><h2 id="h-abstract" resource="#h-abstract"><span property="xhv:role" resource="xhv:heading">Abstract</span></h2>
+  <p>
+This document outlines a low-level API for registering <a href="#dfn-payment-app" class="internalDFN" data-link-type="dfn">payment app</a>s,
+requesting payments, and acknowledge payment requests using a polyfillable
+browser API. There is also a higher-level ecommerce
+<a href="https://github.com/w3c/webpayments/wiki/Checkout-API">Checkout API</a> that utilizes
+this low-level API.
+  </p>
+</section><section id="sotd" class="introductory"><h2 id="h-sotd" resource="#h-sotd"><span property="xhv:role" resource="xhv:heading">Status of This Document</span></h2>
+  <p>
+    This specification was published by the <a href="http://www.w3.org/community/webpayments/">W3C Web Payments Community Group</a>.
+    It is not a W3C Standard nor is it on the W3C Standards Track.
+    
+      Please note that under the 
+      <a href="https://www.w3.org/community/about/agreements/cla/">W3C Community Contributor License Agreement (CLA)</a>
+      there is a limited opt-out and other conditions apply.
+    
+    Learn more about 
+    <a href="http://www.w3.org/community/">W3C Community and Business Groups</a>.
+  </p>
+  
+  
+
+  <p>There are a number of ways that one may participate in the development of
+    this specification:</p>
+
+  <ul>
+    <li>Ad-hoc technical discussion primarily occurs on the public community mailing list:
+      <a href="http://lists.w3.org/Archives/Public/public-webpayments/">public-webpayments@w3.org</a></li>
+
+    <li><a href="http://payswarm/minutes/">Public Web Payments Community Group teleconferences</a>
+    are held on Wednesdays at 1600UTC every other week.</li>
+
+    <li>Specification bugs and issues should be reported in the
+      <a href="https://github.com/web-payments/web-payments.org/issues">issue tracker</a>
+      if you do not want to send an e-mail to the public-webpayments mailing
+      list.</li>
+
+    <li><a href="https://github.com/web-payments/web-payments.org/tree/master/">Source code</a>
+      for the specification can be found on Github.</li>
+
+  </ul>
+
+  
+    
+      <p>If you wish to make comments regarding this document, please send them to 
+      <a href="mailto:public-webpayments@w3.org">public-webpayments@w3.org</a> 
+      (<a href="mailto:public-webpayments-request@w3.org?subject=subscribe">subscribe</a>,
+      <a href="http://lists.w3.org/Archives/Public/public-webpayments/">archives</a>).</p>
+    
+  
+</section><section id="toc"><h2 class="introductory" id="h-toc" resource="#h-toc"><span property="xhv:role" resource="xhv:heading">Table of Contents</span></h2><ul class="toc" role="directory"><li class="tocline"><a href="#introduction" class="tocxref"><span class="secno">1. </span>Introduction</a><ul class="toc"><li class="tocline"><a href="#about-this-document" class="tocxref"><span class="secno">1.1 </span>About this Document</a></li><li class="tocline"><a href="#how-this-document-is-organized" class="tocxref"><span class="secno">1.2 </span>How this Document is Organized</a></li></ul></li><li class="tocline"><a href="#terminology" class="tocxref"><span class="secno">2. </span>Terminology</a></li><li class="tocline"><a href="#a-basic-purchase-flow" class="tocxref"><span class="secno">3. </span>A Basic Purchase Flow</a></li><li class="tocline"><a href="#detailed-flows" class="tocxref"><span class="secno">4. </span>Detailed Flows</a><ul class="toc"><li class="tocline"><a href="#payment-app-registration" class="tocxref"><span class="secno">4.1 </span>Payment App Registration</a></li><li class="tocline"><a href="#processing-a-payment-request" class="tocxref"><span class="secno">4.2 </span>Processing a Payment Request</a></li><li class="tocline"><a href="#generating-a-payment-acknowledgement" class="tocxref"><span class="secno">4.3 </span>Generating a Payment Acknowledgement</a></li></ul></li><li class="tocline"><a href="#the-application-programming-interface" class="tocxref"><span class="secno">5. </span>The Application Programming Interface</a><ul class="toc"><li class="tocline"><a href="#object-interfaces" class="tocxref"><span class="secno">5.1 </span>Object Interfaces</a><ul class="toc"><li class="tocline"><a href="#paymentapplication" class="tocxref"><span class="secno">5.1.1 </span>PaymentApplication</a></li><li class="tocline"><a href="#paymentrequest" class="tocxref"><span class="secno">5.1.2 </span>PaymentRequest</a></li><li class="tocline"><a href="#paymentacknowledgement" class="tocxref"><span class="secno">5.1.3 </span>PaymentAcknowledgement</a></li><li class="tocline"><a href="#payment" class="tocxref"><span class="secno">5.1.4 </span>Payment</a></li></ul></li><li class="tocline"><a href="#navigatorpayment" class="tocxref"><span class="secno">5.2 </span>NavigatorPayment</a><ul class="toc"><li class="tocline"><a href="#methods" class="tocxref"><span class="secno">5.2.1 </span>Methods</a></li></ul></li></ul></li><li class="tocline"><a href="#extensibility" class="tocxref"><span class="secno">6. </span>Extensibility</a></li><li class="tocline"><a href="#security-considerations" class="tocxref"><span class="secno">7. </span>Security Considerations</a><ul class="toc"><li class="tocline"><a href="#message-integrity" class="tocxref"><span class="secno">7.1 </span>Message Integrity</a></li></ul></li><li class="tocline"><a href="#messages-addendum" class="tocxref"><span class="secno">A. </span>Messages Addendum</a></li><li class="tocline"><a href="#flows-addendum" class="tocxref"><span class="secno">B. </span>Flows Addendum</a><ul class="toc"><li class="tocline"><a href="#traditional-unencrypted-credit-card-flow" class="tocxref"><span class="secno">B.1 </span>Traditional Unencrypted Credit Card Flow</a></li><li class="tocline"><a href="#tokenized-credit-card-flow" class="tocxref"><span class="secno">B.2 </span>Tokenized Credit Card Flow</a></li><li class="tocline"><a href="#iso20022-sepa-credit-transfer" class="tocxref"><span class="secno">B.3 </span>ISO20022/SEPA Credit Transfer</a></li><li class="tocline"><a href="#crypto-currency-payment" class="tocxref"><span class="secno">B.4 </span>Crypto-currency Payment</a></li></ul></li><li class="tocline"><a href="#acknowledgements" class="tocxref"><span class="secno">C. </span>Acknowledgements</a></li><li class="tocline"><a href="#references" class="tocxref"><span class="secno">D. </span>References</a><ul class="toc"><li class="tocline"><a href="#normative-references" class="tocxref"><span class="secno">D.1 </span>Normative references</a></li></ul></li></ul></section>
+
+
+
+<section class="informative" id="introduction" typeof="bibo:Chapter" resource="#introduction" property="bibo:hasPart">
+  <!--OddPage--><h2 id="h-introduction" resource="#h-introduction"><span property="xhv:role" resource="xhv:heading"><span class="secno">1. </span>Introduction</span></h2><p><em>This section is non-normative.</em></p>
+
+  <p>
+This API enables a web application to initiate payment for a product or
+service by calling a <code>navigator.payment.request()</code> method. The
+implementation of this feature is expected to be provided by a JavaScript
+polyfill at first, and if deployment is successful, native browser
+implementations will surface to enhance usability and transaction
+security.
+  </p>
+  <section class="informative" id="about-this-document" typeof="bibo:Chapter" resource="#about-this-document" property="bibo:hasPart">
+    <h3 id="h-about-this-document" resource="#h-about-this-document"><span property="xhv:role" resource="xhv:heading"><span class="secno">1.1 </span>About this Document</span></h3><p><em>This section is non-normative.</em></p>
+
+    <p>This document is a detailed specification for an application programming
+      interface (API) for initiating payments from within a browser
+      environment. The document is primarily intended for the following
+      audiences:</p>
+
+    <ul>
+      <li>Software developers who want to understand the design decisions and
+        algorithms behind the API.</li>
+      <li>Software developers who want to implement the API.</li>
+    </ul>
+  </section>
+  <section id="how-this-document-is-organized" typeof="bibo:Chapter" resource="#how-this-document-is-organized" property="bibo:hasPart">
+    <h3 id="h-how-this-document-is-organized" resource="#h-how-this-document-is-organized"><span property="xhv:role" resource="xhv:heading"><span class="secno">1.2 </span>How this Document is Organized</span></h3>
+
+    <p>
+This document is organized as follows:
+    </p>
+
+    <ul>
+        <li>
+<a href="#terminology">Section 2: Terminology</a> defines basic terminology
+used throughout this document.
+      </li>
+      <li>
+<a href="#a-basic-purchase-flow">Section 3: A Basic Purchase Flow</a> describes
+the basic payment flow at a high-level.
+      </li>
+      <li>
+<a href="#detailed-flows">Section 4: Detailed Flows</a> describes each
+flow provided by the browser API in detail.
+      </li>
+      <li>
+<a href="#the-application-programming-interface">Section 5:
+The Application Programming Interface</a> defines the browser API for
+registering, initiating, and acknowledging payments.
+      </li>
+    </ul>
+  </section>
+</section>
+
+  <section class="normative" id="terminology" typeof="bibo:Chapter" resource="#terminology" property="bibo:hasPart">
+    <!--OddPage--><h2 id="h-terminology" resource="#h-terminology"><span property="xhv:role" resource="xhv:heading"><span class="secno">2. </span>Terminology</span></h2>
+
+    <div><p>
+This document attempts to communicate the concepts outlined in the Web
+Payments space by using specific terms to discuss particular concepts. This
+terminology is included below and linked to throughout the document to aid
+the reader:
+</p>
+
+<dl class="termlist">
+  <dt></dt>
+
+  
+
+  <dt></dt>
+
+  
+
+  <dt></dt>
+
+  
+
+  <dt></dt>
+
+  
+
+  <dt></dt>
+
+  
+
+  <dt></dt>
+
+  
+
+  <dt></dt>
+
+  
+
+  <dt></dt>
+
+  
+
+  <dt></dt>
+
+  
+
+  <dt></dt>
+
+  
+
+  <dt></dt>
+
+  
+
+  <dt></dt>
+
+  
+
+  <dt></dt>
+
+  
+
+  <dt><dfn id="dfn-payee" data-lt="payee|payees" data-dfn-type="dfn">payee</dfn></dt>
+
+  <dd>An entity that receives funds as required by a transaction.</dd>
+
+  <dt><dfn id="dfn-payer" data-lt="payer|payers" data-dfn-type="dfn">payer</dfn></dt>
+
+  <dd>An entity that provides a source of funds as required by a
+  transaction.</dd>
+
+  <dt><dfn id="dom-payment" data-dfn-for="" data-lt="payment|payments" data-dfn-type="dfn" data-idl=""><code>payment</code></dfn></dt>
+
+  <dd>[ECB] in a strict sense, a payment is a transfer of funds which
+  discharges an obligation on the part of a payer vis-a-vis a payee.
+  However, in a technical or statistical sense, it is often used as a
+  synonym for transfer order</dd>
+
+  <dt><dfn id="dfn-payment-app" data-lt="payment app|payment apps" data-dfn-type="dfn">payment app</dfn></dt>
+
+  <dd>[EXPERIMENTAL] A piece of software that enables a payer to make
+  payments. A payment app will one or more payment methods.</dd>
+
+  <dt><dfn id="dfn-payment-instrument" data-lt="payment instrument|payment instruments" data-dfn-type="dfn">payment instrument</dfn></dt>
+
+  <dd>A mechanism used to transfer value from a payer to a
+  payee. Examples: Corporate Visa card, personal Visa card, a
+  bitcoin account, a PayPal account, and an Alipay account. [PSD2] any
+  personalized device(s) and/or set of procedures agreed between the
+  payment service user and the payment service provider and used in
+  order to initiate a payment order. [ECB] a tool or a set of procedures
+  enabling the transfer of funds from a payer to a payee.</dd>
+
+  <dt><dfn id="dfn-payment-method" data-lt="payment method|payment methods" data-dfn-type="dfn">payment method</dfn></dt>
+
+  <dd>[EXPERIMENTAL] A way of paying. A system and set of rules for payments.
+  A payment app may support one or more payment methods. For example,
+  Visa, Mastercard, American Express, bobspay.com are payment methods.</dd>
+
+  <dt></dt>
+
+  
+
+  <dt></dt>
+
+  
+
+  <dt></dt>
+
+  
+
+  <dt><dfn id="dfn-payment-processor" data-lt="payment processor|payment processors" data-dfn-type="dfn">payment processor</dfn></dt>
+
+  <dd>An entity that submits and processes payments using a
+  particular payment instrument to a payment network. Examples:
+  Stripe, PayPal, Authorize.net, Atos, FedACH.</dd>
+
+  <dt></dt>
+
+  
+
+  <dt><dfn id="dfn-payment-service-provider" data-lt="payment service provider|payment service providers" data-dfn-type="dfn">payment service provider</dfn></dt>
+
+  <dd>
+    [PSD] A body executing payment services such as
+
+    <ol>
+      <li>credit institutions</li>
+
+      <li>electronic money institutions</li>
+
+      <li>post office giro institutions</li>
+
+      <li>payment institutions</li>
+
+      <li>central banks other than when acting in their capacity as a
+      monetary authority or carrying out other functions of a public
+      nature</li>
+
+      <li>government departments and local authorities, other than when
+      carrying out functions of a public nature</li>
+    </ol>
+  </dd>
+
+  <dt></dt>
+
+  
+
+  <dt></dt>
+
+  
+
+  <dt></dt>
+
+  
+
+  <dt></dt>
+
+  
+
+  <dt></dt>
+
+  
+
+  <dt></dt>
+
+  
+
+  <dt></dt>
+
+  
+
+  <dt></dt>
+
+  
+
+  <dt></dt>
+
+  
+
+</dl>
+</div>
+
+  </section>
+
+
+
+<section id="a-basic-purchase-flow" typeof="bibo:Chapter" resource="#a-basic-purchase-flow" property="bibo:hasPart">
+  <!--OddPage--><h2 id="h-a-basic-purchase-flow" resource="#h-a-basic-purchase-flow"><span property="xhv:role" resource="xhv:heading"><span class="secno">3. </span>A Basic Purchase Flow</span></h2>
+
+  <p>
+The diagram below outlines a basic payment flow with no errors. The basic
+flow starts out with the <a href="#dfn-payee" class="internalDFN" data-link-type="dfn">payee</a> offering the <a href="#dfn-payer" class="internalDFN" data-link-type="dfn">payer</a> a
+payment request. The <a href="#dfn-payer" class="internalDFN" data-link-type="dfn">payer</a>'s user agent then helps them select a
+<a href="#dfn-payment-app" class="internalDFN" data-link-type="dfn">payment app</a> that is compatible with one of the <a href="#dfn-payment-method" class="internalDFN" data-link-type="dfn">payment method</a>s
+offered in the payment request. The <a href="#dfn-payment-app" class="internalDFN" data-link-type="dfn">payment app</a> is responsible for
+processing the request and returning a payment acknowledgement to the user
+agent. How the <a href="#dfn-payment-app" class="internalDFN" data-link-type="dfn">payment app</a> processes the request is an implementation
+detail; it may be done locally or the request may be sent to a 3rd party for
+processing. The flow ends with the user agent returning the payment
+acknowledgement the payee for processing and, if no errors occurred, the
+delivery of the good or service to the payer. There may be additional steps
+following the receipt of a payment acknowledgement that the payee must perform
+to execute the actual payment, such as communicating with their own
+<a href="#dfn-payment-service-provider" class="internalDFN" data-link-type="dfn">payment service provider</a>, but these are specific to the
+<a href="#dfn-payment-method" class="internalDFN" data-link-type="dfn">payment method</a> used.
+  </p>
+
+  <script type="text/jumly+sequence">
+@found "Payee server (merchant)", ->
+  @message "display offer", "Payer browser (customer)", ->
+    @message "click 'Pay'", "Payee server (merchant)", ->
+      @reply "payment request", "Payer browser (customer)"
+    @message "select payment app", "Payment App", ->
+      @message "(optional) select payment instrument", "Payment App"
+      @alt
+        "3rd party NOT required": ->
+          @message "process request", "Payment App", ->
+        "3rd party required": ->
+          @message "payment request + (optional) payment instrument", "Payer payment processor (wallet)", ->
+            @message "process request", ->
+              @reply "payment response", "Payment App", ->
+      @reply "payment acknowledgement", "Payer browser (customer)", ->
+    @reply "payment acknowledgement", "Payee server (merchant)"
+  @message "process acknowledgement", ->
+    @message "deliver good/service", "Payer browser (customer)"
+  </script><div class="sequence-diagram diagram" style="width: 756px;"><div class="participant found"><div class="name">Payee server (merchant)</div></div><div class="participant"><div class="name">Payer browser (customer)</div></div><div class="participant"><div class="name">Payment App</div></div><div class="participant" style="margin-right: 0px;"><div class="name">Payer payment processor (wallet)</div></div><div class="interaction activated"><div class="occurrence leftmost" style="left: 71px;"><div class="interaction reply"><div class="message" style="width: 208px; left: -2px;"><svg class="arrow" width="208" height="20"><line x1="16" y1="10" x2="196" y2="10"></line><polyline class="head" points="186,4 196,10 186,16"></polyline><polyline class="closed" points="186,17 186,3"></polyline></svg><div class="name">display offer</div></div><div class="occurrence" style="left: 194px;"><div class="interaction reply"><div class="message" style="width: 202px; left: -192px;"><svg class="arrow" width="202" height="20"><line x1="190" y1="10" x2="16" y2="10"></line><polyline class="head" points="26,4 16,10 26,16"></polyline><polyline class="closed" points="26,17 26,3"></polyline></svg><div class="name">click 'Pay'</div></div><div class="occurrence" style="left: -192px;"></div><div class="message return reverse" style="width: 190px; left: -192px;"><svg class="arrow" width="190" height="20"><line x1="16" y1="10" x2="190" y2="10"></line><polyline class="head" points="180,4 190,10 180,16"></polyline><polyline class="closed" points="180,17 180,3"></polyline></svg><div class="name">payment request</div></div></div><div class="interaction reply"><div class="message" style="width: 181px; left: -2px;"><svg class="arrow" width="181" height="20"><line x1="16" y1="10" x2="169" y2="10"></line><polyline class="head" points="159,4 169,10 159,16"></polyline><polyline class="closed" points="159,17 159,3"></polyline></svg><div class="name">select payment app</div></div><div class="occurrence" style="left: 167px;"><div class="interaction self" style="padding-bottom: 16px;"><div class="message self" style="top: 0px; width: 44px; height: 34px; left: 4px;"><svg class="arrow" width="44" height="34"><polyline points="10,2 38,2 38,25 18,25"></polyline><polyline class="head" points="28,19 18,25 28,31"></polyline><polyline class="closed" points="28,32 28,18"></polyline></svg><div class="name" style="position: relative; top: 11.3281px; left: 44px;">(optional) select payment instrument</div></div><div class="occurrence" style="left: 4px; top: 16px;"></div></div><div class="fragment alt" style="width: 222px;"><div class="header"><div class="name">alt</div></div><div class="condition">3rd party NOT required</div><div class="interaction self" style="padding-bottom: 16px;"><div class="message self" style="top: 0px; width: 44px; height: 24px; left: -5px;"><svg class="arrow" width="44" height="24"><polyline points="10,2 38,2 38,15 18,15"></polyline><polyline class="head" points="28,9 18,15 28,21"></polyline><polyline class="closed" points="28,22 28,8"></polyline></svg><div class="name" style="position: relative; top: 11.3281px; left: 44px;">process request</div></div><div class="occurrence" style="left: -5px; top: 16px;"></div></div><div class="divider"></div><div class="condition">3rd party required</div><div class="interaction reply"><div class="message" style="width: 194px; left: -11px;"><svg class="arrow" width="194" height="20"><line x1="16" y1="10" x2="182" y2="10"></line><polyline class="head" points="172,4 182,10 172,16"></polyline><polyline class="closed" points="172,17 172,3"></polyline></svg><div class="name">payment request + (optional) payment instrument</div></div><div class="occurrence" style="left: 171px;"><div class="interaction self" style="padding-bottom: 16px;"><div class="message self" style="top: 0px; width: 44px; height: 24px; left: 4px;"><svg class="arrow" width="44" height="24"><polyline points="10,2 38,2 38,15 18,15"></polyline><polyline class="head" points="28,9 18,15 28,21"></polyline><polyline class="closed" points="28,22 28,8"></polyline></svg><div class="name" style="position: relative; top: 11.3281px; left: 44px;">process request</div></div><div class="occurrence" style="left: 4px; top: 16px;"></div></div></div><div class="message return reverse" style="width: 182px; left: -11px;"><svg class="arrow" width="182" height="20"><line x1="182" y1="10" x2="16" y2="10"></line><polyline class="head" points="26,4 16,10 26,16"></polyline><polyline class="closed" points="26,17 26,3"></polyline></svg><div class="name">payment response</div></div></div></div></div><div class="message return reverse" style="width: 169px; left: -2px;"><svg class="arrow" width="169" height="20"><line x1="169" y1="10" x2="16" y2="10"></line><polyline class="head" points="26,4 16,10 26,16"></polyline><polyline class="closed" points="26,17 26,3"></polyline></svg><div class="name">payment acknowledgement</div></div></div></div><div class="message return reverse" style="width: 196px; left: -2px;"><svg class="arrow" width="196" height="20"><line x1="196" y1="10" x2="16" y2="10"></line><polyline class="head" points="26,4 16,10 26,16"></polyline><polyline class="closed" points="26,17 26,3"></polyline></svg><div class="name">payment acknowledgement</div></div></div><div class="interaction self" style="padding-bottom: 16px;"><div class="message self" style="top: 0px; width: 44px; height: 34px; left: 4px;"><svg class="arrow" width="44" height="34"><polyline points="10,2 38,2 38,25 18,25"></polyline><polyline class="head" points="28,19 18,25 28,31"></polyline><polyline class="closed" points="28,32 28,18"></polyline></svg><div class="name" style="position: relative; top: 11.3281px; left: 44px;">process acknowledgement</div></div><div class="occurrence" style="left: 4px; top: 16px;"><div class="interaction"><div class="message" style="width: 202px; left: -2px;"><svg class="arrow" width="202" height="20"><line x1="16" y1="10" x2="190" y2="10"></line><polyline class="head" points="180,4 190,10 180,16"></polyline><polyline class="closed" points="180,17 180,3"></polyline></svg><div class="name">deliver good/service</div></div><div class="occurrence rightmost" style="left: 188px;"></div></div></div></div></div></div><div class="lifeline" style="width: 154px; left: 0px; height: 616.781px; margin-top: -620.594px;"><div class="line"></div></div><div class="lifeline" style="width: 162px; left: 192px; height: 616.781px; margin-top: -616.781px;"><div class="line"></div></div><div class="lifeline" style="width: 100px; left: 392px; height: 616.781px; margin-top: -616.781px;"><div class="line"></div></div><div class="lifeline" style="width: 188px; left: 530px; height: 632.781px; margin-top: -616.781px;"><div class="line"></div></div></div>
+
+  <ol class="algorithm">
+    <li>
+The <a href="#dfn-payee" class="internalDFN" data-link-type="dfn">payee</a>'s web page calls <code>navigator.payment.request(req)</code>.
+    </li>
+    <li>
+The payment mediator scans the list of previously registered
+<a href="#dfn-payment-app" class="internalDFN" data-link-type="dfn">payment app</a>s and finds matches that support
+<code>paymentMethod</code> in <code>acceptablePayment</code> in
+<code>request</code>.
+    </li>
+    <li>
+A <a href="#dfn-payment-app" class="internalDFN" data-link-type="dfn">payment app</a> is selected by the payment mediator or the <a href="#dfn-payer" class="internalDFN" data-link-type="dfn">payer</a>.
+The process <em class="rfc2119" title="MAY">MAY</em> consist of one or more of the following steps:
+      <ol class="algorithm">
+        <li>
+If there is only one payment app that matches, that is automatically set
+to the <em>selected <a href="#dfn-payment-app" class="internalDFN" data-link-type="dfn">payment app</a></em>.
+        </li>
+        <li>
+If there is a pre-existing preference set by the <a href="#dfn-payer" class="internalDFN" data-link-type="dfn">payer</a> that narrows the
+selection of the <a href="#dfn-payment-app" class="internalDFN" data-link-type="dfn">payment app</a> to one match, the match is set to the
+<em>selected <a href="#dfn-payment-app" class="internalDFN" data-link-type="dfn">payment app</a></em>.
+        </li>
+        <li>
+If there is more than one potential match, the <a href="#dfn-payer" class="internalDFN" data-link-type="dfn">payer</a> is asked which
+app they would like to use and the selection is set to the
+<em>selected <a href="#dfn-payment-app" class="internalDFN" data-link-type="dfn">payment app</a></em>.
+        </li>
+        <li>
+If there are no matches, the <a href="#dfn-payer" class="internalDFN" data-link-type="dfn">payer</a> is notified and may be taken to an
+alternate flow where a matching <a href="#dfn-payment-app" class="internalDFN" data-link-type="dfn">payment app</a> is acquired.
+        </li>
+      </ol>
+    </li>
+    <li>
+If the <a href="#dfn-payment-app" class="internalDFN" data-link-type="dfn">payment app</a> optionally requests the payer to select a
+payment instrument.
+    </li>
+    <li>
+If the <a href="#dfn-payment-app" class="internalDFN" data-link-type="dfn">payment app</a> does not require the use of a
+3rd party <a href="#dfn-payment-service-provider" class="internalDFN" data-link-type="dfn">payment service provider</a> or <a href="#dfn-payment-processor" class="internalDFN" data-link-type="dfn">payment processor</a>
+(e.g. cryptocurrency), then the payment is processed locally.
+    </li>
+    <li>
+If the <a href="#dfn-payment-app" class="internalDFN" data-link-type="dfn">payment app</a> or <a href="#dfn-payment-method" class="internalDFN" data-link-type="dfn">payment method</a> requires the use of a 3rd
+party payer <a href="#dfn-payment-service-provider" class="internalDFN" data-link-type="dfn">payment service provider</a> or <a href="#dfn-payment-processor" class="internalDFN" data-link-type="dfn">payment processor</a> (e.g.
+push-payment that uses a PayPal/Google Wallet-like instrument, ACH, ISO20022
+style instrument):
+      <ol class="algorithm">
+        <li>
+The <a href="#dfn-payment-app" class="internalDFN" data-link-type="dfn">payment app</a> forwards the <code>request</code> and
+<em>selected <a href="#dfn-payment-instrument" class="internalDFN" data-link-type="dfn">payment instrument</a></em> (if previously
+selected) to the 3rd party for approval.
+        </li>
+        <li>
+The <a href="#dfn-payment-processor" class="internalDFN" data-link-type="dfn">payment processor</a>
+        </li>
+      </ol>
+    </li>
+    <li>
+The <a href="#dfn-payment-app" class="internalDFN" data-link-type="dfn">payment app</a> creates the payment acknowledgement, which includes any
+potential errors that occurred, and passes it to the
+<code>navigator.payment.acknowledge()</code> method. This
+method sends the payment acknowledgement to the Web application that called
+<code>navigator.payment.request()</code> by resolving the Promise returned
+from that method.
+    </li>
+    <li>
+If the <a href="#dfn-payment-method" class="internalDFN" data-link-type="dfn">payment method</a> requires the payment flow to continue to a
+3rd party payee <a href="#dfn-payment-service-provider" class="internalDFN" data-link-type="dfn">payment service provider</a> or <a href="#dfn-payment-processor" class="internalDFN" data-link-type="dfn">payment processor</a>
+(e.g. pull-payment like non-EMV magstripe credit card with embossed PAN and
+CVV2, or tokenized credit card):
+      <ol class="algorithm">
+        <li>
+The payee's Web application forwards the appropriate information
+(e.g. payment approval token) from the payment acknowledgement to their
+<a href="#dfn-payment-service-provider" class="internalDFN" data-link-type="dfn">payment service provider</a> or <a href="#dfn-payment-processor" class="internalDFN" data-link-type="dfn">payment processor</a>, which executes
+the payment.
+        </li>
+      </ol>
+    </li>
+    <li>
+The payee delivers goods/services to the payer.
+    </li>
+  </ol>
+</section>
+
+<section id="detailed-flows" typeof="bibo:Chapter" resource="#detailed-flows" property="bibo:hasPart">
+  <!--OddPage--><h2 id="h-detailed-flows" resource="#h-detailed-flows"><span property="xhv:role" resource="xhv:heading"><span class="secno">4. </span>Detailed Flows</span></h2>
+  <div class="issue" id="issue-1"><div class="issue-title" aria-level="3" role="heading" id="h-issue1"><span>Issue 1</span></div><p class="">
+Describe the payment flow in detail here using Adrian's flow diagram and Ian's
+steps.
+  </p></div>
+
+  <section id="payment-app-registration" typeof="bibo:Chapter" resource="#payment-app-registration" property="bibo:hasPart">
+    <h3 id="h-payment-app-registration" resource="#h-payment-app-registration"><span property="xhv:role" resource="xhv:heading"><span class="secno">4.1 </span>Payment App Registration</span></h3>
+    <ol>
+      <li>
+The <a href="#dfn-payer" class="internalDFN" data-link-type="dfn">payer</a> navigates to a <a href="#dfn-payment-app" class="internalDFN" data-link-type="dfn">payment app</a> provider website
+(like their bank) to sign up.</li>
+      
+      <li>
+During sign up, the <code>navigator.payment.registerApp()</code> call is made
+to register a <a href="#dfn-payment-app" class="internalDFN" data-link-type="dfn">payment app</a>:
+      <div class="example"><div class="example-title"><span>Example 1</span><span style="text-transform: none">: Example of a payment app registration</span></div><pre class="example highlight prettyprint prettyprinted"><span class="kwd">var</span><span class="pln"> app </span><span class="pun">=</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+  id</span><span class="pun">:</span><span class="pln"> </span><span class="str">'https://bank.example.com/app/'</span><span class="pun">,</span><span class="pln">
+  type</span><span class="pun">:</span><span class="pln"> </span><span class="str">'PaymentApp'</span><span class="pun">,</span><span class="pln">
+  name</span><span class="pun">:</span><span class="pln"> </span><span class="str">'ExampleBank App'</span><span class="pun">,</span><span class="pln">
+  image</span><span class="pun">:</span><span class="pln"> </span><span class="str">'https://bank.example.com/icons/app.png'</span><span class="pun">,</span><span class="pln">
+  url</span><span class="pun">:</span><span class="pln"> </span><span class="str">'https://bank.example.com/app/'</span><span class="pun">,</span><span class="pln">
+  supportedPaymentMethod</span><span class="pun">:</span><span class="pln"> </span><span class="pun">[</span><span class="pln">
+    </span><span class="str">'https://w3id.org/payment-methods#Visa'</span><span class="pun">,</span><span class="pln">
+    </span><span class="str">'https://w3id.org/payment-methods#MasterCard'</span><span class="pln">
+  </span><span class="pun">]</span><span class="pln">
+</span><span class="pun">};</span><span class="pln">
+
+</span><span class="com">// register the </span><a href="#dfn-payment-app" class="internalDFN" data-link-type="dfn"><span class="com">payment app</span></a><span class="com"> - at this point, the </span><span class="com">payee interface</span><span class="pln">
+</span><span class="com">// asks the person for approval to register the new </span><a href="#dfn-payment-app" class="internalDFN" data-link-type="dfn"><span class="com">payment app</span></a><span class="pln">
+</span><span class="kwd">var</span><span class="pln"> registration </span><span class="pun">=</span><span class="pln"> navigator</span><span class="pun">.</span><span class="pln">payment</span><span class="pun">.</span><span class="pln">registerApp</span><span class="pun">(</span><span class="pln">app</span><span class="pun">);</span><span class="pln">
+
+</span><span class="com">// called when the registration completes</span><span class="pln">
+registration</span><span class="pun">.</span><span class="kwd">then</span><span class="pun">(</span><span class="kwd">function</span><span class="pun">(</span><span class="pln">result</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+  </span><span class="com">// app has been registered, do something</span><span class="pln">
+</span><span class="pun">}).</span><span class="kwd">catch</span><span class="pun">(</span><span class="kwd">function</span><span class="pun">(</span><span class="pln">err</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+  </span><span class="com">// app has not been registered, do something</span><span class="pln">
+</span><span class="pun">});</span></pre></div>
+      </li>
+    </ol>
+  </section>
+
+  <section id="processing-a-payment-request" typeof="bibo:Chapter" resource="#processing-a-payment-request" property="bibo:hasPart">
+    <h3 id="h-processing-a-payment-request" resource="#h-processing-a-payment-request"><span property="xhv:role" resource="xhv:heading"><span class="secno">4.2 </span>Processing a Payment Request</span></h3>
+
+    <div class="issue" id="issue-2"><div class="issue-title" aria-level="4" role="heading" id="h-issue2"><span>Issue 2</span></div><p class="">
+Additional parts of the Payment Request may be digitally signed (such as
+payment method-specific data). For push-based payment methods, it is important
+that the payer's payment service provider can verify that certain pieces of
+information in the payment request have not been altered.
+    </p></div>
+
+    <div class="issue" id="issue-3"><div class="issue-title" aria-level="4" role="heading" id="h-issue3"><span>Issue 3</span></div><p class="">
+Can we make `type` a default attribute with a value of `PaymentRequest`? If
+not, we may want to exclude it here and mention it in the extension section.
+    </p></div>
+
+    <ol>
+      <li>
+The <a href="#dfn-payer" class="internalDFN" data-link-type="dfn">payer</a> navigates to a <a href="#dfn-payee" class="internalDFN" data-link-type="dfn">payee</a>'s website.</li>
+      <li>
+The <a href="#dfn-payer" class="internalDFN" data-link-type="dfn">payer</a> finds an item to buy and initiates the payment flow
+(by clicking a button, swiping, speaking a voice command, etc.).
+      </li>
+      <li>
+The <a href="#dfn-payee" class="internalDFN" data-link-type="dfn">payee</a> application generates a signed payment request that
+contains enough information to process the payment:
+      <div class="example"><div class="example-title"><span>Example 2</span><span style="text-transform: none">: Example of a payment request</span></div><pre class="example highlight prettyprint prettyprinted"><span class="kwd">var</span><span class="pln"> request </span><span class="pun">=</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+  type</span><span class="pun">:</span><span class="pln"> </span><span class="str">'PaymentRequest'</span><span class="pun">,</span><span class="pln">
+  description</span><span class="pun">:</span><span class="pln"> </span><span class="str">'Payment to ExampleMerch for widgets'</span><span class="pun">,</span><span class="pln">
+  acceptablePayment</span><span class="pun">:</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+    paymentMethod</span><span class="pun">:</span><span class="pln"> </span><span class="str">'https://w3id.org/payment-methods#Visa'</span><span class="pun">,</span><span class="pln">
+    paymentAmount</span><span class="pun">:</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+      amount</span><span class="pun">:</span><span class="pln"> </span><span class="str">'4.35'</span><span class="pun">,</span><span class="pln">
+      currency</span><span class="pun">:</span><span class="pln"> </span><span class="str">'USD'</span><span class="pln">
+    </span><span class="pun">}</span><span class="pln">
+  </span><span class="pun">}</span><span class="pln">
+</span><span class="pun">};</span><span class="pln">
+
+</span><span class="com">// request payment and get a promise that will resolve to</span><span class="pln">
+</span><span class="com">// a payment acknowledgement</span><span class="pln">
+</span><span class="kwd">var</span><span class="pln"> payment </span><span class="pun">=</span><span class="pln"> navigator</span><span class="pun">.</span><span class="pln">payment</span><span class="pun">.</span><span class="pln">request</span><span class="pun">(</span><span class="pln">request</span><span class="pun">);</span><span class="pln">
+
+</span><span class="com">// called when the payment request has been processed</span><span class="pln">
+payment</span><span class="pun">.</span><span class="kwd">then</span><span class="pun">(</span><span class="kwd">function</span><span class="pun">(</span><span class="pln">acknowledgement</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+  </span><span class="com">// payment request was at least partially processed, do something with the</span><span class="pln">
+  </span><span class="com">// acknowledgement, such as check its approval code or forward an approval</span><span class="pln">
+  </span><span class="com">// token to actually execute the payment</span><span class="pln">
+</span><span class="pun">}).</span><span class="kwd">catch</span><span class="pun">(</span><span class="kwd">function</span><span class="pun">(</span><span class="pln">err</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+  </span><span class="com">// payment request failed</span><span class="pln">
+</span><span class="pun">});</span></pre></div>
+      </li>
+    </ol>
+  </section>
+
+  <section id="generating-a-payment-acknowledgement" typeof="bibo:Chapter" resource="#generating-a-payment-acknowledgement" property="bibo:hasPart">
+    <h3 id="h-generating-a-payment-acknowledgement" resource="#h-generating-a-payment-acknowledgement"><span property="xhv:role" resource="xhv:heading"><span class="secno">4.3 </span>Generating a Payment Acknowledgement</span></h3>
+
+    <div class="issue" id="issue-4"><div class="issue-title" aria-level="4" role="heading" id="h-issue4"><span>Issue 4</span></div><p class="">
+Additional parts of the Payment Acknowledgment may be digitally signed (such as
+payment method-specific data). For push-based payment methods, this is one
+mechanism that a payee can use to verify that a payment was processed.
+    </p></div>
+
+    <div class="issue" id="issue-5"><div class="issue-title" aria-level="4" role="heading" id="h-issue5"><span>Issue 5</span></div><p class="">
+Can we make `type` a default attribute with a value of `PaymentAcknowledgement`?
+If not, we may want to exclude it here and mention it in the extension section.
+    </p></div>
+
+    <ol>
+      <li>
+The <a href="#dfn-payee" class="internalDFN" data-link-type="dfn">payee</a>'s <a href="#dfn-payment-app" class="internalDFN" data-link-type="dfn">payment app</a> receives a payment request (for a
+Web-based payment app, this is done via
+<code>navigator.payment.getPendingRequest</code>), obtains and authenticates
+the payer's <a href="#dfn-payment-instrument" class="internalDFN" data-link-type="dfn">payment instrument</a> information, and gets approval to proceed
+with the payment from the <a href="#dfn-payer" class="internalDFN" data-link-type="dfn">payer</a>.
+      </li>
+      <li>
+Once approval has been provided by the <a href="#dfn-payer" class="internalDFN" data-link-type="dfn">payer</a>, the payment
+acknowledgement is transmitted to the <a href="#dfn-payee" class="internalDFN" data-link-type="dfn">payee</a>'s web application.
+      </li>
+      <li>
+The <a href="#dfn-payment-app" class="internalDFN" data-link-type="dfn">payment app</a> or a payment service processor it works with
+generates a payment acknowledgement message
+that contains enough information to verify that the payment
+request has completed successfully (or has failed). The <a href="#dfn-payment-app" class="internalDFN" data-link-type="dfn">payment app</a>
+resolves the Promise that the <a href="#dfn-payer" class="internalDFN" data-link-type="dfn">payer</a>'s web application is waiting on
+by calling <code>navigator.payment.acknowledge</code> and passing the
+payment acknowledgement message.
+        <div class="example"><div class="example-title"><span>Example 3</span><span style="text-transform: none">: Example of a payment acknowledgement</span></div><pre class="example highlight prettyprint prettyprinted"><span class="com">// Web-based payment app gets request via `getPendingRequest`</span><span class="pln">
+navigator</span><span class="pun">.</span><span class="pln">payment</span><span class="pun">.</span><span class="pln">getPendingRequest</span><span class="pun">().</span><span class="kwd">then</span><span class="pun">(</span><span class="kwd">function</span><span class="pun">(</span><span class="pln">paymentRequest</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+  </span><span class="com">// process payment request ...</span><span class="pln">
+
+  </span><span class="com">// generate acknowledgement</span><span class="pln">
+  </span><span class="kwd">var</span><span class="pln"> acknowledgement </span><span class="pun">=</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+    type</span><span class="pun">:</span><span class="pln"> </span><span class="str">'PaymentAcknowledgement'</span><span class="pun">,</span><span class="pln">
+    description</span><span class="pun">:</span><span class="pln"> </span><span class="str">'Payment to ExampleMerch for widgets'</span><span class="pun">,</span><span class="pln">
+    payment</span><span class="pun">:</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+      paymentMethod</span><span class="pun">:</span><span class="pln"> </span><span class="str">'https://w3id.org/payment-methods#Visa'</span><span class="pun">,</span><span class="pln">
+      status</span><span class="pun">:</span><span class="pln"> </span><span class="str">'authorized'</span><span class="pun">,</span><span class="pln">
+      approvalCode</span><span class="pun">:</span><span class="pln"> </span><span class="str">'10025AB'</span><span class="pun">,</span><span class="pln">
+      paymentAmount</span><span class="pun">:</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+        amount</span><span class="pun">:</span><span class="pln"> </span><span class="str">'4.35'</span><span class="pun">,</span><span class="pln">
+        currency</span><span class="pun">:</span><span class="pln"> </span><span class="str">'USD'</span><span class="pln">
+      </span><span class="pun">}</span><span class="pln">
+    </span><span class="pun">}</span><span class="pln">
+  </span><span class="pun">};</span><span class="pln">
+
+  </span><span class="com">// acknowledge that the payment was processed</span><span class="pln">
+  navigator</span><span class="pun">.</span><span class="pln">payment</span><span class="pun">.</span><span class="pln">acknowledge</span><span class="pun">(</span><span class="pln">acknowledgement</span><span class="pun">);</span><span class="pln">
+</span><span class="pun">});</span></pre></div>
+      </li>
+    </ol>
+  </section>
+</section>
+
+<section id="the-application-programming-interface" typeof="bibo:Chapter" resource="#the-application-programming-interface" property="bibo:hasPart">
+  <!--OddPage--><h2 id="h-the-application-programming-interface" resource="#h-the-application-programming-interface"><span property="xhv:role" resource="xhv:heading"><span class="secno">5. </span>The Application Programming Interface</span></h2>
+
+  <div class="issue" id="issue-6"><div class="issue-title" aria-level="3" role="heading" id="h-issue6"><span>Issue 6</span></div><p class="">
+This browser-based API is provided for convenience purposes only. The
+existence of the API is absolutely not a requirement for the basic operation
+of the Web Payments protocol. No browser API is necessary in order for a
+Web application to initiate payment and receive an acknowledgement of the
+result of the payment.
+  </p></div>
+
+  <p>This API provides a clean mechanism that enables developers to
+    initiate payments in a user agent.
+    A conformant user agent <em class="rfc2119" title="MUST">MUST</em> implement the entirety of the
+    following API.</p>
+
+  <section id="object-interfaces" typeof="bibo:Chapter" resource="#object-interfaces" property="bibo:hasPart">
+    <h3 id="h-object-interfaces" resource="#h-object-interfaces"><span property="xhv:role" resource="xhv:heading"><span class="secno">5.1 </span>Object Interfaces</span></h3>
+
+    <section id="paymentapplication" typeof="bibo:Chapter" resource="#paymentapplication" property="bibo:hasPart">
+      <h4 id="h-paymentapplication" resource="#h-paymentapplication"><span property="xhv:role" resource="xhv:heading"><span class="secno">5.1.1 </span>PaymentApplication</span></h4>
+
+      <pre class="idl"><span class="idlInterface" id="idl-def-paymentapplication" data-idl="" data-title="PaymentApplication">interface <span class="idlInterfaceID">PaymentApplication</span> {
+<span class="idlAttribute" id="idl-def-paymentapplication-id" data-idl="" data-title="id" data-dfn-for="paymentapplication">    attribute <span class="idlAttrType">DOMString</span>                          <span class="idlAttrName">id</span>;</span>
+<span class="idlAttribute" id="idl-def-paymentapplication-type" data-idl="" data-title="type" data-dfn-for="paymentapplication">    attribute <span class="idlAttrType">(DOMString or Sequence&lt;DOMString&gt;)</span> <span class="idlAttrName">type</span>;</span>
+<span class="idlAttribute" id="idl-def-paymentapplication-name" data-idl="" data-title="name" data-dfn-for="paymentapplication">    attribute <span class="idlAttrType">DOMString</span>                          <span class="idlAttrName">name</span>;</span>
+<span class="idlAttribute" id="idl-def-paymentapplication-image" data-idl="" data-title="image" data-dfn-for="paymentapplication">    attribute <span class="idlAttrType">DOMString</span>                          <span class="idlAttrName">image</span>;</span>
+<span class="idlAttribute" id="idl-def-paymentapplication-url" data-idl="" data-title="url" data-dfn-for="paymentapplication">    attribute <span class="idlAttrType">DOMString</span>                          <span class="idlAttrName">url</span>;</span>
+<span class="idlAttribute" id="idl-def-paymentapplication-supportedpaymentmethod" data-idl="" data-title="supportedPaymentMethod" data-dfn-for="paymentapplication">    attribute <span class="idlAttrType">(DOMString or Sequence&lt;DOMString&gt;)</span> <span class="idlAttrName">supportedPaymentMethod</span>;</span>
+};</span></pre>
+
+      <p>
+A <a href="#idl-def-paymentapplication" class="internalDFN" data-link-type="dfn"><code><code>PaymentApplication</code></code></a> describes a <a href="#dfn-payment-app" class="internalDFN" data-link-type="dfn">payment app</a>,
+primarily for the purposes of registration.
+      </p>
+      <dl>
+        <dt><code>id</code></dt>
+        <dd>
+A URL identifier for the <a href="#dfn-payment-app" class="internalDFN" data-link-type="dfn">payment app</a> that will be used by the
+implementation to differentiate one payment application from another. For
+example: <code>"https://bank.example.com/generic-brand-rewards-app"</code>
+        </dd>
+        <dt><code>type</code></dt>
+        <dd>
+A type identifier associated with the object, typically set to
+<code>"PaymentApplication"</code>. The set of available types <em class="rfc2119" title="MAY">MAY</em> be extended
+in the future to add things like <code>"OfflineApplication"</code> to identify
+payment applications that are capable of running in an offline mode.
+        </dd>
+        <dt><code>name</code></dt>
+        <dd>
+Human readable text that will be used to identify the payment application.
+This text <em class="rfc2119" title="MAY">MAY</em> be displayed to the <a href="#dfn-payer" class="internalDFN" data-link-type="dfn">payer</a> in a <a href="#dfn-payment-app" class="internalDFN" data-link-type="dfn">payment app</a>
+selection interface. For example, <code>"Red Bank Visa Card"</code>.
+        </dd>
+        <dt><code>image</code></dt>
+        <dd>
+A URL to a brand image or logo associated of the payment application. This
+image <em class="rfc2119" title="MAY">MAY</em> be displayed to the <a href="#dfn-payer" class="internalDFN" data-link-type="dfn">payer</a> in a <a href="#dfn-payment-app" class="internalDFN" data-link-type="dfn">payment app</a> selection
+interface. For example:
+<code>"https://bank.example.com/generic-brand-rewards-app.png"</code>
+        </dd>
+        <dt><code>url</code></dt>
+        <dd>
+The target URL for the <a href="#idl-def-paymentrequest" class="internalDFN" data-link-type="dfn"><code>PaymentRequest</code></a>. This URL should be capable of
+processing a pending payment request, generating a payment acknowledgement,
+and responding with the final result. For example:
+<code>"https://bank.example.com/web-payments"</code>
+        </dd>
+        <dt><code>supportedPaymentMethod</code></dt>
+        <dd>
+One or more payment method identifiers, which may be simple strings or URLs.
+For example, <code>"VisaLegacy"</code> or
+<code>"https://newnetwork.example.com/methods/SuperCard"</code>
+        </dd>
+      </dl>
+
+      <div class="example"><div class="example-title"><span>Example 4</span></div><pre class="example highlight prettyprint prettyprinted"><span class="kwd">var</span><span class="pln"> app </span><span class="pun">=</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+  id</span><span class="pun">:</span><span class="pln"> </span><span class="str">'https://bank.example.com/generic-brand-rewards-app'</span><span class="pun">,</span><span class="pln">
+  type</span><span class="pun">:</span><span class="pln"> </span><span class="str">'PaymentApplication'</span><span class="pun">,</span><span class="pln">
+  name</span><span class="pun">:</span><span class="pln"> </span><span class="str">'ExampleBank App'</span><span class="pun">,</span><span class="pln">
+  image</span><span class="pun">:</span><span class="pln"> </span><span class="str">'https://bank.example.com/icons/app.png'</span><span class="pun">,</span><span class="pln">
+  url</span><span class="pun">:</span><span class="pln"> </span><span class="str">'https://bank.example.com/web-payments/'</span><span class="pun">,</span><span class="pln">
+  supportedPaymentMethod</span><span class="pun">:</span><span class="pln"> </span><span class="pun">[</span><span class="pln">
+    </span><span class="str">'VisaLegacy'</span><span class="pun">,</span><span class="pln"> </span><span class="str">'VisaTokenized'</span><span class="pun">,</span><span class="pln"> </span><span class="str">'https://newnetwork.example.com/methods/SuperCard'</span><span class="pln">
+  </span><span class="pun">]</span><span class="pln">
+</span><span class="pun">};</span></pre></div>
+    </section>
+
+    <section id="paymentrequest" typeof="bibo:Chapter" resource="#paymentrequest" property="bibo:hasPart">
+      <h4 id="h-paymentrequest" resource="#h-paymentrequest"><span property="xhv:role" resource="xhv:heading"><span class="secno">5.1.2 </span>PaymentRequest</span></h4>
+
+      <pre class="idl"><span class="idlInterface" id="idl-def-paymentrequest" data-idl="" data-title="PaymentRequest">interface <span class="idlInterfaceID">PaymentRequest</span> {
+<span class="idlAttribute" id="idl-def-paymentrequest-type" data-idl="" data-title="type" data-dfn-for="paymentrequest">    attribute <span class="idlAttrType">(DOMString or Sequence&lt;DOMString&gt;)</span>                 <span class="idlAttrName">type</span>;</span>
+<span class="idlAttribute" id="idl-def-paymentrequest-description" data-idl="" data-title="description" data-dfn-for="paymentrequest">    attribute <span class="idlAttrType">DOMString</span>                                          <span class="idlAttrName">description</span>;</span>
+<span class="idlAttribute" id="dom-acceptablepayment" data-idl="" data-title="acceptablePayment" data-dfn-for=""><code>    attribute <span class="idlAttrType">(<a href="#idl-def-acceptablepayment" class="internalDFN" data-link-type="dfn"><code>AcceptablePayment</code></a> or Sequence&lt;<a href="#idl-def-acceptablepayment" class="internalDFN" data-link-type="dfn"><code>AcceptablePayment</code></a>&gt;)</span> <span class="idlAttrName">acceptablePayment</span>;</code></span>
+};</span></pre>
+
+      <p>
+A <a href="#idl-def-paymentrequest" class="internalDFN" data-link-type="dfn"><code><code>PaymentRequest</code></code></a> expresses a payment that is requested
+by a <a href="#dfn-payee" class="internalDFN" data-link-type="dfn">payee</a>.
+      </p>
+      <dl>
+        <dt><code>type</code></dt>
+        <dd>
+An type identifier associated with the object, typically set to
+<code>"PaymentRequest"</code>. The set of available types <em class="rfc2119" title="MAY">MAY</em> be extended
+in the future to add things like <code>"SubscriptionRequest"</code> to identify
+payment requests that may have some recurring quality to them.
+        </dd>
+        <dt><code>description</code></dt>
+        <dd>
+A human-readable description of the reason the payment request was initiated.
+This text <em class="rfc2119" title="MAY">MAY</em> be displayed to the <a href="#dfn-payer" class="internalDFN" data-link-type="dfn">payer</a> in a payment interface.
+For example, <code>"Payment for widgets from Acme Anvil Emporium"</code>.
+        </dd>
+        <dt><code>acceptablePayment</code></dt>
+        <dd>
+One or more ways that the <a href="#dfn-payee" class="internalDFN" data-link-type="dfn">payee</a> can accept payment for the request.
+        </dd>
+      </dl>
+      <div class="example"><div class="example-title"><span>Example 5</span></div><pre class="example highlight prettyprint prettyprinted"><span class="kwd">var</span><span class="pln"> request </span><span class="pun">=</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+  type</span><span class="pun">:</span><span class="pln"> </span><span class="str">'PaymentRequest'</span><span class="pun">,</span><span class="pln">
+  description</span><span class="pun">:</span><span class="pln"> </span><span class="str">'Payment to ExampleMerch for widgets'</span><span class="pun">,</span><span class="pln">
+  acceptablePayment</span><span class="pun">:</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+    paymentMethod</span><span class="pun">:</span><span class="pln"> </span><span class="str">'VisaTokenized'</span><span class="pun">,</span><span class="pln">
+    paymentAmount</span><span class="pun">:</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+      amount</span><span class="pun">:</span><span class="pln"> </span><span class="str">'4.35'</span><span class="pun">,</span><span class="pln">
+      currency</span><span class="pun">:</span><span class="pln"> </span><span class="str">'USD'</span><span class="pln">
+    </span><span class="pun">}</span><span class="pln">
+  </span><span class="pun">}</span><span class="pln">
+</span><span class="pun">};</span></pre></div>
+
+      <pre class="idl"><span class="idlInterface" id="idl-def-acceptablepayment" data-idl="" data-title="AcceptablePayment">interface <span class="idlInterfaceID"><a data-lt="AcceptablePayment" href="#idl-def-acceptablepayment" class="internalDFN" data-link-type="dfn" data-for=""><code>AcceptablePayment</code></a></span> {
+<span class="idlAttribute" id="idl-def-acceptablepayment-paymentmethod" data-idl="" data-title="paymentMethod" data-dfn-for="acceptablepayment">    attribute <span class="idlAttrType">(DOMString or Sequence&lt;DOMString&gt;)</span> <span class="idlAttrName">paymentMethod</span>;</span>
+<span class="idlAttribute" id="idl-def-acceptablepayment-paymentamount" data-idl="" data-title="paymentAmount" data-dfn-for="acceptablepayment">    attribute <span class="idlAttrType"><a href="#idl-def-financialamount" class="internalDFN" data-link-type="dfn"><code>FinancialAmount</code></a></span>                    <span class="idlAttrName">paymentAmount</span>;</span>
+};</span></pre>
+
+      <p>
+An <a href="#idl-def-acceptablepayment" class="internalDFN" data-link-type="dfn"><code><code>AcceptablePayment</code></code></a> expresses the terms under which a
+payment request may be fulfilled.
+      </p>
+      <dl>
+        <dt><code>paymentMethod</code></dt>
+        <dd>
+One or more payment method identifiers, which may be simple strings or URLs.
+For example, <code>"VisaLegacy"</code> or
+<code>"https://newnetwork.example.com/methods/SuperCard"</code>
+
+        </dd>
+        <dt><code>paymentAmount</code></dt>
+        <dd>
+The amount of financial value requested by the <a href="#dfn-payee" class="internalDFN" data-link-type="dfn">payee</a>.
+        </dd>
+      </dl>
+
+      <pre class="idl"><span class="idlInterface" id="idl-def-financialamount" data-idl="" data-title="FinancialAmount">interface <span class="idlInterfaceID">FinancialAmount</span> {
+<span class="idlAttribute" id="idl-def-financialamount-amount" data-idl="" data-title="amount" data-dfn-for="financialamount">    attribute <span class="idlAttrType">DOMString</span> <span class="idlAttrName">amount</span>;</span>
+<span class="idlAttribute" id="idl-def-financialamount-currency" data-idl="" data-title="currency" data-dfn-for="financialamount">    attribute <span class="idlAttrType">DOMString</span> <span class="idlAttrName">currency</span>;</span>
+};</span></pre>
+      <p>
+A <a href="#idl-def-financialamount" class="internalDFN" data-link-type="dfn"><code><code>FinancialAmount</code></code></a> interface is used to express a scalar
+financial value.
+      </p>
+      <dl>
+        <dt><code><dfn data-dfn-type="dfn" id="dfn-currency">currency</dfn></code></dt>
+        <dd>
+<code>currency</code> is a string containing a three-character alphaneumeric
+code for the currency as defined by [<cite><a class="bibref" href="#bib-ISO4217">ISO4217</a></cite>] or a URL for a currency
+identifier. For example, <code>"USD"</code> for US Dollars or
+<code>"https://example.com/currencies/experimental-XYZ"</code> for a new
+experimental currency.
+        </dd>
+        <dt><code><dfn data-dfn-type="dfn" id="dfn-amount">amount</dfn></code></dt>
+        <dd>
+A string containing the decimal monetary value. The string <em class="rfc2119" title="MUST">MUST</em> use a single
+U+002E FULL STOP character as the decimal separator. The string <em class="rfc2119" title="MUST">MUST</em> begin
+with a single U+002D HYPHEN-MINUS character if the value is negative. All
+other characters must be characters in the range U+0030 DIGIT ZERO (0) to
+U+0039 DIGIT NINE (9).
+<div class="note"><div class="note-title" aria-level="5" role="heading" id="h-note1"><span>Note</span></div><div class="">
+The string should match the regular expression
+<code>^-?[0-9]+(\.[0-9]+)?$</code>.
+</div></div>
+        </dd>
+      </dl>
+
+      <p>The following example shows how to represent $55.00 US Dollars.</p>
+      <div class="example"><div class="example-title"><span>Example 6</span></div><pre class="example highlight prettyprint prettyprinted"><span class="pun">{</span><span class="pln">
+  amount</span><span class="pun">:</span><span class="pln"> </span><span class="str">"55.00"</span><span class="pln">
+  currency</span><span class="pun">:</span><span class="pln"> </span><span class="str">"USD"</span><span class="pun">,</span><span class="pln">
+</span><span class="pun">}</span></pre></div>
+    </section>
+
+    <section id="paymentacknowledgement" typeof="bibo:Chapter" resource="#paymentacknowledgement" property="bibo:hasPart">
+      <h4 id="h-paymentacknowledgement" resource="#h-paymentacknowledgement"><span property="xhv:role" resource="xhv:heading"><span class="secno">5.1.3 </span>PaymentAcknowledgement</span></h4>
+
+      <pre class="idl"><span class="idlInterface" id="idl-def-paymentacknowledgement" data-idl="" data-title="PaymentAcknowledgement">interface <span class="idlInterfaceID">PaymentAcknowledgement</span> {
+<span class="idlAttribute" id="idl-def-paymentacknowledgement-type" data-idl="" data-title="type" data-dfn-for="paymentacknowledgement">    attribute <span class="idlAttrType">(DOMString or Sequence&lt;DOMString&gt;)</span> <span class="idlAttrName">type</span>;</span>
+<span class="idlAttribute" id="idl-def-paymentacknowledgement-description" data-idl="" data-title="description" data-dfn-for="paymentacknowledgement">    attribute <span class="idlAttrType">DOMString</span>                          <span class="idlAttrName">description</span>;</span>
+<span class="idlAttribute" id="idl-def-paymentacknowledgement-payment" data-idl="" data-title="payment" data-dfn-for="paymentacknowledgement">    attribute <span class="idlAttrType"><a href="#dom-payment" class="internalDFN" data-link-type="dfn"><code>Payment</code></a></span>                            <span class="idlAttrName">payment</span>;</span>
+};</span></pre>
+
+      <p>
+A <a href="#idl-def-paymentacknowledgement" class="internalDFN" data-link-type="dfn"><code><code>PaymentAcknowledgement</code></code></a> expresses the result of processing
+a payment request.
+      </p>
+      <dl>
+        <dt><code>type</code></dt>
+        <dd>
+An type identifier associated with the object, typically set to
+<code>"PaymentAcknowledgement"</code>. The set of available types <em class="rfc2119" title="MAY">MAY</em> be
+extended in the future to add things like <code>Receipt</code> to identify
+acknowledgements that contain receipt information.
+        </dd>
+        <dt><code>description</code></dt>
+        <dd>
+Human readable text that will be used to identify what the payment was for.
+This text <em class="rfc2119" title="MAY">MAY</em> be displayed to the <a href="#dfn-payer" class="internalDFN" data-link-type="dfn">payer</a>. For example,
+<code>"Payment to ExampleMerch for widgets"</code>.
+        </dd>
+        <dt><code>payment</code></dt>
+        <dd>
+Information such as the payment method used and the payment amount. Payment
+method specific information, such as the status of the payment, may also be
+included. The presence and meaning of this extra information is dependent on
+the payment method. The payment information may be used by the <a href="#dfn-payee" class="internalDFN" data-link-type="dfn">payee</a> or
+their associated <a href="#dfn-payment-service-provider" class="internalDFN" data-link-type="dfn">payment service provider</a> to, for example, finalize a
+payment or display information to the <a href="#dfn-payer" class="internalDFN" data-link-type="dfn">payer</a>.
+        </dd>
+      </dl>
+
+      <div class="example"><div class="example-title"><span>Example 7</span></div><pre class="example highlight prettyprint prettyprinted"><span class="kwd">var</span><span class="pln"> acknowledgement </span><span class="pun">=</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+  type</span><span class="pun">:</span><span class="pln"> </span><span class="str">'PaymentAcknowledgement'</span><span class="pun">,</span><span class="pln">
+  description</span><span class="pun">:</span><span class="pln"> </span><span class="str">'Payment to ExampleMerch for widgets'</span><span class="pun">,</span><span class="pln">
+  payment</span><span class="pun">:</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+    paymentMethod</span><span class="pun">:</span><span class="pln"> </span><span class="str">'https://w3id.org/payment-methods#Visa'</span><span class="pun">,</span><span class="pln">
+    status</span><span class="pun">:</span><span class="pln"> </span><span class="str">'authorized'</span><span class="pun">,</span><span class="pln">
+    approvalCode</span><span class="pun">:</span><span class="pln"> </span><span class="str">'10025AB'</span><span class="pun">,</span><span class="pln">
+    paymentAmount</span><span class="pun">:</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+      amount</span><span class="pun">:</span><span class="pln"> </span><span class="str">'4.35'</span><span class="pun">,</span><span class="pln">
+      currency</span><span class="pun">:</span><span class="pln"> </span><span class="str">'USD'</span><span class="pln">
+    </span><span class="pun">}</span><span class="pln">
+  </span><span class="pun">}</span><span class="pln">
+</span><span class="pun">};</span></pre></div>
+    </section>
+
+    <section id="payment" typeof="bibo:Chapter" resource="#payment" property="bibo:hasPart">
+      <h4 id="h-payment" resource="#h-payment"><span property="xhv:role" resource="xhv:heading"><span class="secno">5.1.4 </span>Payment</span></h4>
+
+      <pre class="idl"><span class="idlInterface" id="idl-def-payment" data-idl="" data-title="Payment">interface <span class="idlInterfaceID"><a data-lt="Payment" href="#dom-payment" class="internalDFN" data-link-type="dfn" data-for=""><code>Payment</code></a></span> {
+<span class="idlAttribute" id="idl-def-payment-paymentmethod" data-idl="" data-title="paymentMethod" data-dfn-for="payment">    attribute <span class="idlAttrType">DOMString</span>       <span class="idlAttrName">paymentMethod</span>;</span>
+<span class="idlAttribute" id="idl-def-payment-paymentamount" data-idl="" data-title="paymentAmount" data-dfn-for="payment">    attribute <span class="idlAttrType"><a href="#idl-def-financialamount" class="internalDFN" data-link-type="dfn"><code>FinancialAmount</code></a></span> <span class="idlAttrName">paymentAmount</span>;</span>
+};</span></pre>
+
+      <p>
+A <a href="#dom-payment" class="internalDFN" data-link-type="dfn"><code><code>Payment</code></code></a> expresses details of a payment such as the
+payment method used and the payment amount.
+      </p>
+      <dl>
+        <dt><code>paymentMethod</code></dt>
+        <dd>
+One or more payment method identifiers, which may be simple strings or URLs.
+For example, <code>"VisaLegacy"</code> or
+<code>"https://newnetwork.example.com/methods/SuperCard"</code>
+        </dd>
+        <dt><code>paymentAmount</code></dt>
+        <dd>
+The <code>FinancialAmount</code> associated with the payment.
+        </dd>
+      </dl>
+
+      <div class="example"><div class="example-title"><span>Example 8</span></div><pre class="example highlight prettyprint prettyprinted"><span class="kwd">var</span><span class="pln"> payment </span><span class="pun">=</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+  paymentMethod</span><span class="pun">:</span><span class="pln"> </span><span class="str">'https://w3id.org/payment-methods#Visa'</span><span class="pun">,</span><span class="pln">
+  paymentAmount</span><span class="pun">:</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+    amount</span><span class="pun">:</span><span class="pln"> </span><span class="str">'4.35'</span><span class="pun">,</span><span class="pln">
+    currency</span><span class="pun">:</span><span class="pln"> </span><span class="str">'USD'</span><span class="pln">
+  </span><span class="pun">}</span><span class="pln">
+</span><span class="pun">};</span></pre></div>
+    </section>
+
+  </section>
+
+  <section id="navigatorpayment" typeof="bibo:Chapter" resource="#navigatorpayment" property="bibo:hasPart">
+    <h3 id="h-navigatorpayment" resource="#h-navigatorpayment"><span property="xhv:role" resource="xhv:heading"><span class="secno">5.2 </span>NavigatorPayment</span></h3>
+
+    <p>Navigator Payment is the name of the high-level programming
+      interface that Web developers use to initiate payments. If <em class="rfc2119" title="MUST">MUST</em> be
+      made available via the <code>navigator.payment</code> object.</p>
+
+    <pre class="idl"><span class="idlInterface" id="idl-def-NavigatorPayment">interface <span class="idlInterfaceID">NavigatorPayment</span> {
+<span class="idlMethod">    <span class="idlMethType">Promise</span> <span class="idlMethName"><a href="#widl-NavigatorPayment-registerApp-Promise-PaymentApplication-app-object-options">registerApp</a></span> (<span class="idlParam"><span class="idlParamType"><a href="#idl-def-paymentapplication" class="internalDFN" data-link-type="dfn"><code>PaymentApplication</code></a></span> <span class="idlParamName">app</span></span>, <span class="idlParam"><span class="idlParamType">object</span> <span class="idlParamName">options</span></span>);</span>
+<span class="idlMethod">    <span class="idlMethType">Promise</span> <span class="idlMethName"><a href="#widl-NavigatorPayment-request-Promise-PaymentRequest-request-object-options">request</a></span> (<span class="idlParam"><span class="idlParamType"><a href="#idl-def-paymentrequest" class="internalDFN" data-link-type="dfn"><code>PaymentRequest</code></a></span> <span class="idlParamName">request</span></span>, <span class="idlParam"><span class="idlParamType">object</span> <span class="idlParamName">options</span></span>);</span>
+<span class="idlMethod">    <span class="idlMethType">Promise</span> <span class="idlMethName"><a href="#widl-NavigatorPayment-getPendingRequest-Promise">getPendingRequest</a></span> ();</span>
+<span class="idlMethod">    <span class="idlMethType">void</span>    <span class="idlMethName"><a href="#widl-NavigatorPayment-acknowledge-void-PaymentAcknowledgement-acknowledgement-object-options">acknowledge</a></span> (<span class="idlParam"><span class="idlParamType"><a href="#idl-def-paymentacknowledgement" class="internalDFN" data-link-type="dfn"><code>PaymentAcknowledgement</code></a></span> <span class="idlParamName">acknowledgement</span></span>, <span class="idlParam"><span class="idlParamType">object</span> <span class="idlParamName">options</span></span>);</span>
+};</span></pre><section id="methods" typeof="bibo:Chapter" resource="#methods" property="bibo:hasPart"><h4 id="h-methods" resource="#h-methods"><span property="xhv:role" resource="xhv:heading"><span class="secno">5.2.1 </span>Methods</span></h4><dl class="methods"><dt id="widl-NavigatorPayment-acknowledge-void-PaymentAcknowledgement-acknowledgement-object-options"><code>acknowledge</code></dt><dd>
+        <p>
+Typically called by a <a href="#dfn-payment-app" class="internalDFN" data-link-type="dfn">payment app</a> to acknowledge that a payment request
+has been processed.
+        </p>
+        
+      <table class="parameters"><tbody><tr><th>Parameter</th><th>Type</th><th>Nullable</th><th>Optional</th><th>Description</th></tr><tr><td class="prmName">acknowledgement</td><td class="prmType"><code><a href="#idl-def-paymentacknowledgement" class="internalDFN" data-link-type="dfn"><code>PaymentAcknowledgement</code></a></code></td><td class="prmNullFalse"><span role="img" aria-label="False">✘</span></td><td class="prmOptFalse"><span role="img" aria-label="False">✘</span></td><td class="prmDesc">
+Describes the result of a payment request.
+          </td></tr><tr><td class="prmName">options</td><td class="prmType"><code>object</code></td><td class="prmNullFalse"><span role="img" aria-label="False">✘</span></td><td class="prmOptFalse"><span role="img" aria-label="False">✘</span></td><td class="prmDesc">
+A set of options to use when processing the payment acknowledgement.
+          </td></tr></tbody></table><div><em>Return type: </em><code>void</code></div></dd><dt id="widl-NavigatorPayment-getPendingRequest-Promise"><code>getPendingRequest</code></dt><dd>
+        <p>
+Called by a <a href="#dfn-payment-app" class="internalDFN" data-link-type="dfn">payment app</a> to get the pending payment request. The returned
+Promise resolves to the request.
+        </p>
+      <div><em>No parameters.</em></div><div><em>Return type: </em><code>Promise</code></div></dd><dt id="widl-NavigatorPayment-registerApp-Promise-PaymentApplication-app-object-options"><code>registerApp</code></dt><dd>
+        <p>
+Typically called by a <a href="#dfn-payment-service-provider" class="internalDFN" data-link-type="dfn">payment service provider</a> to register a
+<a href="#dfn-payment-app" class="internalDFN" data-link-type="dfn">payment app</a> for later use during a payment request.
+        </p>
+        
+      <table class="parameters"><tbody><tr><th>Parameter</th><th>Type</th><th>Nullable</th><th>Optional</th><th>Description</th></tr><tr><td class="prmName">app</td><td class="prmType"><code><a href="#idl-def-paymentapplication" class="internalDFN" data-link-type="dfn"><code>PaymentApplication</code></a></code></td><td class="prmNullFalse"><span role="img" aria-label="False">✘</span></td><td class="prmOptFalse"><span role="img" aria-label="False">✘</span></td><td class="prmDesc">
+A description of the <a href="#dfn-payment-app" class="internalDFN" data-link-type="dfn">payment app</a>.
+          </td></tr><tr><td class="prmName">options</td><td class="prmType"><code>object</code></td><td class="prmNullFalse"><span role="img" aria-label="False">✘</span></td><td class="prmOptFalse"><span role="img" aria-label="False">✘</span></td><td class="prmDesc">
+A set of options to use when registering the payment app.
+          </td></tr></tbody></table><div><em>Return type: </em><code>Promise</code></div></dd><dt id="widl-NavigatorPayment-request-Promise-PaymentRequest-request-object-options"><code>request</code></dt><dd>
+        <p>
+Typically called by a <a href="#dfn-payee" class="internalDFN" data-link-type="dfn">payee</a> to initiate a payment.
+        </p>
+        
+      <table class="parameters"><tbody><tr><th>Parameter</th><th>Type</th><th>Nullable</th><th>Optional</th><th>Description</th></tr><tr><td class="prmName">request</td><td class="prmType"><code><a href="#idl-def-paymentrequest" class="internalDFN" data-link-type="dfn"><code>PaymentRequest</code></a></code></td><td class="prmNullFalse"><span role="img" aria-label="False">✘</span></td><td class="prmOptFalse"><span role="img" aria-label="False">✘</span></td><td class="prmDesc">
+Typically called by a <a href="#dfn-payee" class="internalDFN" data-link-type="dfn">payee</a> to request a payment.
+          </td></tr><tr><td class="prmName">options</td><td class="prmType"><code>object</code></td><td class="prmNullFalse"><span role="img" aria-label="False">✘</span></td><td class="prmOptFalse"><span role="img" aria-label="False">✘</span></td><td class="prmDesc">
+A set of options to use when requesting payment.
+          </td></tr></tbody></table><div><em>Return type: </em><code>Promise</code></div></dd></dl></section>
+
+  </section> <!-- end of NavigatorPayment -->
+</section>
+
+<section id="extensibility" typeof="bibo:Chapter" resource="#extensibility" property="bibo:hasPart">
+  <!--OddPage--><h2 id="h-extensibility" resource="#h-extensibility"><span property="xhv:role" resource="xhv:heading"><span class="secno">6. </span>Extensibility</span></h2>
+
+  <p>
+In general, the WebIDL descriptions provided in this specification outline
+the specific interfaces, properties, and values that an implementation <em class="rfc2119" title="MAY">MAY</em>
+depend on. It is expected that other properties and values will be stored in
+objects that implement the various interfaces in this specification (e.g.
+<a href="#idl-def-paymentapplication" class="internalDFN" data-link-type="dfn"><code>PaymentApplication</code></a>, <a href="#idl-def-paymentrequest" class="internalDFN" data-link-type="dfn"><code>PaymentRequest</code></a>,
+<a href="#idl-def-paymentacknowledgement" class="internalDFN" data-link-type="dfn"><code>PaymentAcknowledgement</code></a>, etc.). While this specification does
+not suggest a single extension mechanism, it does anticipate
+extensibility. To that end,
+  </p>
+
+  <ul>
+    <li>
+Implementations <em class="rfc2119" title="MUST">MUST</em> preserve unrecognized properties and their
+associated values.
+    </li>
+    <li>
+Another specification [LINK_TBD] explains how to extend the
+parameters used with this API using JSON-LD.
+    </li>
+  </ul>
+
+  <div class="issue" id="issue-7"><div class="issue-title" aria-level="3" role="heading" id="h-issue7"><span>Issue 7</span></div><p class="">
+The Working Group seeks feedback from the Web community on that
+specification and how well it furthers interoperability needs in the
+payments ecosystem. To provide feedback, see the
+<a href="#h-sotd">status section</a> above.
+  </p></div>
+</section>
+
+  <!-- section>
+    <h3>Extending Messages Using JSON-LD</h3>
+
+    <p>
+The interfaces in this specification (e.g.
+<a>PaymentApplication</a>, <a>PaymentRequest</a>,
+<a>PaymentAcknowledgement</a>, etc.)
+are designed to optionally accept JSON-LD objects. In
+order to ensure a JSON-LD object can be passed to the API properly, the
+following transformation MUST be applied:
+    </p>
+    <ol>
+      <li>
+If a <code>@context</code> property does not exist, add one and assign the
+value <code>"https://w3id.org/payments/v1"</code> to it. If a
+<code>@context</code> does exist, ensure its value is
+<code>"https://w3id.org/payments/v1"</code>. If its value does not match,
+perform JSON-LD compaction on the object using that context. This MUST be done
+as there is no requirement for API implementations to perform any JSON-LD
+processing.
+      </li>
+      <li>
+Pass the resulting object to the API.
+      </li>
+    </ol>
+
+    <p>
+Any application receiving an interface from the API can similarly interpret
+it as a JSON-LD object. In this case, the application MUST ensure that if the
+<code>@context</code> property exists and that the value associated is
+<code>"https://w3id.org/payments/v1"</code>. If the <code>@context</code>
+does not exist, it MUST be assumed that the object has a <code>@context</code>
+property with the value of <code>"https://w3id.org/payments/v1"</code>.
+    </p>
+
+  <p class="issue">
+Can we simplify the above `@context` check (when receiving an interface from
+the API) so it's unnecessary by adding an optional `@context` property with
+a required value of "https://w3id.org/payments/v1" to the appropriate
+interfaces?
+  </p>
+  <section-->
+
+<section id="security-considerations" typeof="bibo:Chapter" resource="#security-considerations" property="bibo:hasPart">
+  <!--OddPage--><h2 id="h-security-considerations" resource="#h-security-considerations"><span property="xhv:role" resource="xhv:heading"><span class="secno">7. </span>Security Considerations</span></h2>
+
+  <section id="message-integrity" typeof="bibo:Chapter" resource="#message-integrity" property="bibo:hasPart">
+    <h3 id="h-message-integrity" resource="#h-message-integrity"><span property="xhv:role" resource="xhv:heading"><span class="secno">7.1 </span>Message Integrity</span></h3>
+    <div class="issue" id="issue-8"><div class="issue-title" aria-level="4" role="heading" id="h-issue8"><span>Issue 8</span></div><p class="">
+This section has not been discussed by the WG and is kept here as
+a placeholder for a larger discussion around ensuring
+message integrity.
+    </p></div>
+
+    <p>
+It is possible to sign any JSON-LD based message by using
+Linked Data Signatures, like so:
+    </p>
+
+    <div class="example"><div class="example-title"><span>Example 9</span><span style="text-transform: none">: Example of a signed payment acknowledgement</span></div><pre class="example highlight prettyprint prettyprinted"><span class="com">// generate acknowledgement</span><span class="pln">
+</span><span class="kwd">var</span><span class="pln"> acknowledgement </span><span class="pun">=</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+  type</span><span class="pun">:</span><span class="pln"> </span><span class="str">'PaymentAcknowledgement'</span><span class="pun">,</span><span class="pln">
+  description</span><span class="pun">:</span><span class="pln"> </span><span class="str">'Payment to ExampleMerch for widgets'</span><span class="pun">,</span><span class="pln">
+  payment</span><span class="pun">:</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+    paymentMethod</span><span class="pun">:</span><span class="pln"> </span><span class="str">'https://w3id.org/payment-methods#Visa'</span><span class="pun">,</span><span class="pln">
+    status</span><span class="pun">:</span><span class="pln"> </span><span class="str">'authorized'</span><span class="pun">,</span><span class="pln">
+    approvalCode</span><span class="pun">:</span><span class="pln"> </span><span class="str">'10025AB'</span><span class="pun">,</span><span class="pln">
+    paymentAmount</span><span class="pun">:</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+      amount</span><span class="pun">:</span><span class="pln"> </span><span class="str">'4.35'</span><span class="pun">,</span><span class="pln">
+      currency</span><span class="pun">:</span><span class="pln"> </span><span class="str">'USD'</span><span class="pln">
+    </span><span class="pun">}</span><span class="pln">
+  </span><span class="pun">},</span><span class="pln">
+  signature</span><span class="pun">:</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+    type</span><span class="pun">:</span><span class="pln"> </span><span class="str">'LinkedDataSignature2015'</span><span class="pun">,</span><span class="pln">
+    creator</span><span class="pun">:</span><span class="pln"> </span><span class="str">'https://payment-service-provider.example.com/keys/12'</span><span class="pun">,</span><span class="pln">
+    created</span><span class="pun">:</span><span class="pln"> </span><span class="str">'2015-09-23T20:23:15Z'</span><span class="pun">,</span><span class="pln">
+    nonce</span><span class="pun">:</span><span class="pln"> </span><span class="str">'239807882930744352'</span><span class="pun">,</span><span class="pln">
+    signatureValue</span><span class="pun">:</span><span class="pln"> </span><span class="str">'m4NTIyZTOGQzNGVkMzVkZ...OWM32NjIgoYzI43Q3ODIy='</span><span class="pln">
+  </span><span class="pun">}</span><span class="pln">
+</span><span class="pun">};</span></pre></div>
+  </section>
+</section>
+
+<section class="appendix informative" id="messages-addendum" typeof="bibo:Chapter" resource="#messages-addendum" property="bibo:hasPart">
+  <!--OddPage--><h2 id="h-messages-addendum" resource="#h-messages-addendum"><span property="xhv:role" resource="xhv:heading"><span class="secno">A. </span>Messages Addendum</span></h2><p><em>This section is non-normative.</em></p>
+
+  <p>
+Multiple types of <a href="#dfn-payment-app" class="internalDFN" data-link-type="dfn">payment app</a>s, each supporting multiple types of
+<a href="#dfn-payment-method" class="internalDFN" data-link-type="dfn">payment method</a>s and <a href="#dfn-payment-instrument" class="internalDFN" data-link-type="dfn">payment instrument</a>s may be supported using
+this approach:
+  </p>
+  <div class="example"><div class="example-title"><span>Example 10</span><span style="text-transform: none">: Example of Bitcoin App registration</span></div><pre class="example highlight prettyprint prettyprinted"><span class="kwd">var</span><span class="pln"> app </span><span class="pun">=</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+  id</span><span class="pun">:</span><span class="pln"> </span><span class="str">'https://bitcoin-wallet.example.com/app/'</span><span class="pun">,</span><span class="pln">
+  type</span><span class="pun">:</span><span class="pln"> </span><span class="str">'PaymentApp'</span><span class="pun">,</span><span class="pln">
+  name</span><span class="pun">:</span><span class="pln"> </span><span class="str">'Example Bitcoin App'</span><span class="pun">,</span><span class="pln">
+  image</span><span class="pun">:</span><span class="pln"> </span><span class="str">'https://bitcoin-wallet.example.com/icons/app.png'</span><span class="pun">,</span><span class="pln">
+  url</span><span class="pun">:</span><span class="pln"> </span><span class="str">'https://bitcoin-wallet.example.com/app/'</span><span class="pun">,</span><span class="pln">
+  supportedPaymentMethod</span><span class="pun">:</span><span class="pln"> </span><span class="pun">[</span><span class="pln">
+    </span><span class="str">'https://w3id.org/payment-methods#Bitcoin'</span><span class="pln">
+  </span><span class="pun">]</span><span class="pln">
+</span><span class="pun">};</span><span class="pln">
+
+</span><span class="com">// register the </span><a href="#dfn-payment-app" class="internalDFN" data-link-type="dfn"><span class="com">payment app</span></a><span class="com"> - at this point, the </span><span class="com">payee interface</span><span class="pln">
+</span><span class="com">// asks the person for approval to register the new </span><a href="#dfn-payment-app" class="internalDFN" data-link-type="dfn"><span class="com">payment app</span></a><span class="pln">
+</span><span class="kwd">var</span><span class="pln"> registration </span><span class="pun">=</span><span class="pln"> navigator</span><span class="pun">.</span><span class="pln">payment</span><span class="pun">.</span><span class="pln">registerApp</span><span class="pun">(</span><span class="pln">app</span><span class="pun">);</span><span class="pln">
+
+</span><span class="com">// called when the registration completes</span><span class="pln">
+registration</span><span class="pun">.</span><span class="kwd">then</span><span class="pun">(</span><span class="kwd">function</span><span class="pun">(</span><span class="pln">result</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+  </span><span class="com">// app has been registered, do something</span><span class="pln">
+</span><span class="pun">}).</span><span class="kwd">catch</span><span class="pun">(</span><span class="kwd">function</span><span class="pun">(</span><span class="pln">err</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+  </span><span class="com">// app has not been registered, do something</span><span class="pln">
+</span><span class="pun">});</span></pre></div>
+
+  <p>
+Multiple acceptable payments may be collected into a single payment request.
+  </p>
+
+  <div class="example"><div class="example-title"><span>Example 11</span><span style="text-transform: none">: Example of a complex payment request</span></div><pre class="example highlight prettyprint prettyprinted"><span class="kwd">var</span><span class="pln"> request </span><span class="pun">=</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+  type</span><span class="pun">:</span><span class="pln"> </span><span class="str">'PaymentRequest'</span><span class="pln">
+  description</span><span class="pun">:</span><span class="pln"> </span><span class="str">'Payment to ExampleMerch for Widget 1'</span><span class="pln">
+  acceptablePayment</span><span class="pun">:</span><span class="pln"> </span><span class="pun">[{</span><span class="pln">
+    paymentMethod</span><span class="pun">:</span><span class="pln"> </span><span class="pun">[</span><span class="pln">
+      </span><span class="str">'https://w3id.org/payment-methods#Visa'</span><span class="pun">,</span><span class="pln">
+      </span><span class="str">'https://w3id.org/payment-methods#Mastercard'</span><span class="pun">,</span><span class="pln">
+      </span><span class="str">'https://w3id.org/payment-methods#Discover'</span><span class="pln">
+    </span><span class="pun">],</span><span class="pln">
+    paymentAmount</span><span class="pun">:</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+      amount</span><span class="pun">:</span><span class="pln"> </span><span class="str">'4.35'</span><span class="pun">,</span><span class="pln">
+      currency</span><span class="pun">:</span><span class="pln"> </span><span class="str">'USD'</span><span class="pln">
+    </span><span class="pun">}</span><span class="pln">
+  </span><span class="pun">},</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+    paymentMethod</span><span class="pun">:</span><span class="pln"> </span><span class="str">'https://w3id.org/payment-methods#Bitcoin'</span><span class="pun">,</span><span class="pln">
+    paymentAmount</span><span class="pun">:</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+      amount</span><span class="pun">:</span><span class="pln"> </span><span class="str">'0.0177'</span><span class="pun">,</span><span class="pln">
+      currency</span><span class="pun">:</span><span class="pln"> </span><span class="str">'BTC'</span><span class="pln">
+    </span><span class="pun">},</span><span class="pln">
+    destination</span><span class="pun">:</span><span class="pln"> </span><span class="str">'3QJmV3qfvL9SuYo34YihAf3sRCW3qSinyC'</span><span class="pln">
+  </span><span class="pun">}]</span><span class="pln">
+</span><span class="pun">};</span><span class="pln">
+
+</span><span class="com">// request payment and get a promise that will resolve to</span><span class="pln">
+</span><span class="com">// a payment acknowledgement</span><span class="pln">
+</span><span class="kwd">var</span><span class="pln"> payment </span><span class="pun">=</span><span class="pln"> navigator</span><span class="pun">.</span><span class="pln">payment</span><span class="pun">.</span><span class="pln">request</span><span class="pun">(</span><span class="pln">request</span><span class="pun">);</span><span class="pln">
+
+</span><span class="com">// called when the payment request has been processed</span><span class="pln">
+payment</span><span class="pun">.</span><span class="kwd">then</span><span class="pun">(</span><span class="kwd">function</span><span class="pun">(</span><span class="pln">acknowledgement</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+  </span><span class="com">// payment request was at least partially processed, do something with the</span><span class="pln">
+  </span><span class="com">// acknowledgement, such as check its approval code or forward an approval</span><span class="pln">
+  </span><span class="com">// token to actually execute the payment</span><span class="pln">
+</span><span class="pun">}).</span><span class="kwd">catch</span><span class="pun">(</span><span class="kwd">function</span><span class="pun">(</span><span class="pln">err</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+  </span><span class="com">// payment request failed</span><span class="pln">
+</span><span class="pun">});</span></pre></div>
+
+  <div class="issue" id="issue-9"><div class="issue-title" aria-level="3" role="heading" id="h-issue9"><span>Issue 9</span></div><p class="">
+An example should be added demonstrating how merchants can recommend a URL in
+an `acceptablePayment` block that the payer can use to install a Payment App
+for a particular payment method, if the payer does not have an app for it and
+wants to use that method.
+  </p></div>
+
+</section>
+
+<section class="appendix informative" id="flows-addendum" typeof="bibo:Chapter" resource="#flows-addendum" property="bibo:hasPart">
+  <!--OddPage--><h2 id="h-flows-addendum" resource="#h-flows-addendum"><span property="xhv:role" resource="xhv:heading"><span class="secno">B. </span>Flows Addendum</span></h2><p><em>This section is non-normative.</em></p>
+
+  <section id="traditional-unencrypted-credit-card-flow" typeof="bibo:Chapter" resource="#traditional-unencrypted-credit-card-flow" property="bibo:hasPart">
+    <h3 id="h-traditional-unencrypted-credit-card-flow" resource="#h-traditional-unencrypted-credit-card-flow"><span property="xhv:role" resource="xhv:heading"><span class="secno">B.1 </span>Traditional Unencrypted Credit Card Flow</span></h3>
+  <p>
+The diagram below outlines a traditional unencrypted credit card flow
+where the user agent stores credit card details and forwards them on
+to a merchant for processing.
+  </p>
+
+  <img width="100%" src="http://www.plantuml.com/plantuml/proxy?fmt=svg&amp;src=https://raw.githubusercontent.com/w3c/webpayments/gh-pages/PaymentFlows/Card/MerchantHosted-CardPayment-Current.pml">
+
+  <div class="example"><div class="example-title"><span>Example 12</span><span style="text-transform: none">: Implementation of legacy merchant hosted card payment using Web Payments Browser API</span></div><pre id="flows-traditional-card" class="example highlight prettyprint prettyprinted"><span class="com">// Step #1 has already happened at this point</span><span class="pln">
+</span><span class="com">// Step #2: Press Pay</span><span class="pln">
+</span><span class="com">//   - generate the payment request</span><span class="pln">
+</span><span class="kwd">var</span><span class="pln"> req </span><span class="pun">=</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+  type</span><span class="pun">:</span><span class="pln"> </span><span class="str">'PaymentRequest'</span><span class="pun">,</span><span class="pln">
+  description</span><span class="pun">:</span><span class="pln"> </span><span class="str">'Payment to ExampleMerch for widgets'</span><span class="pun">,</span><span class="pln">
+  acceptablePayment</span><span class="pun">:</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+    paymentMethod</span><span class="pun">:</span><span class="pln"> </span><span class="str">'VisaLegacy'</span><span class="pun">,</span><span class="pln">
+    paymentAmount</span><span class="pun">:</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+      amount</span><span class="pun">:</span><span class="pln"> </span><span class="str">'4.35'</span><span class="pun">,</span><span class="pln">
+      currency</span><span class="pun">:</span><span class="pln"> </span><span class="str">'USD'</span><span class="pln">
+    </span><span class="pun">}</span><span class="pln">
+  </span><span class="pun">}</span><span class="pln">
+</span><span class="pun">};</span><span class="pln">
+</span><span class="kwd">var</span><span class="pln"> payment </span><span class="pun">=</span><span class="pln"> navigator</span><span class="pun">.</span><span class="pln">payment</span><span class="pun">.</span><span class="pln">request</span><span class="pun">(</span><span class="pln">req</span><span class="pun">);</span><span class="pln">
+
+</span><span class="com">// once this is called, Steps #3-#12 are executed by the payment app</span><span class="pln">
+payment</span><span class="pun">.</span><span class="kwd">then</span><span class="pun">(</span><span class="kwd">function</span><span class="pun">(</span><span class="pln">acknowledgement</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+  </span><span class="com">// Step #12: Authorization Result</span><span class="pln">
+  </span><span class="com">//   - check the payment acknowledgement</span><span class="pln">
+  </span><span class="kwd">if</span><span class="pun">(</span><span class="pln">acknowledgement</span><span class="pun">.</span><span class="pln">approvalCode</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+    </span><span class="com">// notify the payer that payment was successful</span><span class="pln">
+  </span><span class="pun">}</span><span class="pln"> </span><span class="kwd">else</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+    </span><span class="com">// the result wasn't as expected, notify the payer</span><span class="pln">
+  </span><span class="pun">}</span><span class="pln">
+</span><span class="pun">}).</span><span class="kwd">catch</span><span class="pun">(</span><span class="kwd">function</span><span class="pun">(</span><span class="pln">err</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+  </span><span class="com">// Step #12: an error occured</span><span class="pln">
+</span><span class="pun">});</span></pre></div>
+
+  </section>
+
+  <section id="tokenized-credit-card-flow" typeof="bibo:Chapter" resource="#tokenized-credit-card-flow" property="bibo:hasPart">
+    <h3 id="h-tokenized-credit-card-flow" resource="#h-tokenized-credit-card-flow"><span property="xhv:role" resource="xhv:heading"><span class="secno">B.2 </span>Tokenized Credit Card Flow</span></h3>
+  <p>
+The diagram below outlines a tokenized credit card flow where the token is
+generated via a local mobile wallet application available to the payer.
+  </p>
+
+  <img width="100%" src="http://www.plantuml.com/plantuml/proxy?fmt=svg&amp;src=https://raw.githubusercontent.com/w3c/webpayments/gh-pages/PaymentFlows/Card/MerchantHosted-CardPaymentwithTokenisation-Current.pml">
+
+  <div class="example"><div class="example-title"><span>Example 13</span><span style="text-transform: none">: Implementation of tokenized card flow using Browser Payments API</span></div><pre id="flows-tokenized-card" class="example highlight prettyprint prettyprinted"><span class="com">// Step #1 has already happened at this point</span><span class="pln">
+</span><span class="com">// Step #2: Press Pay</span><span class="pln">
+</span><span class="com">//   - generate the payment request</span><span class="pln">
+</span><span class="kwd">var</span><span class="pln"> req </span><span class="pun">=</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+  type</span><span class="pun">:</span><span class="pln"> </span><span class="str">'PaymentRequest'</span><span class="pun">,</span><span class="pln">
+  description</span><span class="pun">:</span><span class="pln"> </span><span class="str">'Payment to ExampleMerch for widgets'</span><span class="pun">,</span><span class="pln">
+  acceptablePayment</span><span class="pun">:</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+    paymentMethod</span><span class="pun">:</span><span class="pln"> </span><span class="str">'VisaTokenized'</span><span class="pun">,</span><span class="pln">
+    paymentAmount</span><span class="pun">:</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+      amount</span><span class="pun">:</span><span class="pln"> </span><span class="str">'4.35'</span><span class="pun">,</span><span class="pln">
+      currency</span><span class="pun">:</span><span class="pln"> </span><span class="str">'USD'</span><span class="pln">
+    </span><span class="pun">}</span><span class="pln">
+  </span><span class="pun">}</span><span class="pln">
+</span><span class="pun">};</span><span class="pln">
+</span><span class="kwd">var</span><span class="pln"> payment </span><span class="pun">=</span><span class="pln"> navigator</span><span class="pun">.</span><span class="pln">payment</span><span class="pun">.</span><span class="pln">request</span><span class="pun">(</span><span class="pln">req</span><span class="pun">);</span><span class="pln">
+
+</span><span class="com">// once this is called, Steps #3-#12 are executed by the payment app</span><span class="pln">
+payment</span><span class="pun">.</span><span class="kwd">then</span><span class="pun">(</span><span class="kwd">function</span><span class="pun">(</span><span class="pln">acknowledgement</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+  </span><span class="com">// Step #13: Authorization Result</span><span class="pln">
+  </span><span class="com">//   - if a token was requested, store it for future payments</span><span class="pln">
+  </span><span class="kwd">if</span><span class="pun">(</span><span class="pln">acknowledgement</span><span class="pun">.</span><span class="pln">token</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+    </span><span class="com">// store tokenized version of card</span><span class="pln">
+  </span><span class="pun">}</span><span class="pln">
+
+  </span><span class="com">// process the acknowledgement</span><span class="pln">
+  </span><span class="kwd">if</span><span class="pun">(</span><span class="pln">isValid</span><span class="pun">(</span><span class="pln">acknowledgement</span><span class="pun">.</span><span class="pln">approvalCode</span><span class="pun">))</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+    </span><span class="com">// the payment operation was successful</span><span class="pln">
+  </span><span class="pun">}</span><span class="pln"> </span><span class="kwd">else</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+    </span><span class="com">// deal with partial successes</span><span class="pln">
+  </span><span class="pun">}</span><span class="pln">
+</span><span class="pun">}).</span><span class="kwd">catch</span><span class="pun">(</span><span class="kwd">function</span><span class="pun">(</span><span class="pln">err</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+  </span><span class="com">// Step #13: an error occured</span><span class="pln">
+</span><span class="pun">});</span></pre></div>
+
+  </section>
+
+  <section id="iso20022-sepa-credit-transfer" typeof="bibo:Chapter" resource="#iso20022-sepa-credit-transfer" property="bibo:hasPart">
+    <h3 id="h-iso20022-sepa-credit-transfer" resource="#h-iso20022-sepa-credit-transfer"><span property="xhv:role" resource="xhv:heading"><span class="secno">B.3 </span>ISO20022/SEPA Credit Transfer</span></h3>
+  <p>
+The diagram below show a SEPA Credit Transfer being executed.
+  </p>
+
+  <img width="100%" src="http://www.plantuml.com/plantuml/proxy?fmt=svg&amp;src=https://raw.githubusercontent.com/w3c/webpayments/gh-pages/PaymentFlows/CreditTransfer/WebInitiatedSEPACreditTransfer-Current.pml">
+
+  <div class="example"><div class="example-title"><span>Example 14</span><span style="text-transform: none">: Implementation of SEPA Credit Transfer using Browser Payments API</span></div><pre id="flows-sepa-credit-transfer" class="example highlight prettyprint prettyprinted"><span class="com">// Step #1 has already happened at this point</span><span class="pln">
+</span><span class="com">// Step #2: Press Pay (on the PSP website)</span><span class="pln">
+</span><span class="com">//   - generate the payment request</span><span class="pln">
+</span><span class="kwd">var</span><span class="pln"> req </span><span class="pun">=</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+  type</span><span class="pun">:</span><span class="pln"> </span><span class="str">'PaymentRequest'</span><span class="pun">,</span><span class="pln">
+  description</span><span class="pun">:</span><span class="pln"> </span><span class="str">'Payment to ExampleMerch for widgets'</span><span class="pun">,</span><span class="pln">
+  acceptablePayment</span><span class="pun">:</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+    paymentMethod</span><span class="pun">:</span><span class="pln"> </span><span class="str">'SepaCreditTransfer'</span><span class="pun">,</span><span class="pln">
+    paymentAmount</span><span class="pun">:</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+      amount</span><span class="pun">:</span><span class="pln"> </span><span class="str">'4.35'</span><span class="pun">,</span><span class="pln">
+      currency</span><span class="pun">:</span><span class="pln"> </span><span class="str">'EUR'</span><span class="pln">
+    </span><span class="pun">}</span><span class="pln">
+  </span><span class="pun">}</span><span class="pln">
+</span><span class="pun">};</span><span class="pln">
+</span><span class="kwd">var</span><span class="pln"> payment </span><span class="pun">=</span><span class="pln"> navigator</span><span class="pun">.</span><span class="pln">payment</span><span class="pun">.</span><span class="pln">request</span><span class="pun">(</span><span class="pln">req</span><span class="pun">);</span><span class="pln">
+
+</span><span class="com">// once this is called, Steps #3-#12 are executed by the payment app</span><span class="pln">
+payment</span><span class="pun">.</span><span class="kwd">then</span><span class="pun">(</span><span class="kwd">function</span><span class="pun">(</span><span class="pln">acknowledgement</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+  </span><span class="com">// Step #13: Payment Notification (initiated)</span><span class="pln">
+  </span><span class="kwd">if</span><span class="pun">(</span><span class="pln">acknowledgement</span><span class="pun">.</span><span class="pln">status </span><span class="pun">===</span><span class="pln"> </span><span class="str">'initiated'</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+    </span><span class="com">// the SEPA payment initiation operation was successful</span><span class="pln">
+  </span><span class="pun">}</span><span class="pln"> </span><span class="kwd">else</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+    </span><span class="com">// deal with partial successes</span><span class="pln">
+  </span><span class="pun">}</span><span class="pln">
+</span><span class="pun">}).</span><span class="kwd">catch</span><span class="pun">(</span><span class="kwd">function</span><span class="pun">(</span><span class="pln">err</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+  </span><span class="com">// Step #13: an error occured</span><span class="pln">
+</span><span class="pun">});</span></pre></div>
+
+  </section>
+
+  <section id="crypto-currency-payment" typeof="bibo:Chapter" resource="#crypto-currency-payment" property="bibo:hasPart">
+    <h3 id="h-crypto-currency-payment" resource="#h-crypto-currency-payment"><span property="xhv:role" resource="xhv:heading"><span class="secno">B.4 </span>Crypto-currency Payment</span></h3>
+  <p>
+The diagram below outlines a cryptographic currency payment where the
+cryptocurrency application is available on the same system as the user
+agent.
+  </p>
+
+  <img width="100%" src="http://www.plantuml.com/plantuml/proxy?fmt=svg&amp;src=https://raw.githubusercontent.com/w3c/webpayments/gh-pages/PaymentFlows/Bitcoin/Basic-Bitcoin-Transfer.pml">
+
+  <div class="example"><div class="example-title"><span>Example 15</span><span style="text-transform: none">: Implementation of basic Bitcoin payment using Browser Payments API</span></div><pre id="flows-basic-bitcoin" class="example highlight prettyprint prettyprinted"><span class="com">// Step #1 has already happened at this point</span><span class="pln">
+</span><span class="com">// Step #2: Bitcoin address and requested amount</span><span class="pln">
+</span><span class="com">//   - generate the payment request</span><span class="pln">
+</span><span class="kwd">var</span><span class="pln"> req </span><span class="pun">=</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+  type</span><span class="pun">:</span><span class="pln"> </span><span class="str">'PaymentRequest'</span><span class="pun">,</span><span class="pln">
+  description</span><span class="pun">:</span><span class="pln"> </span><span class="str">'Payment to ExampleMerch for widgets'</span><span class="pun">,</span><span class="pln">
+  acceptablePayment</span><span class="pun">:</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+    paymentMethod</span><span class="pun">:</span><span class="pln"> </span><span class="str">'Bitcoin'</span><span class="pun">,</span><span class="pln">
+    paymentAddress</span><span class="pun">:</span><span class="pln"> </span><span class="str">'bitcoin:175tWpb8K1S7NmH4Zx6rewF9WQrcZv245W'</span><span class="pun">,</span><span class="pln">
+    paymentAmount</span><span class="pun">:</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+      amount</span><span class="pun">:</span><span class="pln"> </span><span class="str">'0.00435'</span><span class="pun">,</span><span class="pln">
+      currency</span><span class="pun">:</span><span class="pln"> </span><span class="str">'https://bitcoinfoundation.org/currencies#btc'</span><span class="pln">
+    </span><span class="pun">}</span><span class="pln">
+  </span><span class="pun">}</span><span class="pln">
+</span><span class="pun">};</span><span class="pln">
+</span><span class="kwd">var</span><span class="pln"> payment </span><span class="pun">=</span><span class="pln"> navigator</span><span class="pun">.</span><span class="pln">payment</span><span class="pun">.</span><span class="pln">request</span><span class="pun">(</span><span class="pln">req</span><span class="pun">);</span><span class="pln">
+
+</span><span class="com">// once this is called, Steps #3-#4 are executed by the payment app</span><span class="pln">
+payment</span><span class="pun">.</span><span class="kwd">then</span><span class="pun">(</span><span class="kwd">function</span><span class="pun">(</span><span class="pln">acknowledgement</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+  </span><span class="com">// Step #5: Notify Payee that transaction has been submitted</span><span class="pln">
+  </span><span class="kwd">if</span><span class="pun">(</span><span class="pln">acknowledgement</span><span class="pun">.</span><span class="pln">txid</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+    </span><span class="com">// wait for number of transactions to be verified</span><span class="pln">
+  </span><span class="pun">}</span><span class="pln"> </span><span class="kwd">else</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+    </span><span class="com">// deal with partial success</span><span class="pln">
+  </span><span class="pun">}</span><span class="pln">
+</span><span class="pun">}).</span><span class="kwd">catch</span><span class="pun">(</span><span class="kwd">function</span><span class="pun">(</span><span class="pln">err</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+  </span><span class="com">// Step #13: an error occured</span><span class="pln">
+</span><span class="pun">});</span></pre></div>
+
+  </section>
+
+</section>
+
+<section class="appendix informative" id="acknowledgements" typeof="bibo:Chapter" resource="#acknowledgements" property="bibo:hasPart">
+  <!--OddPage--><h2 id="h-acknowledgements" resource="#h-acknowledgements"><span property="xhv:role" resource="xhv:heading"><span class="secno">C. </span>Acknowledgements</span></h2><p><em>This section is non-normative.</em></p>
+
+  <p>
+The editor would like to thank the Web Payments Community Group, the
+Web Payments Interest Group, Andreas Gal, Fernando Jiménez, Mike Hanson,
+and Kumar McMillan for their work on the MozPay API.
+  </p>
+
+  <p>
+Thanks to the following individuals, in order of their first name, for
+their input on the specification: ...
+  </p>
+
+</section>
+
+
+
+
+
+
+
+<section id="references" class="appendix" typeof="bibo:Chapter" resource="#references" property="bibo:hasPart"><!--OddPage--><h2 id="h-references" resource="#h-references"><span property="xhv:role" resource="xhv:heading"><span class="secno">D. </span>References</span></h2><section id="normative-references" typeof="bibo:Chapter" resource="#normative-references" property="bibo:hasPart"><h3 id="h-normative-references" resource="#h-normative-references"><span property="xhv:role" resource="xhv:heading"><span class="secno">D.1 </span>Normative references</span></h3><dl class="bibliography" resource=""><dt id="bib-ISO4217">[ISO4217]</dt><dd><cite><a href="http://www.iso.org/iso/home/standards/currency_codes.htm">ISO 4217: Codes for the representation of currencies and funds</a></cite>. ISO.
+</dd></dl></section></section></body></html>
