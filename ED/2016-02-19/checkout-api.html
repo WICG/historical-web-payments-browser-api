@@ -537,7 +537,7 @@ table.exceptions table {
   </p>
   <h1 class="title p-name" id="title" property="dc:title">Checkout API</h1>
   
-  <h2 id="draft-community-group-report-11-february-2016">Draft Community Group Report <time property="dc:issued" class="dt-published" datetime="2016-02-11">11 February 2016</time></h2>
+  <h2 id="draft-community-group-report-19-february-2016">Draft Community Group Report <time property="dc:issued" class="dt-published" datetime="2016-02-19">19 February 2016</time></h2>
   <dl>
     
     
@@ -619,7 +619,7 @@ table.exceptions table {
   
     
   
-</section><section id="toc"><h2 class="introductory" id="h-toc" resource="#h-toc"><span property="xhv:role" resource="xhv:heading">Table of Contents</span></h2><ul class="toc" role="directory"><li class="tocline"><a href="#introduction" class="tocxref"><span class="secno">1. </span>Introduction</a><ul class="toc"><li class="tocline"><a href="#goals" class="tocxref"><span class="secno">1.1 </span>Goals</a></li><li class="tocline"><a href="#non-goals" class="tocxref"><span class="secno">1.2 </span>Non-goals</a></li></ul></li><li class="tocline"><a href="#conformance" class="tocxref"><span class="secno">2. </span>Conformance</a></li><li class="tocline"><a href="#dependencies" class="tocxref"><span class="secno">3. </span>Dependencies</a></li><li class="tocline"><a href="#the-checkout-interface" class="tocxref"><span class="secno">4. </span>The <span data-dfn-for="" data-dfn-type="dfn" data-idl=""><code>Checkout</code></span> Interface</a><ul class="toc"><li class="tocline"><a href="#send" class="tocxref"><span class="secno">4.1 </span>send()</a></li><li class="tocline"><a href="#request" class="tocxref"><span class="secno">4.2 </span>request()</a></li><li class="tocline"><a href="#start" class="tocxref"><span class="secno">4.3 </span>start()</a></li><li class="tocline"><a href="#continue" class="tocxref"><span class="secno">4.4 </span>continue()</a></li><li class="tocline"><a href="#cancel" class="tocxref"><span class="secno">4.5 </span>cancel()</a></li><li class="tocline"><a href="#finish" class="tocxref"><span class="secno">4.6 </span>finish()</a></li></ul></li><li class="tocline"><a href="#checkoutdetails-dictionary" class="tocxref"><span class="secno">5. </span>CheckoutDetails dictionary</a></li><li class="tocline"><a href="#checkoutitem-interface" class="tocxref"><span class="secno">6. </span>CheckoutItem interface</a></li><li class="tocline"><a href="#paymentitem-dictionary" class="tocxref"><span class="secno">7. </span>PaymentItem dictionary</a></li><li class="tocline"><a href="#shippingaddress-interface" class="tocxref"><span class="secno">8. </span>ShippingAddress interface</a></li><li class="tocline"><a href="#checkoutoption-interface" class="tocxref"><span class="secno">9. </span>CheckoutOption interface</a></li><li class="tocline"><a href="#shippingoption-interface" class="tocxref"><span class="secno">10. </span>ShippingOption interface</a></li><li class="tocline"><a href="#algorithms" class="tocxref"><span class="secno">11. </span>Algorithms</a><ul class="toc"><li class="tocline"><a href="#shipping-address-changed-algorithm" class="tocxref"><span class="secno">11.1 </span>Shipping address changed algorithm</a></li><li class="tocline"><a href="#user-agent-delegates-payment-request-algorithm" class="tocxref"><span class="secno">11.2 </span>User agent delegates payment request algorithm</a></li><li class="tocline"><a href="#user-accepts-the-payment-request-algorithm" class="tocxref"><span class="secno">11.3 </span>User accepts the payment request algorithm</a></li></ul></li><li class="tocline"><a href="#extensibility" class="tocxref"><span class="secno">12. </span>Extensibility</a></li><li class="tocline"><a href="#references" class="tocxref"><span class="secno">A. </span>References</a><ul class="toc"><li class="tocline"><a href="#normative-references" class="tocxref"><span class="secno">A.1 </span>Normative references</a></li><li class="tocline"><a href="#informative-references" class="tocxref"><span class="secno">A.2 </span>Informative references</a></li></ul></li></ul></section>
+</section><section id="toc"><h2 class="introductory" id="h-toc" resource="#h-toc"><span property="xhv:role" resource="xhv:heading">Table of Contents</span></h2><ul class="toc" role="directory"><li class="tocline"><a href="#introduction" class="tocxref"><span class="secno">1. </span>Introduction</a><ul class="toc"><li class="tocline"><a href="#goals" class="tocxref"><span class="secno">1.1 </span>Goals</a></li><li class="tocline"><a href="#non-goals" class="tocxref"><span class="secno">1.2 </span>Non-goals</a></li></ul></li><li class="tocline"><a href="#conformance" class="tocxref"><span class="secno">2. </span>Conformance</a></li><li class="tocline"><a href="#dependencies" class="tocxref"><span class="secno">3. </span>Dependencies</a></li><li class="tocline"><a href="#the-checkout-interface" class="tocxref"><span class="secno">4. </span>The <span data-dfn-for="" data-dfn-type="dfn" data-idl=""><code>Checkout</code></span> Interface</a><ul class="toc"><li class="tocline"><a href="#send" class="tocxref"><span class="secno">4.1 </span>send()</a></li><li class="tocline"><a href="#request" class="tocxref"><span class="secno">4.2 </span>request()</a></li><li class="tocline"><a href="#addeventlistener" class="tocxref"><span class="secno">4.3 </span>addEventListener()</a></li><li class="tocline"><a href="#start" class="tocxref"><span class="secno">4.4 </span>start()</a></li><li class="tocline"><a href="#cancel" class="tocxref"><span class="secno">4.5 </span>cancel()</a></li><li class="tocline"><a href="#finish" class="tocxref"><span class="secno">4.6 </span>finish()</a></li></ul></li><li class="tocline"><a href="#checkoutdetails-dictionary" class="tocxref"><span class="secno">5. </span>CheckoutDetails dictionary</a></li><li class="tocline"><a href="#checkoutitem-interface" class="tocxref"><span class="secno">6. </span>CheckoutItem interface</a></li><li class="tocline"><a href="#paymentitem-dictionary" class="tocxref"><span class="secno">7. </span>PaymentItem dictionary</a></li><li class="tocline"><a href="#shippingaddress-interface" class="tocxref"><span class="secno">8. </span>ShippingAddress interface</a></li><li class="tocline"><a href="#checkoutoption-interface" class="tocxref"><span class="secno">9. </span>CheckoutOption interface</a></li><li class="tocline"><a href="#shippingoption-interface" class="tocxref"><span class="secno">10. </span>ShippingOption interface</a></li><li class="tocline"><a href="#algorithms" class="tocxref"><span class="secno">11. </span>Algorithms</a><ul class="toc"><li class="tocline"><a href="#shipping-address-changed-algorithm" class="tocxref"><span class="secno">11.1 </span>Shipping address changed algorithm</a></li><li class="tocline"><a href="#user-agent-delegates-payment-request-algorithm" class="tocxref"><span class="secno">11.2 </span>User agent delegates payment request algorithm</a></li><li class="tocline"><a href="#user-accepts-the-payment-request-algorithm" class="tocxref"><span class="secno">11.3 </span>User accepts the payment request algorithm</a></li></ul></li><li class="tocline"><a href="#extensibility" class="tocxref"><span class="secno">12. </span>Extensibility</a></li><li class="tocline"><a href="#references" class="tocxref"><span class="secno">A. </span>References</a><ul class="toc"><li class="tocline"><a href="#normative-references" class="tocxref"><span class="secno">A.1 </span>Normative references</a></li><li class="tocline"><a href="#informative-references" class="tocxref"><span class="secno">A.2 </span>Informative references</a></li></ul></li></ul></section>
 
     
 
@@ -775,13 +775,14 @@ table.exceptions table {
     <section id="the-checkout-interface" typeof="bibo:Chapter" resource="#the-checkout-interface" property="bibo:hasPart">
       <!--OddPage--><h2 id="h-the-checkout-interface" resource="#h-the-checkout-interface"><span property="xhv:role" resource="xhv:heading"><span class="secno">4. </span>The <dfn data-dfn-for="" data-dfn-type="dfn" id="dom-checkout" data-idl=""><code>Checkout</code></dfn> Interface</span></h2>
       <pre class="idl"><span class="idlInterface" id="idl-def-checkout" data-idl="" data-title="Checkout">[<span class="idlCtor"><span class="extAttrName">Constructor</span></span>]
-interface <span class="idlInterfaceID"><a data-lt="Checkout" href="#dom-checkout" class="internalDFN" data-link-type="dfn" data-for=""><code>Checkout</code></a></span> {
+interface <span class="idlInterfaceID"><a data-lt="Checkout" href="#dom-checkout" class="internalDFN" data-link-type="dfn" data-for=""><code>Checkout</code></a></span> : <span class="idlSuperclass">EventTarget</span> {
 <span class="idlMethod" id="idl-def-checkout-send(domstring,optional-sequence<checkoutitem>)" data-idl="" data-title="send" data-dfn-for="checkout">    <span class="idlMethType"><a href="#dom-checkout" class="internalDFN" data-link-type="dfn"><code>Checkout</code></a></span>                 <span class="idlMethName">send</span>(<span class="idlParam"><span class="idlParamType">DOMString</span> <span class="idlParamName">itemType</span></span>,
                                   <span class="idlParam">optional <span class="idlParamType">sequence&lt;<a href="#idl-def-checkoutitem" class="internalDFN" data-link-type="dfn"><code>CheckoutItem</code></a>&gt;</span> <span class="idlParamName">items</span></span>);</span>
 <span class="idlMethod" id="idl-def-checkout-request(domstring,optional-sequence<checkoutoption>)" data-idl="" data-title="request" data-dfn-for="checkout">    <span class="idlMethType"><a href="#dom-checkout" class="internalDFN" data-link-type="dfn"><code>Checkout</code></a></span>                 <span class="idlMethName">request</span>(<span class="idlParam"><span class="idlParamType">DOMString</span> <span class="idlParamName">optionType</span></span>,
                                      <span class="idlParam">optional <span class="idlParamType">sequence&lt;<a href="#idl-def-checkoutoption" class="internalDFN" data-link-type="dfn"><code>CheckoutOption</code></a>&gt;</span> <span class="idlParamName">options</span></span>);</span>
+<span class="idlAttribute" id="idl-def-checkout-onshippingaddresschange" data-idl="" data-title="onshippingAddressChange" data-dfn-for="checkout">    attribute <span class="idlAttrType">EventHandler</span> <span class="idlAttrName">onshippingAddressChange</span>;</span>
+<span class="idlAttribute" id="idl-def-checkout-onshippingoptionchange" data-idl="" data-title="onshippingOptionChange" data-dfn-for="checkout">    attribute <span class="idlAttrType">EventHandler</span> <span class="idlAttrName">onshippingOptionChange</span>;</span>
 <span class="idlMethod" id="idl-def-checkout-start()" data-idl="" data-title="start" data-dfn-for="checkout">    <span class="idlMethType">Promise&lt;<a href="#dom-checkoutdetails" class="internalDFN" data-link-type="dfn"><code>CheckoutDetails</code></a>&gt;</span> <span class="idlMethName">start</span>();</span>
-<span class="idlMethod" id="idl-def-checkout-continue()" data-idl="" data-title="continue" data-dfn-for="checkout">    <span class="idlMethType">Promise&lt;<a href="#dom-checkoutdetails" class="internalDFN" data-link-type="dfn"><code>CheckoutDetails</code></a>&gt;</span> <span class="idlMethName">continue</span>();</span>
 <span class="idlMethod" id="idl-def-checkout-cancel(domstring)" data-idl="" data-title="cancel" data-dfn-for="checkout">    <span class="idlMethType"><a href="#dfn-promise" class="internalDFN" data-link-type="dfn">Promise</a></span>                  <span class="idlMethName">cancel</span>(<span class="idlParam"><span class="idlParamType">DOMString</span> <span class="idlParamName">reason</span></span>);</span>
 <span class="idlMethod" id="idl-def-checkout-finish(paymentrequest)" data-idl="" data-title="finish" data-dfn-for="checkout">    <span class="idlMethType"><a href="#dfn-promise" class="internalDFN" data-link-type="dfn">Promise</a></span>                  <span class="idlMethName">finish</span>(<span class="idlParam"><span class="idlParamType"><a href="#dfn-paymentrequest" class="internalDFN" data-link-type="dfn">PaymentRequest</a></span> <span class="idlParamName">request</span></span>);</span>
 };</span></pre>
@@ -797,31 +798,34 @@ to start the checkout process and waits for a promise to resolve.
       </p>
 
       <p>
-The browser then opens a UI to take the user through the checkout process. Once
-the user has made all of their selections, the user (for example) clicks a
-button to see their total. Upon clicking, the promise the merchant was waiting
-on resolves with the requested information and the in-browser UI will wait for
-the merchant site to call "finish" with the payment request message (which can
-be generated asynchronously if desired). The merchant can also call "cancel"
-instead. Sometimes the merchant may need to request information piecemeal; for
-example, the merchant may need to request a shipping address before a set of
-shipping options can be provided for the user to select from. In this case,
-the merchant may request that the user select from a list of shipping options
-and then call "continue", which will return a Promise that the merchant site
-can wait for, just like when calling "start". Once a Promise resolves with
-checkout details where the "finished" flag is set to true, the merchant can
-generate a payment request message and pass it to "finish" to complete the
-checkout process.
+The browser then opens a UI to take the user through the checkout process. The
+button to finish the checkout button will be disabled until the user provides
+all of the information that the merchant has requested. Sometimes some of the
+information the merchant needs may depend on collecting other types of
+information first. For example, the merchant may need to obtain the user's
+shipping address before offering the appropriate shipping options for their
+area. In this case, the merchant site may listen for an address change event
+and, when it occurs, may request that the user additionally select a shipping
+option from a list provided by the merchant site. The merchant may also
+optionally call "cancel" if they can't ship to the user's address.
+      </p>
+
+      <p>
+Only once all of the requested information has been provided, will the
+user be able to click a button to proceed. Upon clicking it, the Promise
+resolves with all the checkout details the merchant needs to generate a
+payment request message. They do so and pass it to "finish" to complete the
+checkout process and allow the user to pay with their choice of payment app.
       </p>
 
       <p>
 Once finish is called, it internally calls navigator.payment.request(paymentRequest)
-and returns a promise, which will resolve to an error or a payment
-acknowledgement. This causes the in-browser UI to show the price and payment
-app selection screen, just like it would have if called independently. If the
-user selects a payment app and completes their payment, the merchant site will
-eceive a payment acknowledgement via the resolved promise, otherwise, it will
-receive an error.
+which returns a Promise that will eventually resolve to a payment
+acknowledgement from the payment app selected by the user. This call causes the
+in-browser UI to show the price and payment app selection screen, just like it
+would have if called independently. If the user selects a payment app and
+completes their payment, the merchant site will receive a payment
+acknowledgement via the resolved promise, otherwise, it will receive an error.
       </p>
 
       <p>
@@ -830,23 +834,18 @@ considering the merchant's thought process:
       </p>
       <ol>
         <li>
-          What do I need from the UA to generate a payment request? Ask for it
-          and wait for a response.
+          What do I need from the UA to generate a payment request? Ask for it.
+          If I anticipate needing more information, listen for events where
+          I can react to the information given so far and ask for more
+          information as needed.
         </li>
         <li>
-          Do I have everything I need now? If not, ask for more and wait for
-          a response. If I do, generate a payment request and finish the flow.
+          Now I have everything I need, so generate a payment request and
+          finish the flow.
         </li>
       </ol>
 
       <div class="issue"><div class="issue-title" aria-level="3" role="heading" id="h-issue1"><span>Issue</span></div><p class="">
-Note: If a "back" feature for the in-browser UI is desirable at this point,
-one option is to return a promise in the error that can be waited on, again, to
-resolve once the user is ready for the merchant site to generate the payment
-request message based on their changes.
-      </p></div>
-
-      <div class="issue"><div class="issue-title" aria-level="3" role="heading" id="h-issue2"><span>Issue</span></div><p class="">
 This API can be used to give merchant sites a full, in-browser, checkout
 experience, but builds on top of the navigator.payment.request API. It could
 also be modified (internally) to build on top of other future APIs that expose
@@ -855,17 +854,6 @@ address or other "identity credentials/verifiable claims" (this is aimed at
 supporting The Extensible Web Manifesto approach). These APIs are not yet
 exposed as low-level APIs, but this approach is an attempt to do some future
 proofing should they be standardized at some point.
-      </p></div>
-
-      <div class="issue"><div class="issue-title" aria-level="3" role="heading" id="h-issue3"><span>Issue</span></div><p class="">
-This API is also designed so that the flow occurs in a straightforward,
-deterministic, singular way. It intentionally avoids events and exposing state
-management to the merchant site. The merchant site does not have to deal with
-multiple events coming from the in-browser UI and the subsequent management of
-any asynchronous work it generates. Rather, once the user has made their
-selections and chosen all of the necessary information, it will be informed.
-The in-browser UI will not allow further action until the merchant site
-responds with a call to "continue" or a payment request message.
       </p></div>
 
       <p>The following examples show various <a href="#dom-checkout" class="internalDFN" data-link-type="dfn"><code><code>Checkout</code></code></a> flows
@@ -884,6 +872,8 @@ checkout
   </span><span class="com">// finish checkout will call `navigator.payment.request` internally</span><span class="pln">
   checkout</span><span class="pun">.</span><span class="pln">finish</span><span class="pun">(</span><span class="pln">paymentRequest</span><span class="pun">).</span><span class="kwd">then</span><span class="pun">(</span><span class="kwd">function</span><span class="pun">(</span><span class="pln">acknowledgement</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
     </span><span class="com">// handle acknowledgement from payment app</span><span class="pln">
+  </span><span class="pun">}).</span><span class="kwd">catch</span><span class="pun">(</span><span class="kwd">function</span><span class="pun">(</span><span class="pln">err</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+    </span><span class="com">// handle error</span><span class="pln">
   </span><span class="pun">});</span><span class="pln">
 </span><span class="pun">}</span></pre></div>
 
@@ -891,38 +881,40 @@ checkout
 checkout
   </span><span class="pun">.</span><span class="pln">send</span><span class="pun">(</span><span class="str">'paymentItem'</span><span class="pun">,</span><span class="pln"> paymentItems</span><span class="pun">)</span><span class="pln">  </span><span class="com">// send line item estimate to UA</span><span class="pln">
   </span><span class="pun">.</span><span class="pln">request</span><span class="pun">(</span><span class="str">'shippingAddress'</span><span class="pun">)</span><span class="pln">         </span><span class="com">// request shippingAddress from UA</span><span class="pln">
+  </span><span class="pun">.</span><span class="pln">addEventListener</span><span class="pun">(</span><span class="str">'shippingAddressChange'</span><span class="pun">,</span><span class="pln"> shippingAddressChanged</span><span class="pun">)</span><span class="pln">
   </span><span class="pun">.</span><span class="pln">start</span><span class="pun">()</span><span class="pln">                            </span><span class="com">// start the checkout UI</span><span class="pln">
   </span><span class="pun">.</span><span class="kwd">then</span><span class="pun">(</span><span class="pln">finishCheckout</span><span class="pun">);</span><span class="pln">              </span><span class="com">// checkout UI has collected the info</span><span class="pln">
 
-</span><span class="kwd">function</span><span class="pln"> finishCheckout</span><span class="pun">(</span><span class="pln">checkoutDetails</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
-  </span><span class="kwd">if</span><span class="pun">(!</span><span class="pln">isAddressAcceptable</span><span class="pun">(</span><span class="pln">checkoutDetails</span><span class="pun">.</span><span class="pln">shippingAddress</span><span class="pun">))</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+</span><span class="kwd">function</span><span class="pln"> shippingAddressChanged</span><span class="pun">(</span><span class="kwd">event</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+  </span><span class="kwd">var</span><span class="pln"> checkoutDetails </span><span class="pun">=</span><span class="pln"> </span><span class="kwd">event</span><span class="pun">.</span><span class="pln">checkoutDetails</span><span class="pun">;</span><span class="pln">
+
+  </span><span class="kwd">if</span><span class="pun">(!</span><span class="pln">isAddressAcceptable</span><span class="pun">(</span><span class="pln">checkoutDetails</span><span class="pun">.</span><span class="pln">address</span><span class="pun">))</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
     </span><span class="kwd">return</span><span class="pln"> checkout</span><span class="pun">.</span><span class="pln">cancel</span><span class="pun">(</span><span class="str">'We cannot ship to your address.'</span><span class="pun">);</span><span class="pln">
   </span><span class="pun">}</span><span class="pln">
 
-  </span><span class="com">// recalculate line item details based on `checkoutDetails.shippingAddress`</span><span class="pln">
-  </span><span class="com">// and call `send()` so the browser can show the updated info</span><span class="pln">
-  </span><span class="com">// note this could also be done asynchronously</span><span class="pln">
-  </span><span class="kwd">for</span><span class="pun">(</span><span class="kwd">let</span><span class="pln"> item of checkoutDetails</span><span class="pun">.</span><span class="pln">items</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
-    </span><span class="com">// new shipping cost</span><span class="pln">
-    </span><span class="kwd">if</span><span class="pun">(</span><span class="pln">item</span><span class="pun">.</span><span class="pln">id </span><span class="pun">===</span><span class="pln"> </span><span class="str">'shipping'</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
-      item</span><span class="pun">.</span><span class="pln">amount </span><span class="pun">=</span><span class="pln"> calcShippingAmount</span><span class="pun">(</span><span class="pln">checkoutDetails</span><span class="pun">);</span><span class="pln">
-    </span><span class="pun">}</span><span class="pln">
-    </span><span class="com">// new tax amount</span><span class="pln">
-    </span><span class="kwd">if</span><span class="pun">(</span><span class="pln">item</span><span class="pun">.</span><span class="pln">id </span><span class="pun">===</span><span class="pln"> </span><span class="str">'tax'</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
-      item</span><span class="pun">.</span><span class="pln">amount </span><span class="pun">=</span><span class="pln"> calcTaxAmount</span><span class="pun">(</span><span class="pln">checkoutDetails</span><span class="pun">);</span><span class="pln">
-    </span><span class="pun">}</span><span class="pln">
-  </span><span class="pun">}</span><span class="pln">
-  checkout</span><span class="pun">.</span><span class="pln">send</span><span class="pun">(</span><span class="str">'paymentItem'</span><span class="pun">,</span><span class="pln"> checkoutDetails</span><span class="pun">.</span><span class="pln">items</span><span class="pun">);</span><span class="pln">
+  </span><span class="com">// send updated payment items; note `send` can accept a Promise</span><span class="pln">
+  checkout</span><span class="pun">.</span><span class="pln">send</span><span class="pun">(</span><span class="str">'paymentItem'</span><span class="pun">,</span><span class="pln"> getPaymentItems</span><span class="pun">(</span><span class="pln">checkoutDetails</span><span class="pun">));</span><span class="pln">
+</span><span class="pun">}</span><span class="pln">
 
-  </span><span class="kwd">if</span><span class="pun">(!</span><span class="pln">checkoutDetails</span><span class="pun">.</span><span class="pln">finished</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
-    </span><span class="kwd">return</span><span class="pln"> checkout</span><span class="pun">.</span><span class="kwd">continue</span><span class="pun">().</span><span class="kwd">then</span><span class="pun">(</span><span class="pln">finishCheckout</span><span class="pun">);</span><span class="pln">
-  </span><span class="pun">}</span><span class="pln">
+</span><span class="kwd">function</span><span class="pln"> getPaymentItems</span><span class="pun">(</span><span class="pln">checkoutDetails</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+  </span><span class="com">// post checkout details to shipping calculation endpoint and return</span><span class="pln">
+  </span><span class="com">// updated payment items in a Promise</span><span class="pln">
+  </span><span class="kwd">return</span><span class="pln"> fetch</span><span class="pun">(</span><span class="str">'/calc-shipping'</span><span class="pun">,</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+    method</span><span class="pun">:</span><span class="pln"> </span><span class="str">'POST'</span><span class="pun">,</span><span class="pln">
+    body</span><span class="pun">:</span><span class="pln"> JSON</span><span class="pun">.</span><span class="pln">stringify</span><span class="pun">(</span><span class="pln">checkoutDetails</span><span class="pun">)</span><span class="pln">
+  </span><span class="pun">}).</span><span class="kwd">then</span><span class="pun">(</span><span class="kwd">function</span><span class="pun">(</span><span class="pln">res</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+    </span><span class="kwd">return</span><span class="pln"> res</span><span class="pun">.</span><span class="pln">json</span><span class="pun">();</span><span class="pln">
+  </span><span class="pun">});</span><span class="pln">
+</span><span class="pun">}</span><span class="pln">
 
-  </span><span class="com">// create a payment request from the checkout details</span><span class="pln">
-  </span><span class="kwd">var</span><span class="pln"> paymentRequest </span><span class="pun">=</span><span class="pln"> customCreatePaymentRequest</span><span class="pun">(</span><span class="pln">checkoutDetails</span><span class="pun">);</span><span class="pln">
-
-  checkout</span><span class="pun">.</span><span class="pln">finish</span><span class="pun">(</span><span class="pln">paymentRequest</span><span class="pun">).</span><span class="kwd">then</span><span class="pun">(</span><span class="kwd">function</span><span class="pun">(</span><span class="pln">acknowledgement</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+</span><span class="kwd">function</span><span class="pln"> finishCheckout</span><span class="pun">(</span><span class="pln">checkoutDetails</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+  </span><span class="com">// asynchronously create a payment request from the checkout details</span><span class="pln">
+  customCreatePaymentRequest</span><span class="pun">(</span><span class="pln">checkoutDetails</span><span class="pun">).</span><span class="kwd">then</span><span class="pun">(</span><span class="kwd">function</span><span class="pun">(</span><span class="pln">paymentRequest</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+    </span><span class="kwd">return</span><span class="pln"> checkout</span><span class="pun">.</span><span class="pln">finish</span><span class="pun">(</span><span class="pln">paymentRequest</span><span class="pun">);</span><span class="pln">
+  </span><span class="pun">}).</span><span class="kwd">then</span><span class="pun">(</span><span class="kwd">function</span><span class="pun">(</span><span class="pln">acknowledgement</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
     </span><span class="com">// handle acknowledgement from payment app</span><span class="pln">
+  </span><span class="pun">}).</span><span class="kwd">catch</span><span class="pun">(</span><span class="kwd">function</span><span class="pun">(</span><span class="pln">err</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+    </span><span class="com">// handle error</span><span class="pln">
   </span><span class="pun">});</span><span class="pln">
 </span><span class="pun">}</span></pre></div>
 
@@ -931,38 +923,45 @@ checkout
   </span><span class="pun">.</span><span class="pln">send</span><span class="pun">(</span><span class="str">'paymentItem'</span><span class="pun">,</span><span class="pln"> paymentItems</span><span class="pun">)</span><span class="pln">            </span><span class="com">// send line item estimate to UA</span><span class="pln">
   </span><span class="pun">.</span><span class="pln">request</span><span class="pun">(</span><span class="str">'shippingAddress'</span><span class="pun">)</span><span class="pln">                   </span><span class="com">// request shippingAddress from UA</span><span class="pln">
   </span><span class="pun">.</span><span class="pln">request</span><span class="pun">(</span><span class="str">'shippingOption'</span><span class="pun">,</span><span class="pln"> shippingOptions</span><span class="pun">)</span><span class="pln">   </span><span class="com">// request shippingOption from UA</span><span class="pln">
+  </span><span class="pun">.</span><span class="pln">addEventListener</span><span class="pun">(</span><span class="str">'shippingAddressChange'</span><span class="pun">,</span><span class="pln"> shippingAddressChanged</span><span class="pun">)</span><span class="pln">
+  </span><span class="pun">.</span><span class="pln">addEventListener</span><span class="pun">(</span><span class="str">'shippingOptionChange'</span><span class="pun">,</span><span class="pln"> shippingOptionChanged</span><span class="pun">)</span><span class="pln">
   </span><span class="pun">.</span><span class="pln">start</span><span class="pun">()</span><span class="pln">                                      </span><span class="com">// start the checkout UI</span><span class="pln">
   </span><span class="pun">.</span><span class="kwd">then</span><span class="pun">(</span><span class="pln">finishCheckout</span><span class="pun">);</span><span class="pln">                        </span><span class="com">// checkout UI has collected the info</span><span class="pln">
 
-</span><span class="kwd">function</span><span class="pln"> finishCheckout</span><span class="pun">(</span><span class="pln">checkoutDetails</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
-  </span><span class="kwd">if</span><span class="pun">(!</span><span class="pln">isAddressAcceptable</span><span class="pun">(</span><span class="pln">checkoutDetails</span><span class="pun">.</span><span class="pln">shippingAddress</span><span class="pun">))</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+</span><span class="kwd">function</span><span class="pln"> shippingAddressChanged</span><span class="pun">(</span><span class="kwd">event</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+  </span><span class="kwd">var</span><span class="pln"> checkoutDetails </span><span class="pun">=</span><span class="pln"> </span><span class="kwd">event</span><span class="pun">.</span><span class="pln">checkoutDetails</span><span class="pun">;</span><span class="pln">
+
+  </span><span class="kwd">if</span><span class="pun">(!</span><span class="pln">isAddressAcceptable</span><span class="pun">(</span><span class="pln">checkoutDetails</span><span class="pun">.</span><span class="pln">address</span><span class="pun">))</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
     </span><span class="kwd">return</span><span class="pln"> checkout</span><span class="pun">.</span><span class="pln">cancel</span><span class="pun">(</span><span class="str">'We cannot ship to your address.'</span><span class="pun">);</span><span class="pln">
   </span><span class="pun">}</span><span class="pln">
 
-  </span><span class="com">// recalculate line item details based on `checkoutDetails.shippingAddress`</span><span class="pln">
-  </span><span class="com">// and `checkoutDetails.shippingOption` call `send()` so the browser can</span><span class="pln">
-  </span><span class="com">// show the updated info</span><span class="pln">
-  </span><span class="kwd">for</span><span class="pun">(</span><span class="kwd">let</span><span class="pln"> item of checkoutDetails</span><span class="pun">.</span><span class="pln">items</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
-    </span><span class="com">// new shipping cost</span><span class="pln">
-    </span><span class="kwd">if</span><span class="pun">(</span><span class="pln">item</span><span class="pun">.</span><span class="pln">id </span><span class="pun">===</span><span class="pln"> </span><span class="str">'shipping'</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
-      item</span><span class="pun">.</span><span class="pln">amount </span><span class="pun">=</span><span class="pln"> calcShippingAmount</span><span class="pun">(</span><span class="pln">checkoutDetails</span><span class="pun">);</span><span class="pln">
-    </span><span class="pun">}</span><span class="pln">
-    </span><span class="com">// new tax amount</span><span class="pln">
-    </span><span class="kwd">if</span><span class="pun">(</span><span class="pln">item</span><span class="pun">.</span><span class="pln">id </span><span class="pun">===</span><span class="pln"> </span><span class="str">'tax'</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
-      item</span><span class="pun">.</span><span class="pln">amount </span><span class="pun">=</span><span class="pln"> calcTaxAmount</span><span class="pun">(</span><span class="pln">checkoutDetails</span><span class="pun">);</span><span class="pln">
-    </span><span class="pun">}</span><span class="pln">
-  </span><span class="pun">}</span><span class="pln">
-  checkout</span><span class="pun">.</span><span class="pln">send</span><span class="pun">(</span><span class="str">'paymentItem'</span><span class="pun">,</span><span class="pln"> checkoutDetails</span><span class="pun">.</span><span class="pln">items</span><span class="pun">);</span><span class="pln">
+  </span><span class="com">// send updated payment items; note `send` can accept a Promise</span><span class="pln">
+  checkout</span><span class="pun">.</span><span class="pln">send</span><span class="pun">(</span><span class="str">'paymentItem'</span><span class="pun">,</span><span class="pln"> getPaymentItems</span><span class="pun">(</span><span class="pln">checkoutDetails</span><span class="pun">));</span><span class="pln">
+</span><span class="pun">}</span><span class="pln">
 
-  </span><span class="kwd">if</span><span class="pun">(!</span><span class="pln">checkoutDetails</span><span class="pun">.</span><span class="pln">finished</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
-    </span><span class="kwd">return</span><span class="pln"> checkout</span><span class="pun">.</span><span class="kwd">continue</span><span class="pun">().</span><span class="kwd">then</span><span class="pun">(</span><span class="pln">finishCheckout</span><span class="pun">);</span><span class="pln">
-  </span><span class="pun">}</span><span class="pln">
+</span><span class="kwd">function</span><span class="pln"> shippingOptionChanged</span><span class="pun">(</span><span class="kwd">event</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+  </span><span class="kwd">event</span><span class="pun">.</span><span class="pln">send</span><span class="pun">(</span><span class="str">'paymentItem'</span><span class="pun">,</span><span class="pln"> getPaymentItems</span><span class="pun">(</span><span class="kwd">event</span><span class="pun">.</span><span class="pln">checkoutDetails</span><span class="pun">));</span><span class="pln">
+</span><span class="pun">}</span><span class="pln">
 
-  </span><span class="com">// create a payment request from the checkout details</span><span class="pln">
-  </span><span class="kwd">var</span><span class="pln"> paymentRequest </span><span class="pun">=</span><span class="pln"> customCreatePaymentRequest</span><span class="pun">(</span><span class="pln">checkoutDetails</span><span class="pun">);</span><span class="pln">
+</span><span class="kwd">function</span><span class="pln"> getPaymentItems</span><span class="pun">(</span><span class="pln">checkoutDetails</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+  </span><span class="com">// post checkout details to shipping calculation endpoint and return</span><span class="pln">
+  </span><span class="com">// updated payment items in a Promise</span><span class="pln">
+  </span><span class="kwd">return</span><span class="pln"> fetch</span><span class="pun">(</span><span class="str">'/calc-shipping'</span><span class="pun">,</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+    method</span><span class="pun">:</span><span class="pln"> </span><span class="str">'POST'</span><span class="pun">,</span><span class="pln">
+    body</span><span class="pun">:</span><span class="pln"> JSON</span><span class="pun">.</span><span class="pln">stringify</span><span class="pun">(</span><span class="pln">checkoutDetails</span><span class="pun">)</span><span class="pln">
+  </span><span class="pun">}).</span><span class="kwd">then</span><span class="pun">(</span><span class="kwd">function</span><span class="pun">(</span><span class="pln">res</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+    </span><span class="kwd">return</span><span class="pln"> res</span><span class="pun">.</span><span class="pln">json</span><span class="pun">();</span><span class="pln">
+  </span><span class="pun">});</span><span class="pln">
+</span><span class="pun">}</span><span class="pln">
 
-  checkout</span><span class="pun">.</span><span class="pln">finish</span><span class="pun">(</span><span class="pln">paymentRequest</span><span class="pun">).</span><span class="kwd">then</span><span class="pun">(</span><span class="kwd">function</span><span class="pun">(</span><span class="pln">acknowledgement</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+</span><span class="kwd">function</span><span class="pln"> finishCheckout</span><span class="pun">(</span><span class="pln">checkoutDetails</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+  </span><span class="com">// asynchronously create a payment request from the checkout details</span><span class="pln">
+  customCreatePaymentRequest</span><span class="pun">(</span><span class="pln">checkoutDetails</span><span class="pun">).</span><span class="kwd">then</span><span class="pun">(</span><span class="kwd">function</span><span class="pun">(</span><span class="pln">paymentRequest</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+    </span><span class="kwd">return</span><span class="pln"> checkout</span><span class="pun">.</span><span class="pln">finish</span><span class="pun">(</span><span class="pln">paymentRequest</span><span class="pun">);</span><span class="pln">
+  </span><span class="pun">}).</span><span class="kwd">then</span><span class="pun">(</span><span class="kwd">function</span><span class="pun">(</span><span class="pln">acknowledgement</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
     </span><span class="com">// handle acknowledgement from payment app</span><span class="pln">
+  </span><span class="pun">}).</span><span class="kwd">catch</span><span class="pun">(</span><span class="kwd">function</span><span class="pun">(</span><span class="pln">err</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+    </span><span class="com">// handle error</span><span class="pln">
   </span><span class="pun">});</span><span class="pln">
 </span><span class="pun">}</span></pre></div>
 
@@ -970,46 +969,56 @@ checkout
 checkout
   </span><span class="pun">.</span><span class="pln">send</span><span class="pun">(</span><span class="str">'paymentItem'</span><span class="pun">,</span><span class="pln"> paymentItems</span><span class="pun">)</span><span class="pln">  </span><span class="com">// send line item estimate to UA</span><span class="pln">
   </span><span class="pun">.</span><span class="pln">request</span><span class="pun">(</span><span class="str">'shippingAddress'</span><span class="pun">)</span><span class="pln">         </span><span class="com">// request shippingAddress from UA</span><span class="pln">
+  </span><span class="pun">.</span><span class="pln">addEventListener</span><span class="pun">(</span><span class="str">'shippingAddressChange'</span><span class="pun">,</span><span class="pln"> shippingAddressChanged</span><span class="pun">)</span><span class="pln">
+  </span><span class="pun">.</span><span class="pln">addEventListener</span><span class="pun">(</span><span class="str">'shippingOptionChange'</span><span class="pun">,</span><span class="pln"> shippingOptionChanged</span><span class="pun">)</span><span class="pln">
   </span><span class="pun">.</span><span class="pln">start</span><span class="pun">()</span><span class="pln">                            </span><span class="com">// start the checkout UI</span><span class="pln">
   </span><span class="pun">.</span><span class="kwd">then</span><span class="pun">(</span><span class="pln">finishCheckout</span><span class="pun">);</span><span class="pln">              </span><span class="com">// checkout UI has collected the info</span><span class="pln">
 
-</span><span class="kwd">function</span><span class="pln"> finishCheckout</span><span class="pun">(</span><span class="pln">checkoutDetails</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
-  </span><span class="kwd">if</span><span class="pun">(!</span><span class="pln">isAddressAcceptable</span><span class="pun">(</span><span class="pln">checkoutDetails</span><span class="pun">.</span><span class="pln">shippingAddress</span><span class="pun">))</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+</span><span class="kwd">function</span><span class="pln"> shippingAddressChanged</span><span class="pun">(</span><span class="kwd">event</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+  </span><span class="kwd">var</span><span class="pln"> checkoutDetails </span><span class="pun">=</span><span class="pln"> </span><span class="kwd">event</span><span class="pun">.</span><span class="pln">checkoutDetails</span><span class="pun">;</span><span class="pln">
+
+  </span><span class="kwd">if</span><span class="pun">(!</span><span class="pln">isAddressAcceptable</span><span class="pun">(</span><span class="pln">checkoutDetails</span><span class="pun">.</span><span class="pln">address</span><span class="pun">))</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
     </span><span class="kwd">return</span><span class="pln"> checkout</span><span class="pun">.</span><span class="pln">cancel</span><span class="pun">(</span><span class="str">'We cannot ship to your address.'</span><span class="pun">);</span><span class="pln">
   </span><span class="pun">}</span><span class="pln">
 
-  </span><span class="com">// no shipping option has been picked yet, request that the user pick a</span><span class="pln">
-  </span><span class="com">// certain shipping option based on their address and continue</span><span class="pln">
-  </span><span class="kwd">if</span><span class="pun">(!</span><span class="pln">checkoutDetails</span><span class="pun">.</span><span class="pln">shippingOption</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
-    </span><span class="kwd">return</span><span class="pln"> checkout
-      </span><span class="pun">.</span><span class="pln">request</span><span class="pun">(</span><span class="str">'shippingOption'</span><span class="pun">,</span><span class="pln"> createShippingOptions</span><span class="pun">(</span><span class="pln">checkoutDetails</span><span class="pun">))</span><span class="pln">
-      </span><span class="pun">.</span><span class="kwd">continue</span><span class="pun">().</span><span class="kwd">then</span><span class="pun">(</span><span class="pln">finishCheckout</span><span class="pun">);</span><span class="pln">
-  </span><span class="pun">}</span><span class="pln">
+  </span><span class="com">// send updated payment items and additionally request shipping option</span><span class="pln">
+  </span><span class="com">// selection; note `send` and `request` can each accept a Promise</span><span class="pln">
+  checkout
+    </span><span class="pun">.</span><span class="pln">send</span><span class="pun">(</span><span class="str">'paymentItem'</span><span class="pun">,</span><span class="pln"> getPaymentItems</span><span class="pun">(</span><span class="pln">checkoutDetails</span><span class="pun">))</span><span class="pln">
+    </span><span class="pun">.</span><span class="pln">request</span><span class="pun">(</span><span class="str">'shippingOption'</span><span class="pun">,</span><span class="pln"> getShippingOptions</span><span class="pun">(</span><span class="pln">checkoutDetails</span><span class="pun">.</span><span class="pln">address</span><span class="pun">));</span><span class="pln">
+</span><span class="pun">}</span><span class="pln">
 
-  </span><span class="com">// recalculate line item details based on `checkoutDetails.shippingAddress`</span><span class="pln">
-  </span><span class="com">// and `checkoutDetails.shippingOption` call `send()` so the browser can</span><span class="pln">
-  </span><span class="com">// show the updated info</span><span class="pln">
-  </span><span class="kwd">for</span><span class="pun">(</span><span class="kwd">let</span><span class="pln"> item of checkoutDetails</span><span class="pun">.</span><span class="pln">items</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
-    </span><span class="com">// new shipping cost</span><span class="pln">
-    </span><span class="kwd">if</span><span class="pun">(</span><span class="pln">item</span><span class="pun">.</span><span class="pln">id </span><span class="pun">===</span><span class="pln"> </span><span class="str">'shipping'</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
-      item</span><span class="pun">.</span><span class="pln">amount </span><span class="pun">=</span><span class="pln"> calcShippingAmount</span><span class="pun">(</span><span class="pln">checkoutDetails</span><span class="pun">);</span><span class="pln">
-    </span><span class="pun">}</span><span class="pln">
-    </span><span class="com">// new tax amount</span><span class="pln">
-    </span><span class="kwd">if</span><span class="pun">(</span><span class="pln">item</span><span class="pun">.</span><span class="pln">id </span><span class="pun">===</span><span class="pln"> </span><span class="str">'tax'</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
-      item</span><span class="pun">.</span><span class="pln">amount </span><span class="pun">=</span><span class="pln"> calcTaxAmount</span><span class="pun">(</span><span class="pln">checkoutDetails</span><span class="pun">;</span><span class="pln">
-    </span><span class="pun">}</span><span class="pln">
-  </span><span class="pun">}</span><span class="pln">
-  checkout</span><span class="pun">.</span><span class="pln">send</span><span class="pun">(</span><span class="str">'paymentItem'</span><span class="pun">,</span><span class="pln"> checkoutDetails</span><span class="pun">.</span><span class="pln">items</span><span class="pun">);</span><span class="pln">
+</span><span class="kwd">function</span><span class="pln"> shippingOptionChanged</span><span class="pun">(</span><span class="kwd">event</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+  </span><span class="kwd">event</span><span class="pun">.</span><span class="pln">send</span><span class="pun">(</span><span class="str">'paymentItem'</span><span class="pun">,</span><span class="pln"> getPaymentItems</span><span class="pun">(</span><span class="kwd">event</span><span class="pun">.</span><span class="pln">checkoutDetails</span><span class="pun">));</span><span class="pln">
+</span><span class="pun">}</span><span class="pln">
 
-  </span><span class="kwd">if</span><span class="pun">(!</span><span class="pln">checkoutDetails</span><span class="pun">.</span><span class="pln">finished</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
-    </span><span class="kwd">return</span><span class="pln"> checkout</span><span class="pun">.</span><span class="kwd">continue</span><span class="pun">().</span><span class="kwd">then</span><span class="pun">(</span><span class="pln">finishCheckout</span><span class="pun">);</span><span class="pln">
-  </span><span class="pun">}</span><span class="pln">
+</span><span class="kwd">function</span><span class="pln"> getPaymentItems</span><span class="pun">(</span><span class="pln">checkoutDetails</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+  </span><span class="com">// post checkout details to shipping calculation endpoint and return</span><span class="pln">
+  </span><span class="com">// updated payment items in a Promise</span><span class="pln">
+  </span><span class="kwd">return</span><span class="pln"> fetch</span><span class="pun">(</span><span class="str">'/calc-shipping'</span><span class="pun">,</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+    method</span><span class="pun">:</span><span class="pln"> </span><span class="str">'POST'</span><span class="pun">,</span><span class="pln">
+    body</span><span class="pun">:</span><span class="pln"> JSON</span><span class="pun">.</span><span class="pln">stringify</span><span class="pun">(</span><span class="pln">checkoutDetails</span><span class="pun">)</span><span class="pln">
+  </span><span class="pun">}).</span><span class="kwd">then</span><span class="pun">(</span><span class="kwd">function</span><span class="pun">(</span><span class="pln">res</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+    </span><span class="kwd">return</span><span class="pln"> res</span><span class="pun">.</span><span class="pln">json</span><span class="pun">();</span><span class="pln">
+  </span><span class="pun">});</span><span class="pln">
+</span><span class="pun">}</span><span class="pln">
 
+</span><span class="kwd">function</span><span class="pln"> getShippingOptions</span><span class="pun">(</span><span class="pln">checkoutDetails</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+  </span><span class="com">// determine shipping options from checkoutDetails.shippingAddress</span><span class="pln">
+  </span><span class="com">// by, for example, restricting them based on country</span><span class="pln">
+  </span><span class="com">// ...</span><span class="pln">
+
+  </span><span class="kwd">return</span><span class="pln"> </span><span class="typ">Promise</span><span class="pun">.</span><span class="pln">resolve</span><span class="pun">(</span><span class="pln">shippingOptions</span><span class="pun">);</span><span class="pln">
+</span><span class="pun">}</span><span class="pln">
+
+</span><span class="kwd">function</span><span class="pln"> finishCheckout</span><span class="pun">(</span><span class="pln">checkoutDetails</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
   </span><span class="com">// asynchronously create a payment request from the checkout details</span><span class="pln">
   customCreatePaymentRequest</span><span class="pun">(</span><span class="pln">checkoutDetails</span><span class="pun">).</span><span class="kwd">then</span><span class="pun">(</span><span class="kwd">function</span><span class="pun">(</span><span class="pln">paymentRequest</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
     </span><span class="kwd">return</span><span class="pln"> checkout</span><span class="pun">.</span><span class="pln">finish</span><span class="pun">(</span><span class="pln">paymentRequest</span><span class="pun">);</span><span class="pln">
   </span><span class="pun">}).</span><span class="kwd">then</span><span class="pun">(</span><span class="kwd">function</span><span class="pun">(</span><span class="pln">acknowledgement</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
     </span><span class="com">// handle acknowledgement from payment app</span><span class="pln">
+  </span><span class="pun">}).</span><span class="kwd">catch</span><span class="pun">(</span><span class="kwd">function</span><span class="pun">(</span><span class="pln">err</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+    </span><span class="com">// handle error</span><span class="pln">
   </span><span class="pun">});</span><span class="pln">
 </span><span class="pun">}</span></pre></div>
 
@@ -1047,21 +1056,16 @@ checkout
         </ol>
       </section>
 
-      <section id="start" typeof="bibo:Chapter" resource="#start" property="bibo:hasPart">
-        <h3 id="h-start" resource="#h-start"><span property="xhv:role" resource="xhv:heading"><span class="secno">4.3 </span>start()</span></h3>
+      <section id="addeventlistener" typeof="bibo:Chapter" resource="#addeventlistener" property="bibo:hasPart">
+        <h3 id="h-addeventlistener" resource="#h-addeventlistener"><span property="xhv:role" resource="xhv:heading"><span class="secno">4.3 </span>addEventListener()</span></h3>
         <p>
-          The <code><dfn data-dfn-type="dfn" id="dfn-start">start</dfn></code> method must ...
+          The <code><dfn data-dfn-type="dfn" id="dfn-addeventlistener">addEventListener</dfn></code> method registers an
+          event listener for a particular type of event.
         </p>
 
-        <p>The <a href="#dfn-start" class="internalDFN" data-link-type="dfn"><code><code>start</code></code></a> call returns a Promise that
-        resolves to a <a href="#dom-checkoutdetails" class="internalDFN" data-link-type="dfn"><code><code>CheckoutDetails</code></code></a> dictionary. If enough
-        information is present in the details to perform a payment request, a
-        web site creates the payment request and calls <a href="#dfn-finish" class="internalDFN" data-link-type="dfn"><code><code>finish</code></code></a>.
-        Otherwise, the web site may request more information by calling
-        <a href="#dfn-request" class="internalDFN" data-link-type="dfn"><code><code>request</code></code></a> followed by <a href="#dfn-continue" class="internalDFN" data-link-type="dfn"><code><code>continue</code></code></a>.
+        <p>
+          The <a href="#dfn-addeventlistener" class="internalDFN" data-link-type="dfn"><code><code>addEventListener</code></code></a> method <em class="rfc2119" title="MUST">MUST</em> act as follows:
         </p>
-
-        <p>The <a href="#dfn-start" class="internalDFN" data-link-type="dfn"><code><code>start</code></code></a> method <em class="rfc2119" title="MUST">MUST</em> act as follows:</p>
         <ol>
           <li>
             ...
@@ -1069,21 +1073,23 @@ checkout
         </ol>
       </section>
 
-      <section id="continue" typeof="bibo:Chapter" resource="#continue" property="bibo:hasPart">
-        <h3 id="h-continue" resource="#h-continue"><span property="xhv:role" resource="xhv:heading"><span class="secno">4.4 </span>continue()</span></h3>
+      <section id="start" typeof="bibo:Chapter" resource="#start" property="bibo:hasPart">
+        <h3 id="h-start" resource="#h-start"><span property="xhv:role" resource="xhv:heading"><span class="secno">4.4 </span>start()</span></h3>
         <p>
-          The <code><dfn data-dfn-type="dfn" id="dfn-continue">continue</dfn></code> method must ...
+          The <code><dfn data-dfn-type="dfn" id="dfn-start">start</dfn></code> method must ...
         </p>
 
-        <p>The <a href="#dfn-continue" class="internalDFN" data-link-type="dfn"><code><code>continue</code></code></a> call returns a Promise that
-        resolves to a <a href="#dom-checkoutdetails" class="internalDFN" data-link-type="dfn"><code><code>CheckoutDetails</code></code></a> dictionary. If enough
-        information is present in the details to perform a payment request, a
-        web site creates the payment request and calls <a href="#dfn-finish" class="internalDFN" data-link-type="dfn"><code><code>finish</code></code></a>.
-        Otherwise, the web site may request more information by calling
-        <a href="#dfn-request" class="internalDFN" data-link-type="dfn"><code><code>request</code></code></a> followed by <a href="#dfn-continue" class="internalDFN" data-link-type="dfn"><code><code>continue</code></code></a>.
+        <p>The <a href="#dfn-start" class="internalDFN" data-link-type="dfn"><code><code>start</code></code></a> call returns a Promise that
+        resolves to a <a href="#dom-checkoutdetails" class="internalDFN" data-link-type="dfn"><code><code>CheckoutDetails</code></code></a> dictionary once
+        the requested information has been provided by the user agent. A
+        website may add event listeners to capture events as the user provides
+        information in order to request more information as needed. Only once
+        all of the requested information has been provided will the Promise
+        resolve. At this point, the website can then create a payment request
+        payment request and call <a href="#dfn-finish" class="internalDFN" data-link-type="dfn"><code><code>finish</code></code></a> with it.
         </p>
 
-        <p>The <a href="#dfn-continue" class="internalDFN" data-link-type="dfn"><code><code>continue</code></code></a> method <em class="rfc2119" title="MUST">MUST</em> act as follows:</p>
+        <p>The <a href="#dfn-start" class="internalDFN" data-link-type="dfn"><code><code>start</code></code></a> method <em class="rfc2119" title="MUST">MUST</em> act as follows:</p>
         <ol>
           <li>
             ...
@@ -1119,7 +1125,7 @@ checkout
         </ol>
       </section>
 
-      <div class="issue" id="issue-32"><div class="issue-title" aria-level="3" role="heading" id="h-issue4"><a href="https://github.com/WICG/web-payments-browser-api/issues/32"><span>Issue 32</span></a><span style="text-transform: none">: Should the web page be able to provide status information before calling complete()</span></div><div class="">
+      <div class="issue" id="issue-32"><div class="issue-title" aria-level="3" role="heading" id="h-issue2"><a href="https://github.com/WICG/web-payments-browser-api/issues/32"><span>Issue 32</span></a><span style="text-transform: none">: Should the web page be able to provide status information before calling complete()</span></div><div class="">
       There is an open issue about whether there should be a way for a merchant to keep the user
       informed about the progress of a transaction after the user approves the payment request.
       </div></div>
@@ -1131,12 +1137,11 @@ checkout
 <span class="idlMember" id="idl-def-checkoutdetails-items" data-idl="" data-title="items" data-dfn-for="checkoutdetails">    <span class="idlMemberType">sequence&lt;<a href="#idl-def-paymentitem" class="internalDFN" data-link-type="dfn"><code>PaymentItem</code></a>&gt;</span> <span class="idlMemberName">items</span>;</span>
 <span class="idlMember" id="dom-shippingaddress" data-idl="" data-title="shippingAddress" data-dfn-for=""><code>    <span class="idlMemberType"><a href="#idl-def-shippingaddress" class="internalDFN" data-link-type="dfn"><code>ShippingAddress</code></a></span>       <span class="idlMemberName">shippingAddress</span>;</code></span>
 <span class="idlMember" id="dom-shippingoption" data-idl="" data-title="shippingOption" data-dfn-for=""><code>    <span class="idlMemberType"><a href="#idl-def-shippingoption" class="internalDFN" data-link-type="dfn"><code>ShippingOption</code></a></span>        <span class="idlMemberName">shippingOption</span>;</code></span>
-<span class="idlMember" id="idl-def-checkoutdetails-finished" data-idl="" data-title="finished" data-dfn-for="checkoutdetails">    <span class="idlMemberType">boolean</span>               <span class="idlMemberName">finished</span> = <span class="idlMemberValue">false</span>;</span>
 };</span></pre>
 
       <p>
-        Promises returned by <a href="#dfn-start" class="internalDFN" data-link-type="dfn"><code><code>start</code></code></a> and <a href="#dfn-continue" class="internalDFN" data-link-type="dfn"><code><code>continue</code></code></a>
-        resolve to a <code><dfn data-dfn-for="" data-dfn-type="dfn" id="dom-checkoutdetails" data-idl="">CheckoutDetails</dfn></code> dictionary. It
+        The Promise returned by <a href="#dfn-start" class="internalDFN" data-link-type="dfn"><code><code>start</code></code></a> resolves to a
+        <code><dfn data-dfn-for="" data-dfn-type="dfn" id="dom-checkoutdetails" data-idl="">CheckoutDetails</dfn></code> dictionary. It
         provides the information requested from the user agent.
       </p>
       <p>
@@ -1162,14 +1167,6 @@ checkout
           The shipping option that the user selected. If the option is
           <code>null</code>, then this indicates that the user has not yet
           selected a shipping option.
-        </dd>
-        <dt><code>finished</code></dt>
-        <dd>
-          The finished flag is set to true once the user has clicked a button
-          to complete checkout (eg: a "Buy" button). This flag informs the
-          merchant website that it can now generate a payment request message
-          to finish the checkout process and take the user to the payment
-          app selection screen.
         </dd>
       </dl>
     </section>
@@ -1218,7 +1215,7 @@ checkout
         <dt><code>amount</code></dt>
         <dd>
           A <code>FinancialAmount</code> containing the monetary amount for the item.
-          <div class="issue" id="issue-19"><div class="issue-title" aria-level="3" role="heading" id="h-issue5"><a href="https://github.com/WICG/web-payments-browser-api/issues/19"><span>Issue 19</span></a><span style="text-transform: none">: Clarity on Currency Conversion</span></div><div class="">
+          <div class="issue" id="issue-19"><div class="issue-title" aria-level="3" role="heading" id="h-issue3"><a href="https://github.com/WICG/web-payments-browser-api/issues/19"><span>Issue 19</span></a><span style="text-transform: none">: Clarity on Currency Conversion</span></div><div class="">
             There is an open issue about whether there needs to be consideration of differences between
             the currency specified by the merchant for the transaction amount and the currencies that
             the <a href="#dfn-payment-method" class="internalDFN" data-link-type="dfn">payment method</a> might support.
@@ -1248,11 +1245,11 @@ checkout
         <code>shippingAddress</code> field of the <a href="#dom-checkout" class="internalDFN" data-link-type="dfn"><code><code>Checkout</code></code></a> object with
         the user's selected shipping address.
       </p>
-      <div class="issue" id="issue-28"><div class="issue-title" aria-level="3" role="heading" id="h-issue6"><a href="https://github.com/WICG/web-payments-browser-api/issues/28"><span>Issue 28</span></a><span style="text-transform: none">: Write-up proposal for shipping address fields</span></div><div class="">
+      <div class="issue" id="issue-28"><div class="issue-title" aria-level="3" role="heading" id="h-issue4"><a href="https://github.com/WICG/web-payments-browser-api/issues/28"><span>Issue 28</span></a><span style="text-transform: none">: Write-up proposal for shipping address fields</span></div><div class="">
         The fields of the <a href="#idl-def-shippingaddress" class="internalDFN" data-link-type="dfn"><code><code>ShippingAddress</code></code></a> interface are
         yet to be defined.
       </div></div>
-      <div class="issue" id="issue-16"><div class="issue-title" aria-level="3" role="heading" id="h-issue7"><a href="https://github.com/WICG/web-payments-browser-api/issues/16"><span>Issue 16</span></a><span style="text-transform: none">: Merchant requesting arbitrary data from the UA</span></div><div class="">
+      <div class="issue" id="issue-16"><div class="issue-title" aria-level="3" role="heading" id="h-issue5"><a href="https://github.com/WICG/web-payments-browser-api/issues/16"><span>Issue 16</span></a><span style="text-transform: none">: Merchant requesting arbitrary data from the UA</span></div><div class="">
         There is an open question about what data beyond shipping address the merchant might be able
         to request from the <a href="#dfn-user-agent" class="internalDFN" data-link-type="dfn">user agent</a>. For example, billing address, contact phone number, e-mail
         address, or proof of age.
@@ -1312,7 +1309,7 @@ checkout
     <section id="algorithms" typeof="bibo:Chapter" resource="#algorithms" property="bibo:hasPart">
       <!--OddPage--><h2 id="h-algorithms" resource="#h-algorithms"><span property="xhv:role" resource="xhv:heading"><span class="secno">11. </span>Algorithms</span></h2>
 
-      <div class="issue"><div class="issue-title" aria-level="3" role="heading" id="h-issue8"><span>Issue</span></div><p class="">This entire section is out of date and needs to be updated if the approach above is deemed useful by the WG.</p></div>
+      <div class="issue"><div class="issue-title" aria-level="3" role="heading" id="h-issue6"><span>Issue</span></div><p class="">This entire section is out of date and needs to be updated if the approach above is deemed useful by the WG.</p></div>
 
       <p>When the <a href="#dom-checkout" class="internalDFN" data-link-type="dfn"><code><code>Checkout</code></code></a> object is in the <code>interactive</code> state,
       the <a href="#dfn-user-agent" class="internalDFN" data-link-type="dfn">user agent</a> will trigger the following algorithms based on user interaction.</p>
@@ -1340,7 +1337,7 @@ checkout
       <section id="user-agent-delegates-payment-request-algorithm" typeof="bibo:Chapter" resource="#user-agent-delegates-payment-request-algorithm" property="bibo:hasPart">
         <h3 id="h-user-agent-delegates-payment-request-algorithm" resource="#h-user-agent-delegates-payment-request-algorithm"><span property="xhv:role" resource="xhv:heading"><span class="secno">11.2 </span>User agent delegates payment request algorithm</span></h3>
 
-        <div class="issue"><div class="issue-title" aria-level="4" role="heading" id="h-issue9"><span>Issue</span></div><p class="">This entire section is out of date and needs to be updated if the approach above is deemed useful by the WG.</p></div>
+        <div class="issue"><div class="issue-title" aria-level="4" role="heading" id="h-issue7"><span>Issue</span></div><p class="">This entire section is out of date and needs to be updated if the approach above is deemed useful by the WG.</p></div>
 
         <p>
           The <a href="#dom-checkout" class="internalDFN" data-link-type="dfn"><code><code>Checkout</code></code></a> interface allows a web page to call <code>abort</code>
@@ -1376,7 +1373,7 @@ checkout
           </li>
         </ol>
 
-        <div class="issue" id="issue-33"><div class="issue-title" aria-level="4" role="heading" id="h-issue10"><a href="https://github.com/WICG/web-payments-browser-api/issues/33"><span>Issue 33</span></a><span style="text-transform: none">: Should we support a delegated state for Checkout?</span></div><div class="">
+        <div class="issue" id="issue-33"><div class="issue-title" aria-level="4" role="heading" id="h-issue8"><a href="https://github.com/WICG/web-payments-browser-api/issues/33"><span>Issue 33</span></a><span style="text-transform: none">: Should we support a delegated state for Checkout?</span></div><div class="">
           <p>We believe there are <a href="#dfn-user-agent" class="internalDFN" data-link-type="dfn">user agent</a> configurations that can cause the UI to get into a state
           where cancellation by the web page during user interaction is difficult. Users should still
           be able to cancel the payment but script will not be able to. We need to investigate in more
@@ -1391,7 +1388,7 @@ checkout
       <section id="user-accepts-the-payment-request-algorithm" typeof="bibo:Chapter" resource="#user-accepts-the-payment-request-algorithm" property="bibo:hasPart">
         <h3 id="h-user-accepts-the-payment-request-algorithm" resource="#h-user-accepts-the-payment-request-algorithm"><span property="xhv:role" resource="xhv:heading"><span class="secno">11.3 </span>User accepts the payment request algorithm</span></h3>
 
-        <div class="issue"><div class="issue-title" aria-level="4" role="heading" id="h-issue11"><span>Issue</span></div><p class="">This entire section is out of date and needs to be updated if the approach above is deemed useful by the WG.</p></div>
+        <div class="issue"><div class="issue-title" aria-level="4" role="heading" id="h-issue9"><span>Issue</span></div><p class="">This entire section is out of date and needs to be updated if the approach above is deemed useful by the WG.</p></div>
 
         <p>
           The <dfn data-dfn-type="dfn" id="dfn-user-accepts-the-payment-request-algorithm">user accepts the payment request
@@ -1468,7 +1465,7 @@ parameters used with this API using JSON-LD.
     </li>
   </ul>
 
-  <div class="issue"><div class="issue-title" aria-level="3" role="heading" id="h-issue12"><span>Issue</span></div><p class="">
+  <div class="issue"><div class="issue-title" aria-level="3" role="heading" id="h-issue10"><span>Issue</span></div><p class="">
 The Working Group seeks feedback from the Web community on that
 specification and how well it furthers interoperability needs in the
 payments ecosystem. To provide feedback, see the
