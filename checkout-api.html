@@ -353,7 +353,7 @@ checkout
 function shippingAddressChanged(event) {
   var checkoutDetails = event.checkoutDetails;
 
-  if(!isAddressAcceptable(checkoutDetails.address)) {
+  if(!isAddressAcceptable(checkoutDetails.shippingAddress)) {
     return checkout.cancel('We cannot ship to your address.');
   }
 
@@ -398,7 +398,7 @@ checkout
 function shippingAddressChanged(event) {
   var checkoutDetails = event.checkoutDetails;
 
-  if(!isAddressAcceptable(checkoutDetails.address)) {
+  if(!isAddressAcceptable(checkoutDetails.shippingAddress)) {
     return checkout.cancel('We cannot ship to your address.');
   }
 
@@ -446,7 +446,7 @@ checkout
 function shippingAddressChanged(event) {
   var checkoutDetails = event.checkoutDetails;
 
-  if(!isAddressAcceptable(checkoutDetails.address)) {
+  if(!isAddressAcceptable(checkoutDetails.shippingAddress)) {
     return checkout.cancel('We cannot ship to your address.');
   }
 
@@ -454,7 +454,7 @@ function shippingAddressChanged(event) {
   // selection; note `send` and `request` can each accept a Promise
   checkout
     .send('paymentItem', getPaymentItems(checkoutDetails))
-    .request('shippingOption', getShippingOptions(checkoutDetails.address));
+    .request('shippingOption', getShippingOptions(checkoutDetails.shippingAddress));
 }
 
 function shippingOptionChanged(event) {
