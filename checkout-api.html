@@ -239,8 +239,8 @@
       <pre class="idl">
 [Constructor]
 interface Checkout : EventTarget {
-  Checkout send(DOMString itemType, optional sequence &lt;CheckoutItem&gt; items);
-  Checkout request(DOMString optionType, optional sequence &lt;CheckoutOption&gt; options);
+  Checkout send(DOMString itemType, optional Promise&lt;sequence &lt;CheckoutItem&gt;&gt; items);
+  Checkout request(DOMString optionType, optional Promise&lt;sequence &lt;CheckoutOption&gt;&gt; options);
   attribute EventHandler onshippingAddressChange;
   attribute EventHandler onshippingOptionChange;
   Promise&lt;CheckoutDetails&gt; start();
