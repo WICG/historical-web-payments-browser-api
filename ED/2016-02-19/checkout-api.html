@@ -13,7 +13,7 @@
     table td, table th { border-left:solid; border-right:solid; border-bottom:solid thin; vertical-align:top; padding:0.2em }
     li { margin-top: 0.5em; margin-bottom: 0.5em;}
     </style>
-  <style>/*****************************************************************
+  <style type="text/css"></style><style>/*****************************************************************
  * ReSpec 3 CSS
  * Robin Berjon - http://berjon.com/
  *****************************************************************/
@@ -530,7 +530,7 @@ table.exceptions table {
       "status": "CG-DRAFT"
     }
   }
-}</script></head>
+}</script></head><style type="text/css">embed[type*="application/x-shockwave-flash"],embed[src*=".swf"],object[type*="application/x-shockwave-flash"],object[codetype*="application/x-shockwave-flash"],object[src*=".swf"],object[codebase*="swflash.cab"],object[classid*="D27CDB6E-AE6D-11cf-96B8-444553540000"],object[classid*="d27cdb6e-ae6d-11cf-96b8-444553540000"],object[classid*="D27CDB6E-AE6D-11cf-96B8-444553540000"]{	display: none !important;}</style>
   <body class="h-entry" role="document" id="respecDocument"><div class="head" role="contentinfo" id="respecHeader">
   <p>
     <a class="logo" href="http://www.w3.org/"><img width="72" height="48" src="https://www.w3.org/Icons/w3c_home" alt="W3C"></a>
@@ -776,10 +776,10 @@ table.exceptions table {
       <!--OddPage--><h2 id="h-the-checkout-interface" resource="#h-the-checkout-interface"><span property="xhv:role" resource="xhv:heading"><span class="secno">4. </span>The <dfn data-dfn-for="" data-dfn-type="dfn" id="dom-checkout" data-idl=""><code>Checkout</code></dfn> Interface</span></h2>
       <pre class="idl"><span class="idlInterface" id="idl-def-checkout" data-idl="" data-title="Checkout">[<span class="idlCtor"><span class="extAttrName">Constructor</span></span>]
 interface <span class="idlInterfaceID"><a data-lt="Checkout" href="#dom-checkout" class="internalDFN" data-link-type="dfn" data-for=""><code>Checkout</code></a></span> : <span class="idlSuperclass">EventTarget</span> {
-<span class="idlMethod" id="idl-def-checkout-send(domstring,optional-sequence<checkoutitem>)" data-idl="" data-title="send" data-dfn-for="checkout">    <span class="idlMethType"><a href="#dom-checkout" class="internalDFN" data-link-type="dfn"><code>Checkout</code></a></span>                 <span class="idlMethName">send</span>(<span class="idlParam"><span class="idlParamType">DOMString</span> <span class="idlParamName">itemType</span></span>,
-                                  <span class="idlParam">optional <span class="idlParamType">sequence&lt;<a href="#idl-def-checkoutitem" class="internalDFN" data-link-type="dfn"><code>CheckoutItem</code></a>&gt;</span> <span class="idlParamName">items</span></span>);</span>
-<span class="idlMethod" id="idl-def-checkout-request(domstring,optional-sequence<checkoutoption>)" data-idl="" data-title="request" data-dfn-for="checkout">    <span class="idlMethType"><a href="#dom-checkout" class="internalDFN" data-link-type="dfn"><code>Checkout</code></a></span>                 <span class="idlMethName">request</span>(<span class="idlParam"><span class="idlParamType">DOMString</span> <span class="idlParamName">optionType</span></span>,
-                                     <span class="idlParam">optional <span class="idlParamType">sequence&lt;<a href="#idl-def-checkoutoption" class="internalDFN" data-link-type="dfn"><code>CheckoutOption</code></a>&gt;</span> <span class="idlParamName">options</span></span>);</span>
+<span class="idlMethod" id="idl-def-checkout-send(domstring,optional-promise<sequence<checkoutitem>>)" data-idl="" data-title="send" data-dfn-for="checkout">    <span class="idlMethType"><a href="#dom-checkout" class="internalDFN" data-link-type="dfn"><code>Checkout</code></a></span>                 <span class="idlMethName">send</span>(<span class="idlParam"><span class="idlParamType">DOMString</span> <span class="idlParamName">itemType</span></span>,
+                                  <span class="idlParam">optional <span class="idlParamType">Promise&lt;sequence&lt;<a href="#idl-def-checkoutitem" class="internalDFN" data-link-type="dfn"><code>CheckoutItem</code></a>&gt;&gt;</span> <span class="idlParamName">items</span></span>);</span>
+<span class="idlMethod" id="idl-def-checkout-request(domstring,optional-promise<sequence<checkoutoption>>)" data-idl="" data-title="request" data-dfn-for="checkout">    <span class="idlMethType"><a href="#dom-checkout" class="internalDFN" data-link-type="dfn"><code>Checkout</code></a></span>                 <span class="idlMethName">request</span>(<span class="idlParam"><span class="idlParamType">DOMString</span> <span class="idlParamName">optionType</span></span>,
+                                     <span class="idlParam">optional <span class="idlParamType">Promise&lt;sequence&lt;<a href="#idl-def-checkoutoption" class="internalDFN" data-link-type="dfn"><code>CheckoutOption</code></a>&gt;&gt;</span> <span class="idlParamName">options</span></span>);</span>
 <span class="idlAttribute" id="idl-def-checkout-onshippingaddresschange" data-idl="" data-title="onshippingAddressChange" data-dfn-for="checkout">    attribute <span class="idlAttrType">EventHandler</span> <span class="idlAttrName">onshippingAddressChange</span>;</span>
 <span class="idlAttribute" id="idl-def-checkout-onshippingoptionchange" data-idl="" data-title="onshippingOptionChange" data-dfn-for="checkout">    attribute <span class="idlAttrType">EventHandler</span> <span class="idlAttrName">onshippingOptionChange</span>;</span>
 <span class="idlMethod" id="idl-def-checkout-start()" data-idl="" data-title="start" data-dfn-for="checkout">    <span class="idlMethType">Promise&lt;<a href="#dom-checkoutdetails" class="internalDFN" data-link-type="dfn"><code>CheckoutDetails</code></a>&gt;</span> <span class="idlMethName">start</span>();</span>
