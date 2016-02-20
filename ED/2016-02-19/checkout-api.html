@@ -888,7 +888,7 @@ checkout
 </span><span class="kwd">function</span><span class="pln"> shippingAddressChanged</span><span class="pun">(</span><span class="kwd">event</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
   </span><span class="kwd">var</span><span class="pln"> checkoutDetails </span><span class="pun">=</span><span class="pln"> </span><span class="kwd">event</span><span class="pun">.</span><span class="pln">checkoutDetails</span><span class="pun">;</span><span class="pln">
 
-  </span><span class="kwd">if</span><span class="pun">(!</span><span class="pln">isAddressAcceptable</span><span class="pun">(</span><span class="pln">checkoutDetails</span><span class="pun">.</span><span class="pln">address</span><span class="pun">))</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+  </span><span class="kwd">if</span><span class="pun">(!</span><span class="pln">isAddressAcceptable</span><span class="pun">(</span><span class="pln">checkoutDetails</span><span class="pun">.</span><span class="pln">shippingAddress</span><span class="pun">))</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
     </span><span class="kwd">return</span><span class="pln"> checkout</span><span class="pun">.</span><span class="pln">cancel</span><span class="pun">(</span><span class="str">'We cannot ship to your address.'</span><span class="pun">);</span><span class="pln">
   </span><span class="pun">}</span><span class="pln">
 
@@ -931,7 +931,7 @@ checkout
 </span><span class="kwd">function</span><span class="pln"> shippingAddressChanged</span><span class="pun">(</span><span class="kwd">event</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
   </span><span class="kwd">var</span><span class="pln"> checkoutDetails </span><span class="pun">=</span><span class="pln"> </span><span class="kwd">event</span><span class="pun">.</span><span class="pln">checkoutDetails</span><span class="pun">;</span><span class="pln">
 
-  </span><span class="kwd">if</span><span class="pun">(!</span><span class="pln">isAddressAcceptable</span><span class="pun">(</span><span class="pln">checkoutDetails</span><span class="pun">.</span><span class="pln">address</span><span class="pun">))</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+  </span><span class="kwd">if</span><span class="pun">(!</span><span class="pln">isAddressAcceptable</span><span class="pun">(</span><span class="pln">checkoutDetails</span><span class="pun">.</span><span class="pln">shippingAddress</span><span class="pun">))</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
     </span><span class="kwd">return</span><span class="pln"> checkout</span><span class="pun">.</span><span class="pln">cancel</span><span class="pun">(</span><span class="str">'We cannot ship to your address.'</span><span class="pun">);</span><span class="pln">
   </span><span class="pun">}</span><span class="pln">
 
@@ -977,7 +977,7 @@ checkout
 </span><span class="kwd">function</span><span class="pln"> shippingAddressChanged</span><span class="pun">(</span><span class="kwd">event</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
   </span><span class="kwd">var</span><span class="pln"> checkoutDetails </span><span class="pun">=</span><span class="pln"> </span><span class="kwd">event</span><span class="pun">.</span><span class="pln">checkoutDetails</span><span class="pun">;</span><span class="pln">
 
-  </span><span class="kwd">if</span><span class="pun">(!</span><span class="pln">isAddressAcceptable</span><span class="pun">(</span><span class="pln">checkoutDetails</span><span class="pun">.</span><span class="pln">address</span><span class="pun">))</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+  </span><span class="kwd">if</span><span class="pun">(!</span><span class="pln">isAddressAcceptable</span><span class="pun">(</span><span class="pln">checkoutDetails</span><span class="pun">.</span><span class="pln">shippingAddress</span><span class="pun">))</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
     </span><span class="kwd">return</span><span class="pln"> checkout</span><span class="pun">.</span><span class="pln">cancel</span><span class="pun">(</span><span class="str">'We cannot ship to your address.'</span><span class="pun">);</span><span class="pln">
   </span><span class="pun">}</span><span class="pln">
 
@@ -985,7 +985,7 @@ checkout
   </span><span class="com">// selection; note `send` and `request` can each accept a Promise</span><span class="pln">
   checkout
     </span><span class="pun">.</span><span class="pln">send</span><span class="pun">(</span><span class="str">'paymentItem'</span><span class="pun">,</span><span class="pln"> getPaymentItems</span><span class="pun">(</span><span class="pln">checkoutDetails</span><span class="pun">))</span><span class="pln">
-    </span><span class="pun">.</span><span class="pln">request</span><span class="pun">(</span><span class="str">'shippingOption'</span><span class="pun">,</span><span class="pln"> getShippingOptions</span><span class="pun">(</span><span class="pln">checkoutDetails</span><span class="pun">.</span><span class="pln">address</span><span class="pun">));</span><span class="pln">
+    </span><span class="pun">.</span><span class="pln">request</span><span class="pun">(</span><span class="str">'shippingOption'</span><span class="pun">,</span><span class="pln"> getShippingOptions</span><span class="pun">(</span><span class="pln">checkoutDetails</span><span class="pun">.</span><span class="pln">shippingAddress</span><span class="pun">));</span><span class="pln">
 </span><span class="pun">}</span><span class="pln">
 
 </span><span class="kwd">function</span><span class="pln"> shippingOptionChanged</span><span class="pun">(</span><span class="kwd">event</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
