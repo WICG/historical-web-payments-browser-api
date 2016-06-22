@@ -1,6 +1,6 @@
 # The Web Payments Browser API
 
-STATUS: This proposal was presented to the Web Payments Working Group in October 2016 but was not adopted.
+STATUS: This proposal was presented to the Web Payments Working Group in October 2015 but was not adopted.
 See the [Web Payments Working Group wiki](https://github.com/w3c/webpayments/wiki) for current information about the group's deliverables. 
 
 The following information is kept for historical purposes.
