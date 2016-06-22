@@ -1,6 +1,11 @@
 # The Web Payments Browser API
 
-This is a proposal by the Web Payments Community Group for a new browser API
+STATUS: This proposal was presented to the Web Payments Working Group in October 2016 but was not adopted.
+See the [Web Payments Working Group wiki](https://github.com/w3c/webpayments/wiki) for current information about the group's deliverables. 
+
+The following information is kept for historical purposes.
+
+This was a proposal by the Web Payments Community Group for a new browser API
 to enable a better payment experience on the Web. The API enables web developers
 to register payment instruments (credit card, PayPal, Bitcoin, etc.), initiate
 requests for payment, and acknowledge requests for payment.
